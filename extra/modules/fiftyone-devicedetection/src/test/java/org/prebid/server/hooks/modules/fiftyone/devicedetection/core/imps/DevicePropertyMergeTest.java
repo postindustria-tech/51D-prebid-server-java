@@ -1,11 +1,8 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
-import com.iab.openrtb.request.Device;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DevicePropertyMerge;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatch;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DevicePropertyMergeCondition;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -88,7 +85,7 @@ public class DevicePropertyMergeTest {
                     return null;
                 },
                 null);
-        final boolean patched = propertyMerge.patch(null, null, deviceData);
+        final boolean patched = propertyMerge.patch(null, deviceData);
 
         // then
         assertThat(patched).isFalse();
@@ -110,7 +107,7 @@ public class DevicePropertyMergeTest {
                     validatorCalled[0] = true;
                     return false;
                 });
-        final boolean patched = propertyMerge.patch(null, null, null);
+        final boolean patched = propertyMerge.patch(null, null);
 
         // then
         assertThat(patched).isFalse();
@@ -120,21 +117,15 @@ public class DevicePropertyMergeTest {
     @Test
     public void shouldApplyUsablePropertyAndReturnTrue() {
         // given
-        final Device oldDevice = Device.builder().build();
         final String extractedValue = "dummy";
         final boolean[] validatorCalled = { false };
-        final boolean[] setterSupplierCalled = { false };
         final boolean[] setterCalled = { false };
 
         // when
         final DevicePatch propertyMerge = new DevicePropertyMerge<>(
-                device -> {
-                    assertThat(device).isEqualTo(oldDevice);
-                    setterSupplierCalled[0] = true;
-                    return (builder, s) -> {
-                        assertThat(s).isEqualTo(extractedValue);
-                        setterCalled[0] = true;
-                    };
+                (builder, s) -> {
+                    assertThat(s).isEqualTo(extractedValue);
+                    setterCalled[0] = true;
                 },
                 data -> extractedValue,
                 value -> {
@@ -142,12 +133,11 @@ public class DevicePropertyMergeTest {
                     validatorCalled[0] = true;
                     return true;
                 });
-        final boolean patched = propertyMerge.patch(null, oldDevice, null);
+        final boolean patched = propertyMerge.patch(null, null);
 
         // when and then
         assertThat(patched).isTrue();
         assertThat(validatorCalled).containsExactly(true);
-        assertThat(setterSupplierCalled).containsExactly(true);
         assertThat(setterCalled).containsExactly(true);
     }
 }

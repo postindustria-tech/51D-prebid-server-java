@@ -1,11 +1,11 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
 import com.iab.openrtb.request.Device;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceInfoPatcherImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatch;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.DeviceMirror;
 
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -21,7 +21,8 @@ public class DeviceInfoPatcherImpTest {
         final DevicePatchPlan patchPlan = new DevicePatchPlan(Collections.emptySet());
 
         // when
-        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(oldDevice, patchPlan, null);
+        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
+                .patchDeviceInfo(oldDevice, patchPlan, null);
 
         // then
         assertThat(newDevice).isEqualTo(oldDevice);
@@ -31,10 +32,11 @@ public class DeviceInfoPatcherImpTest {
     public void shouldReturnOldDeviceIfPatchChangedNothing() {
         // given
         final Device oldDevice = Device.builder().build();
-        final DevicePatchPlan patchPlan = simplePlan(((deviceBuilder, oldDevice1, newData) -> false));
+        final DevicePatchPlan patchPlan = simplePlan(((writableDeviceInfo, newData) -> false));
 
         // when
-        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(oldDevice, patchPlan, null);
+        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
+                .patchDeviceInfo(oldDevice, patchPlan, null);
 
         // then
         assertThat(newDevice).isEqualTo(oldDevice);
@@ -48,12 +50,13 @@ public class DeviceInfoPatcherImpTest {
 
         // when
         final boolean[] dataPassed = { false };
-        final DevicePatchPlan patchPlan = simplePlan(((deviceBuilder, oldDevice1, newData) -> {
+        final DevicePatchPlan patchPlan = simplePlan(((writableDeviceInfo, newData) -> {
             assertThat(newData).isEqualTo(mockedData);
             dataPassed[0] = true;
             return false;
         }));
-        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(oldDevice, patchPlan, mockedData);
+        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
+                .patchDeviceInfo(oldDevice, patchPlan, mockedData);
 
         // then
         assertThat(newDevice).isEqualTo(oldDevice);
@@ -67,11 +70,12 @@ public class DeviceInfoPatcherImpTest {
         final String newModel = "crafty";
 
         // when
-        final DevicePatchPlan patchPlan = simplePlan(((deviceBuilder, oldDevice1, newData) -> {
-            deviceBuilder.model(newModel);
+        final DevicePatchPlan patchPlan = simplePlan(((writableDeviceInfo, newData) -> {
+            writableDeviceInfo.setModel(newModel);
             return true;
         }));
-        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(oldDevice, patchPlan, null);
+        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
+                .patchDeviceInfo(oldDevice, patchPlan, null);
 
         // then
         assertThat(newDevice).isNotEqualTo(oldDevice);

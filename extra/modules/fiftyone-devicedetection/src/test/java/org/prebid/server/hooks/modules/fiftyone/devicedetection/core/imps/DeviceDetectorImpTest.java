@@ -1,14 +1,13 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
-import com.iab.openrtb.request.Device;
 import fiftyone.devicedetection.shared.DeviceData;
 import fiftyone.pipeline.core.data.FlowData;
 import fiftyone.pipeline.core.flowelements.Pipeline;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceDetectorImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceDetector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.DeviceInfoClone;
 
 import java.util.Collections;
 
@@ -20,8 +19,8 @@ public class DeviceDetectorImpTest {
     @Test
     public void shouldRethrowOnFailure() throws Exception {
         // given
-        try(final Pipeline pipeline = mock(Pipeline.class)) {
-            final FlowData flowData = mock(FlowData.class);
+        try(final Pipeline pipeline = mock(Pipeline.class);
+            final FlowData flowData = mock(FlowData.class)) {
             final RuntimeException e = new RuntimeException();
             when(pipeline.createFlowData()).thenThrow(e);
 
@@ -70,7 +69,7 @@ public class DeviceDetectorImpTest {
             final FlowData flowData = mock(FlowData.class);
             when(pipeline.createFlowData()).thenReturn(flowData);
             when(flowData.get(DeviceData.class)).thenReturn(mock(DeviceData.class));
-            final Device device = Device.builder()
+            final DeviceInfoClone device = DeviceInfoClone.builder()
                     .make("Pumpkin&Co")
                     .build();
 

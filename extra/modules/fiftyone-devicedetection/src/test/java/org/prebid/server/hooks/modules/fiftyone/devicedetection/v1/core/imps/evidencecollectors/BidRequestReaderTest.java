@@ -12,7 +12,7 @@ public class BidRequestReaderTest {
     @Test
     public void shouldNotFailOnNoDevice() {
         // just check for no throw
-        new BidRequestReader().evidenceFrom(BidRequest.builder().build()).injectInto(null);
+        new BidRequestReader(null).evidenceFrom(BidRequest.builder().build()).injectInto(null);
     }
 
     @Test
@@ -25,7 +25,7 @@ public class BidRequestReaderTest {
 
         // when
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = CollectedEvidence.builder();
-        new BidRequestReader().evidenceFrom(bidRequest).injectInto(evidenceBuilder);
+        new BidRequestReader(null).evidenceFrom(bidRequest).injectInto(evidenceBuilder);
         final CollectedEvidence evidence = evidenceBuilder.build();
 
         // then
@@ -42,10 +42,10 @@ public class BidRequestReaderTest {
 
         // when
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = CollectedEvidence.builder();
-        new BidRequestReader().evidenceFrom(bidRequest).injectInto(evidenceBuilder);
+        new BidRequestReader((sua, headers) -> {}).evidenceFrom(bidRequest).injectInto(evidenceBuilder);
         final CollectedEvidence evidence = evidenceBuilder.build();
 
         // then
-        assertThat(evidence.deviceSUA()).isEqualTo(testSUA);
+        assertThat(evidence.secureHeaders()).isEmpty();
     }
 }

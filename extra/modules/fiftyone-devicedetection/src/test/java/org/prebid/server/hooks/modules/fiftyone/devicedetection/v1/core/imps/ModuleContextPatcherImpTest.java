@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.ModuleContext;
 
+import java.util.HashMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ModuleContextPatcherImpTest {
@@ -34,7 +36,7 @@ public class ModuleContextPatcherImpTest {
     public void shouldMergeEvidences() {
         // given and when
         final String ua = "mad-hatter";
-        final UserAgent sua = UserAgent.builder().build();
+        final HashMap<String, String> sua = new HashMap<>();
         final ModuleContext existingContext = ModuleContext.builder()
                 .collectedEvidence(CollectedEvidence.builder()
                         .deviceUA(ua)
@@ -44,13 +46,13 @@ public class ModuleContextPatcherImpTest {
         // when
         final ModuleContext newContext = new ModuleContextPatcherImp().contextWithNewEvidence(
                 existingContext,
-                builder -> builder.deviceSUA(sua));
+                builder -> builder.secureHeaders(sua));
 
         // then
         assertThat(newContext).isNotNull();
         final CollectedEvidence newEvidence = newContext.collectedEvidence();
         assertThat(newEvidence).isNotNull();
         assertThat(newEvidence.deviceUA()).isEqualTo(ua);
-        assertThat(newEvidence.deviceSUA()).isEqualTo(sua);
+        assertThat(newEvidence.secureHeaders()).isEqualTo(sua);
     }
 }
