@@ -5,12 +5,12 @@ import com.iab.openrtb.request.Device;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.BidRequestEvidenceCollector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.BidRequestPatcher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceDetector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatchPlanner;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatcher;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.context.CollectedEvidence;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.context.CollectedEvidence.CollectedEvidenceBuilder;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence.CollectedEvidenceBuilder;
 
 public final class BidRequestPatcherImp implements BidRequestPatcher {
     private final DevicePatchPlanner devicePatchPlanner;

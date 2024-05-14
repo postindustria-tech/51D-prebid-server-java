@@ -3,7 +3,7 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
 import com.iab.openrtb.request.Device;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatch;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatchPlan;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatcher;
 
 import java.util.Map;

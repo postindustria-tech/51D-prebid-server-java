@@ -1,7 +1,7 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.evidencecollectors;
 
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.context.CollectedEvidence;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.hooks.v1.entrypoint.EntrypointPayload;
 import org.prebid.server.model.CaseInsensitiveMultiMap;
 

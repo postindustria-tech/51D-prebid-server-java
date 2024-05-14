@@ -2,7 +2,7 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
 
 import org.prebid.server.auction.model.AuctionContext;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.AccountControl;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.config.AccountFilter;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.AccountFilter;
 import org.prebid.server.hooks.v1.auction.AuctionInvocationContext;
 import org.prebid.server.settings.model.Account;
 

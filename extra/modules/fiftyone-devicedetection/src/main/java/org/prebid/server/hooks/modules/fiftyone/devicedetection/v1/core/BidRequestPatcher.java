@@ -1,7 +1,7 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core;
 
 import com.iab.openrtb.request.BidRequest;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.context.CollectedEvidence;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 
 import java.util.function.BiFunction;
 

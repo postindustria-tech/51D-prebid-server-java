@@ -5,7 +5,7 @@ import com.iab.openrtb.request.Device.DeviceBuilder;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatch;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatchPlanner;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
 
 import java.math.BigDecimal;
 import java.util.AbstractMap;

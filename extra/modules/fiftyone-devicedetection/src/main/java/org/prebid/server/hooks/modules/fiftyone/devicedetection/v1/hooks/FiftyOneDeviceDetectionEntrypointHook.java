@@ -2,8 +2,8 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.EntrypointEvidenceCollector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.ModuleContextPatcher;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.context.ModuleContext;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.result.InvocationResultImpl;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.ModuleContext;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.InvocationResultImpl;
 import org.prebid.server.hooks.v1.InvocationAction;
 import org.prebid.server.hooks.v1.InvocationContext;
 import org.prebid.server.hooks.v1.InvocationResult;

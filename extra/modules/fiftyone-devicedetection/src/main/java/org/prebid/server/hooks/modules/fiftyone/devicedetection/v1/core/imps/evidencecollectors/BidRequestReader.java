@@ -3,9 +3,9 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.ev
 import com.iab.openrtb.request.BidRequest;
 import com.iab.openrtb.request.Device;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.BidRequestEvidenceCollector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.mergers.MergingConfiguratorImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.mergers.PropertyMergeImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.context.CollectedEvidence.CollectedEvidenceBuilder;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.MergingConfiguratorImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.PropertyMergeImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence.CollectedEvidenceBuilder;
 
 import java.util.List;
 

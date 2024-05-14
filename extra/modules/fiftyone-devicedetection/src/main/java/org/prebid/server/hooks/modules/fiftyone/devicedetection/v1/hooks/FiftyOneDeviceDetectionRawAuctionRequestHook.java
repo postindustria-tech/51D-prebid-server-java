@@ -6,9 +6,9 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.AccountC
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.BidRequestEvidenceCollector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.BidRequestPatcher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.ModuleContextPatcher;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.context.CollectedEvidence;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.context.ModuleContext;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.result.InvocationResultImpl;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.ModuleContext;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.InvocationResultImpl;
 import org.prebid.server.hooks.v1.InvocationAction;
 import org.prebid.server.hooks.v1.InvocationResult;
 import org.prebid.server.hooks.v1.InvocationStatus;

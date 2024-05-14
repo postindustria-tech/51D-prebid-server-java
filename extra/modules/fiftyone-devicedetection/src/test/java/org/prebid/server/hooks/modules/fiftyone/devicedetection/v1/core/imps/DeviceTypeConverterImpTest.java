@@ -1,6 +1,7 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
 
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceTypeConverterImp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

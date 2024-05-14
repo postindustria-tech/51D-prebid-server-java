@@ -3,8 +3,8 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
 import com.iab.openrtb.request.BrandVersion;
 import com.iab.openrtb.request.UserAgent;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.UserAgentEvidenceConverter;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.mergers.MergingConfiguratorImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.mergers.PropertyMergeImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.MergingConfiguratorImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.PropertyMergeImp;
 
 import java.util.List;
 import java.util.Map;

@@ -3,14 +3,15 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
 import com.iab.openrtb.request.Device;
 import fiftyone.devicedetection.shared.DeviceData;
 import fiftyone.pipeline.core.data.FlowData;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceDataWrapper;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceDetector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatcher;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceTypeConverter;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.PipelineSupplier;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.PriorityEvidenceSelector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.context.CollectedEvidence;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceTypeConverter;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PipelineSupplier;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PriorityEvidenceSelector;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
 
 public final class DeviceDetectorImp implements DeviceDetector {
     private final PipelineSupplier pipelineSupplier;

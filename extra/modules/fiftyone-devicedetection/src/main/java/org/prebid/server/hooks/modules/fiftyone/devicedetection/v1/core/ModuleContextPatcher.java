@@ -1,6 +1,7 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core;
 
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.context.ModuleContext;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.AdditionalEvidenceInjector;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.ModuleContext;
 
 import java.util.function.BiFunction;
 

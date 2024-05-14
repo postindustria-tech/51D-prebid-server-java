@@ -2,7 +2,7 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
 
 import com.iab.openrtb.request.Device;
 import com.iab.openrtb.request.Device.DeviceBuilder;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.mergers.ValueSetter;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.ValueSetter;
 
 import java.util.function.Function;
 
