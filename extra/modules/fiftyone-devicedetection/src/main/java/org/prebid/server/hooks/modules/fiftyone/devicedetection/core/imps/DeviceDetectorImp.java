@@ -1,12 +1,11 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
-import com.iab.openrtb.request.Device;
 import fiftyone.devicedetection.shared.DeviceData;
 import fiftyone.pipeline.core.data.FlowData;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceDataWrapper;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceDetector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatchPlan;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatcher;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.DeviceInfoClone;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceDetector;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfoPatcher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceTypeConverter;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PipelineSupplier;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PriorityEvidenceSelector;
@@ -17,18 +16,18 @@ public final class DeviceDetectorImp implements DeviceDetector {
     private final PipelineSupplier pipelineSupplier;
     private final PriorityEvidenceSelector priorityEvidenceSelector;
     private final DeviceTypeConverter deviceTypeConverter;
-    private final DevicePatcher devicePatcher;
+    private final DeviceInfoPatcher<DeviceInfoClone> deviceInfoPatcher;
 
     public DeviceDetectorImp(
             PipelineSupplier pipelineSupplier,
             PriorityEvidenceSelector priorityEvidenceSelector,
             DeviceTypeConverter deviceTypeConverter,
-            DevicePatcher devicePatcher)
+            DeviceInfoPatcher<DeviceInfoClone> deviceInfoPatcher)
     {
         this.pipelineSupplier = pipelineSupplier;
         this.priorityEvidenceSelector = priorityEvidenceSelector;
         this.deviceTypeConverter = deviceTypeConverter;
-        this.devicePatcher = devicePatcher;
+        this.deviceInfoPatcher = deviceInfoPatcher;
     }
 
     @Override
@@ -40,12 +39,11 @@ public final class DeviceDetectorImp implements DeviceDetector {
             if (device == null) {
                 return null;
             }
-            final Device newDevice = devicePatcher.patchDevice(
-                    Device.builder().build(),
+            return deviceInfoPatcher.patchDeviceInfo(
+                    DeviceInfoClone.builder().build(),
                     patchPlan,
                     new DeviceDataWrapper(device, deviceTypeConverter)
             );
-            return new DeviceMirror(newDevice);
         } catch (Exception e) {
             // will be caught by `GroupResult.applyPayloadUpdate`
             throw new RuntimeException(e);

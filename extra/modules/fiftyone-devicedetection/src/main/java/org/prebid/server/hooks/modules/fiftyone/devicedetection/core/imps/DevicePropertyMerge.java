@@ -1,19 +1,19 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
-import com.iab.openrtb.request.Device;
-import com.iab.openrtb.request.Device.DeviceBuilder;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatch;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.WritableDeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.ValueSetter;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatch;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.SimplePropertyMerge;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public final class DevicePropertyMerge<T> implements DevicePatch, DevicePropertyMergeCondition {
-    private final SimplePropertyMerge<DevicePropertySetterFactory<T>, DeviceInfo, T> baseMerge;
+    private final SimplePropertyMerge<ValueSetter<WritableDeviceInfo, T>, DeviceInfo, T> baseMerge;
 
     public DevicePropertyMerge(
-            DevicePropertySetterFactory<T> setterFactory,
+            ValueSetter<WritableDeviceInfo, T> setterFactory,
             Function<DeviceInfo, T> getter,
             Predicate<T> isUsable)
     {
@@ -21,12 +21,12 @@ public final class DevicePropertyMerge<T> implements DevicePatch, DeviceProperty
     }
 
     @Override
-    public boolean patch(DeviceBuilder deviceBuilder, Device oldDevice, DeviceInfo newData) {
+    public boolean patch(WritableDeviceInfo writableDeviceInfo, DeviceInfo newData) {
         final T value = baseMerge.getter().apply(newData);
         if (value == null || !baseMerge.isUsable().test(value)) {
             return false;
         }
-        baseMerge.setter().makeFrom(oldDevice).set(deviceBuilder, value);
+        baseMerge.setter().set(writableDeviceInfo, value);
         return true;
     }
 

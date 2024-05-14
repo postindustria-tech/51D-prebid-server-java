@@ -2,7 +2,9 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
 
 import com.iab.openrtb.request.Device;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatchPlan;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceInfoPatcherImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DevicePatchPlannerImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
 
 import java.math.BigDecimal;
 
@@ -57,7 +59,7 @@ public class DevicePatchPlannerImpTest {
 
         // when
         final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(testDevice);
-        final Device newDevice = new DevicePatcherImp().patchDevice(
+        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -78,7 +80,7 @@ public class DevicePatchPlannerImpTest {
 
         // when
         final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(testDevice);
-        final Device newDevice = new DevicePatcherImp().patchDevice(
+        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -99,7 +101,7 @@ public class DevicePatchPlannerImpTest {
 
         // when
         final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(testDevice);
-        final Device newDevice = new DevicePatcherImp().patchDevice(
+        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -120,7 +122,7 @@ public class DevicePatchPlannerImpTest {
 
         // when
         final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(testDevice);
-        final Device newDevice = new DevicePatcherImp().patchDevice(
+        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -141,7 +143,7 @@ public class DevicePatchPlannerImpTest {
 
         // when
         final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(testDevice);
-        final Device newDevice = new DevicePatcherImp().patchDevice(
+        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -162,7 +164,7 @@ public class DevicePatchPlannerImpTest {
 
         // when
         final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(testDevice);
-        final Device newDevice = new DevicePatcherImp().patchDevice(
+        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -183,7 +185,7 @@ public class DevicePatchPlannerImpTest {
 
         // when
         final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(testDevice);
-        final Device newDevice = new DevicePatcherImp().patchDevice(
+        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -204,7 +206,7 @@ public class DevicePatchPlannerImpTest {
 
         // when
         final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(testDevice);
-        final Device newDevice = new DevicePatcherImp().patchDevice(
+        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -225,7 +227,7 @@ public class DevicePatchPlannerImpTest {
 
         // when
         final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(testDevice);
-        final Device newDevice = new DevicePatcherImp().patchDevice(
+        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -245,7 +247,7 @@ public class DevicePatchPlannerImpTest {
 
         // when
         final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(testDevice);
-        final Device newDevice = new DevicePatcherImp().patchDevice(
+        final Device newDevice = new DeviceInfoPatcherImp().patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)

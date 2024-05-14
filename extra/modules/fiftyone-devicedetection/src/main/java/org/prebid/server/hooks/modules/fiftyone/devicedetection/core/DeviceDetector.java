@@ -1,6 +1,5 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core;
 
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 
 import java.util.function.BiFunction;

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.iab.openrtb.request.Device;
 import com.iab.openrtb.request.Device.DeviceBuilder;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceInfoBuilderMethodSet;
 import org.prebid.server.proto.openrtb.ext.request.ExtDevice;
 
 import java.math.BigDecimal;
@@ -67,4 +68,20 @@ public final class DeviceMirror implements DeviceInfo {
         ext.addProperty(DeviceMirror.EXT_DEVICE_ID_KEY, new TextNode(deviceId));
         return deviceBuilder.ext(ext);
     }
+
+    public static final DeviceInfoBuilderMethodSet<Device, Device.DeviceBuilder> BUILDER_METHOD_SET =
+            new DeviceInfoBuilderMethodSet<>(
+                    Device::toBuilder,
+                    Device.DeviceBuilder::build,
+                    DeviceBuilder::devicetype,
+                    DeviceBuilder::make,
+                    DeviceBuilder::model,
+                    DeviceBuilder::os,
+                    DeviceBuilder::osv,
+                    DeviceBuilder::h,
+                    DeviceBuilder::w,
+                    DeviceBuilder::ppi,
+                    DeviceBuilder::pxratio,
+                    device -> (deviceBuilder, value) -> setDeviceId(deviceBuilder, device, value)
+            );
 }

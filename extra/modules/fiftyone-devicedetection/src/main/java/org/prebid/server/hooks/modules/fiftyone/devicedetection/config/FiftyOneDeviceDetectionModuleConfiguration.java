@@ -1,23 +1,21 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.config;
 
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.DeviceInfoClone;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.FiftyOneDeviceDetectionModule;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.AccountControl;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.BidRequestEvidenceCollector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.BidRequestPatcher;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceDetector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatchPlanner;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DevicePatcher;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceTypeConverter;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceDetector;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlanner;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.EntrypointEvidenceCollector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.ModuleContextPatcher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PipelineSupplier;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PriorityEvidenceSelector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.UserAgentEvidenceConverter;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.AccountControlImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.BidRequestPatcherImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.DeviceDetectorImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.DevicePatchPlannerImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.DevicePatcherImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceDetectorImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.DeviceMirror;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DevicePatchPlannerImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceInfoPatcherImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceTypeConverterImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.ModuleContextPatcherImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.PriorityEvidenceSelectorImp;
@@ -68,8 +66,9 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
     }
 
     @Bean
-    BidRequestEvidenceCollector fiftyOneDeviceDetectionBidRequestEvidenceCollector() {
-        return new BidRequestReader();
+    BidRequestEvidenceCollector fiftyOneDeviceDetectionBidRequestEvidenceCollector()
+    {
+        return new BidRequestReader(new UserAgentEvidenceConverterImp());
     }
 
     @Bean
@@ -86,45 +85,25 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
     }
 
     @Bean
-    UserAgentEvidenceConverter fiftyOneDeviceDetectionUserAgentEvidenceConverter() {
-        return new UserAgentEvidenceConverterImp();
-    }
-
-    @Bean
-    PriorityEvidenceSelector fiftyOneDeviceDetectionPriorityEvidenceSelector(
-            UserAgentEvidenceConverter userAgentEvidenceConverter)
-    {
-        return new PriorityEvidenceSelectorImp(userAgentEvidenceConverter);
-    }
-
-    @Bean
-    DeviceTypeConverter fiftyOneDeviceDetectionDeviceTypeConverter() {
-        return new DeviceTypeConverterImp();
-    }
-
-    @Bean
-    DeviceDetector fiftyOneDeviceDetectionDeviceDetector(
-            PipelineSupplier pipelineSupplier,
-            PriorityEvidenceSelector priorityEvidenceSelector,
-            DeviceTypeConverter deviceTypeConverter,
-            DevicePatcher devicePatcher)
-    {
-        return new DeviceDetectorImp(pipelineSupplier, priorityEvidenceSelector, deviceTypeConverter, devicePatcher);
-    }
-
-    @Bean
-    DevicePatcher fiftyOneDeviceDetectionDevicePatcher() {
-        return new DevicePatcherImp();
+    DeviceDetector fiftyOneDeviceDetectionDeviceDetector(PipelineSupplier pipelineSupplier) {
+        return new DeviceDetectorImp(
+                pipelineSupplier,
+                new PriorityEvidenceSelectorImp(),
+                new DeviceTypeConverterImp(),
+                new DeviceInfoPatcherImp<>(DeviceInfoClone.BUILDER_METHOD_SET::makeAdapter));
     }
 
     @Bean
     BidRequestPatcher fiftyOneDeviceDetectionBidRequestPatcher(
             DevicePatchPlanner devicePatchPlanner,
             BidRequestEvidenceCollector bidRequestEvidenceCollector,
-            DeviceDetector deviceDetector,
-            DevicePatcher devicePatcher)
+            DeviceDetector deviceDetector)
     {
-        return new BidRequestPatcherImp(devicePatchPlanner, bidRequestEvidenceCollector, deviceDetector, devicePatcher);
+        return new BidRequestPatcherImp(
+                devicePatchPlanner,
+                bidRequestEvidenceCollector,
+                deviceDetector,
+                new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter));
     }
 
     @Bean

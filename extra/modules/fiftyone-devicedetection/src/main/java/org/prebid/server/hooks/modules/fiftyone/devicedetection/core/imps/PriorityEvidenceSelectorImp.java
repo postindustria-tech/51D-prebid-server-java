@@ -1,7 +1,6 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PriorityEvidenceSelector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.UserAgentEvidenceConverter;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 
 import java.util.Collection;
@@ -9,11 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class PriorityEvidenceSelectorImp implements PriorityEvidenceSelector {
-    private final UserAgentEvidenceConverter userAgentEvidenceConverter;
-
-    public PriorityEvidenceSelectorImp(UserAgentEvidenceConverter userAgentEvidenceConverter) {
-        this.userAgentEvidenceConverter = userAgentEvidenceConverter;
-    }
 
     @Override
     public Map<String, String> apply(CollectedEvidence collectedEvidence) {
@@ -23,7 +17,10 @@ public final class PriorityEvidenceSelectorImp implements PriorityEvidenceSelect
         if (ua != null && !ua.isEmpty()) {
             evidence.put("header.user-agent", ua);
         }
-        userAgentEvidenceConverter.unpack(collectedEvidence.deviceSUA(), evidence);
+        final Map<String, String> secureHeaders = collectedEvidence.secureHeaders();
+        if (secureHeaders != null && !secureHeaders.isEmpty()) {
+            evidence.putAll(secureHeaders);
+        }
         if (!evidence.isEmpty()) {
             return evidence;
         }

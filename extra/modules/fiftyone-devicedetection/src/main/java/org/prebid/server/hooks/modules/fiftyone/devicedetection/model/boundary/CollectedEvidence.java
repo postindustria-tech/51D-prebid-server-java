@@ -1,6 +1,5 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary;
 
-import com.iab.openrtb.request.UserAgent;
 import lombok.Builder;
 
 import java.util.Collection;
@@ -10,6 +9,6 @@ import java.util.Map;
 public record CollectedEvidence(
         Collection<Map.Entry<String, String>> rawHeaders,
         String deviceUA,
-        UserAgent deviceSUA
+        Map<String, String> secureHeaders
 ) {
 }

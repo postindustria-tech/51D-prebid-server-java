@@ -6,17 +6,26 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.BidReque
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.MergingConfiguratorImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.PropertyMergeImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence.CollectedEvidenceBuilder;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.UserAgentEvidenceConverter;
 
+import java.util.HashMap;
 import java.util.List;
 
 public final class BidRequestReader implements BidRequestEvidenceCollector {
-    private static final MergingConfiguratorImp<CollectedEvidenceBuilder, Device> MERGER = new MergingConfiguratorImp<>(
-            List.of(
-                    new PropertyMergeImp<>(Device::getUa, ua -> true, CollectedEvidenceBuilder::deviceUA),
-                    new PropertyMergeImp<>(Device::getSua, sua -> true, CollectedEvidenceBuilder::deviceSUA)));
+    private final MergingConfiguratorImp<CollectedEvidenceBuilder, Device> merger;
+
+    public BidRequestReader(UserAgentEvidenceConverter userAgentEvidenceConverter) {
+         merger = new MergingConfiguratorImp<>(List.of(
+                 new PropertyMergeImp<>(Device::getUa, ua -> true, CollectedEvidenceBuilder::deviceUA),
+                 new PropertyMergeImp<>(Device::getSua, sua -> true, (builder, sua) -> {
+                     final HashMap<String, String> secureHeaders = new HashMap<>();
+                     userAgentEvidenceConverter.unpack(sua, secureHeaders);
+                     builder.secureHeaders(secureHeaders);
+                 })));
+    }
 
     @Override
     public void accept(CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
-        MERGER.applyProperties(evidenceBuilder, bidRequest.getDevice());
+        merger.applyProperties(evidenceBuilder, bidRequest.getDevice());
     }
 }
