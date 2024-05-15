@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatch;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.DeviceMirror;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 
 import java.util.AbstractMap;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;

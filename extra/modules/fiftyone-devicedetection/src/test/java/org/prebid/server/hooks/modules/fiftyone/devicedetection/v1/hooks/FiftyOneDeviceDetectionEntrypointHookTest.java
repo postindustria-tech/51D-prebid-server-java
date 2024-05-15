@@ -9,15 +9,27 @@ import org.prebid.server.hooks.v1.InvocationResult;
 import org.prebid.server.hooks.v1.entrypoint.EntrypointHook;
 import org.prebid.server.hooks.v1.entrypoint.EntrypointPayload;
 
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 public class FiftyOneDeviceDetectionEntrypointHookTest {
+    private static EntrypointHook buildHook(
+            BiConsumer<CollectedEvidence.CollectedEvidenceBuilder, EntrypointPayload> evidenceCollector)
+    {
+        final FiftyOneDeviceDetectionEntrypointHook hook = new FiftyOneDeviceDetectionEntrypointHook();
+        hook.entrypointEvidenceCollector = evidenceCollector;
+        return hook;
+    }
+
     @Test
     public void codeShouldStartWithModuleCode() {
         // given
-        final EntrypointHook hook = new FiftyOneDeviceDetectionEntrypointHook(null, null);
+        final EntrypointHook hook = buildHook(null);
 
         // when and then
         assertThat(hook.code()).startsWith(FiftyOneDeviceDetectionModule.CODE);
@@ -27,47 +39,31 @@ public class FiftyOneDeviceDetectionEntrypointHookTest {
     public void shouldPassPayloadAndBuilderThroughModulePatcher() {
         // given
         final EntrypointPayload payload = mock(EntrypointPayload.class);
-        final CollectedEvidence.CollectedEvidenceBuilder builder = CollectedEvidence.builder();
 
         // when
         final boolean[] payloadReceived = { false };
-        final boolean[] patcherCalled = { false };
-        final EntrypointHook hook = new FiftyOneDeviceDetectionEntrypointHook(((evidenceBuilder, entrypointPayload) -> {
-            assertThat(evidenceBuilder).isEqualTo(builder);
+        final EntrypointHook hook = buildHook(((evidenceBuilder, entrypointPayload) -> {
             assertThat(entrypointPayload).isEqualTo(payload);
             payloadReceived[0] = true;
-        }), (moduleContext, collectedEvidenceBuilderConsumer) -> {
-            assertThat(moduleContext).isNull();
-            patcherCalled[0] = true;
-            collectedEvidenceBuilderConsumer.injectInto(builder);
-            return null;
-        });
+        }));
         final Future<InvocationResult<EntrypointPayload>> result = hook.call(payload, null);
 
         // then
         assertThat(result.succeeded()).isTrue();
-        assertThat(patcherCalled).containsExactly(true);
         assertThat(payloadReceived).containsExactly(true);
     }
 
     @Test
     public void shouldReturnPatchedModule() {
-        // given
-        final ModuleContext newModuleContext = ModuleContext.builder().build();
-
-        // when
-        final boolean[] patcherCalled = { false };
-        final EntrypointHook hook = new FiftyOneDeviceDetectionEntrypointHook(
-                (evidenceBuilder, entrypointPayload) -> fail("Evidence builder should not be called"),
-                (moduleContext, collectedEvidenceBuilderConsumer) -> {
-                    patcherCalled[0] = true;
-                    return newModuleContext;
-                });
+        // given and when
+        final boolean[] builderPatcherCalled = { false };
+        final EntrypointHook hook = buildHook(
+                (evidenceBuilder, entrypointPayload) -> builderPatcherCalled[0] = true);
         final Future<InvocationResult<EntrypointPayload>> result = hook.call(null, null);
 
         // then
         assertThat(result.succeeded()).isTrue();
-        assertThat(patcherCalled).containsExactly(true);
-        assertThat(result.result().moduleContext()).isEqualTo(newModuleContext);
+        assertThat(builderPatcherCalled).containsExactly(true);
+        assertThat(result.result().moduleContext()).isNotNull();
     }
 }

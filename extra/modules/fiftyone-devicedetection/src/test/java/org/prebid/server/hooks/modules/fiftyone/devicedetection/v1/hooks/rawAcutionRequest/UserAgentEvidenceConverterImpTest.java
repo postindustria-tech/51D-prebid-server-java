@@ -1,16 +1,29 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcutionRequest;
 
 import com.iab.openrtb.request.BrandVersion;
 import com.iab.openrtb.request.UserAgent;
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserAgentEvidenceConverterImpTest {
+
+    private static BiConsumer<UserAgent, Map<String, String>> buildConverter()
+    {
+        return new FiftyOneDeviceDetectionRawAuctionRequestHook(
+                null,
+                null,
+                null,
+                null
+        ).userAgentEvidenceConverter;
+    }
+
     @Test
     public void shouldReturnEmptyMapOnEmptyUserAgent() {
         // given
@@ -18,7 +31,7 @@ public class UserAgentEvidenceConverterImpTest {
 
         // when
         final Map<String, String> evidence = new HashMap<>();
-        new UserAgentEvidenceConverterImp().unpack(userAgent, evidence);
+        buildConverter().accept(userAgent, evidence);
 
         // then
         assertThat(evidence).isNotNull();
@@ -39,7 +52,7 @@ public class UserAgentEvidenceConverterImpTest {
 
         // when
         final Map<String, String> evidence = new HashMap<>();
-        new UserAgentEvidenceConverterImp().unpack(userAgent, evidence);
+        buildConverter().accept(userAgent, evidence);
 
         // then
         assertThat(evidence).isNotNull();
@@ -58,7 +71,7 @@ public class UserAgentEvidenceConverterImpTest {
 
         // when
         final Map<String, String> evidence = new HashMap<>();
-        new UserAgentEvidenceConverterImp().unpack(userAgent, evidence);
+        buildConverter().accept(userAgent, evidence);
 
         // then
         assertThat(evidence).isNotNull();
@@ -76,7 +89,7 @@ public class UserAgentEvidenceConverterImpTest {
 
         // when
         final Map<String, String> evidence = new HashMap<>();
-        new UserAgentEvidenceConverterImp().unpack(userAgent, evidence);
+        buildConverter().accept(userAgent, evidence);
 
         // then
         assertThat(evidence).isNotNull();
@@ -93,7 +106,7 @@ public class UserAgentEvidenceConverterImpTest {
 
         // when
         final Map<String, String> evidence = new HashMap<>();
-        new UserAgentEvidenceConverterImp().unpack(userAgent, evidence);
+        buildConverter().accept(userAgent, evidence);
 
         // then
         assertThat(evidence).isNotNull();
@@ -110,7 +123,7 @@ public class UserAgentEvidenceConverterImpTest {
 
         // when
         final Map<String, String> evidence = new HashMap<>();
-        new UserAgentEvidenceConverterImp().unpack(userAgent, evidence);
+        buildConverter().accept(userAgent, evidence);
 
         // then
         assertThat(evidence).isNotNull();
@@ -127,7 +140,7 @@ public class UserAgentEvidenceConverterImpTest {
 
         // when
         final Map<String, String> evidence = new HashMap<>();
-        new UserAgentEvidenceConverterImp().unpack(userAgent, evidence);
+        buildConverter().accept(userAgent, evidence);
 
         // then
         assertThat(evidence).isNotNull();

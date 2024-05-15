@@ -1,19 +1,31 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcutionRequest;
 
-import com.iab.openrtb.request.UserAgent;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.ModuleContext;
 
 import java.util.HashMap;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ModuleContextPatcherImpTest {
+    private static BiFunction<ModuleContext, Consumer<CollectedEvidence.CollectedEvidenceBuilder>, ModuleContext> buildPatcher()
+    {
+        return new FiftyOneDeviceDetectionRawAuctionRequestHook(
+                null,
+                null,
+                null,
+                null
+        ).moduleContextPatcher;
+    }
+
     @Test
     public void shouldMakeNewContextIfNullIsPassedIn() {
         // given and when
-        final ModuleContext newContext = new ModuleContextPatcherImp().contextWithNewEvidence(null, b -> {});
+        final ModuleContext newContext = buildPatcher().apply(null, b -> {});
 
         // then
         assertThat(newContext).isNotNull();
@@ -23,7 +35,7 @@ public class ModuleContextPatcherImpTest {
     @Test
     public void shouldMakeNewEvidenceIfNoneWasPresent() {
         // given and when
-        final ModuleContext newContext = new ModuleContextPatcherImp().contextWithNewEvidence(
+        final ModuleContext newContext = buildPatcher().apply(
                 ModuleContext.builder().build(),
                 b -> {});
 
@@ -44,7 +56,7 @@ public class ModuleContextPatcherImpTest {
                 .build();
 
         // when
-        final ModuleContext newContext = new ModuleContextPatcherImp().contextWithNewEvidence(
+        final ModuleContext newContext = buildPatcher().apply(
                 existingContext,
                 builder -> builder.secureHeaders(sua));
 

@@ -1,9 +1,12 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcutionRequest;
 
 import com.iab.openrtb.request.BidRequest;
 import com.iab.openrtb.request.Device;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.BidRequestPatcher;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceDetector;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfoPatcher;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlanner;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
@@ -11,15 +14,33 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.C
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class BidRequestPatcherImpTest {
+    private static BiFunction<BidRequest, CollectedEvidence, BidRequest> buildHook(
+            DevicePatchPlanner devicePatchPlanner,
+            BiConsumer<CollectedEvidence.CollectedEvidenceBuilder, BidRequest> bidRequestEvidenceCollector,
+            DeviceDetector deviceDetector,
+            DeviceInfoPatcher<Device> deviceInfoPatcher)
+    {
+        final FiftyOneDeviceDetectionRawAuctionRequestHook hook = new FiftyOneDeviceDetectionRawAuctionRequestHook(
+                null,
+                devicePatchPlanner,
+                deviceDetector,
+                deviceInfoPatcher
+        );
+        hook.bidRequestEvidenceCollector = bidRequestEvidenceCollector;
+        return hook.bidRequestPatcher;
+    }
+
     @Test
     public void shouldReturnNullWhenRequestIsNull() {
         // given
-        final BidRequestPatcher requestPatcher = new BidRequestPatcherImp(
+        final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 null,
                 null,
                 null,
@@ -27,14 +48,14 @@ public class BidRequestPatcherImpTest {
         );
 
         // when and then
-        assertThat(requestPatcher.combine(null, null)).isNull();
+        assertThat(requestPatcher.apply(null, null)).isNull();
     }
 
     @Test
     public void shouldReturnNullWhenPlanIsNull() {
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
-        final BidRequestPatcher requestPatcher = new BidRequestPatcherImp(
+        final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 // when
                 device -> null,
                 null,
@@ -43,14 +64,14 @@ public class BidRequestPatcherImpTest {
         );
 
         // then
-        assertThat(requestPatcher.combine(bidRequest, null)).isNull();
+        assertThat(requestPatcher.apply(bidRequest, null)).isNull();
     }
 
     @Test
     public void shouldReturnNullWhenPlanIsEmpty() {
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
-        final BidRequestPatcher requestPatcher = new BidRequestPatcherImp(
+        final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 // when
                 device -> new DevicePatchPlan(Collections.emptySet()),
                 null,
@@ -59,7 +80,7 @@ public class BidRequestPatcherImpTest {
         );
 
         // then
-        assertThat(requestPatcher.combine(bidRequest, null)).isNull();
+        assertThat(requestPatcher.apply(bidRequest, null)).isNull();
     }
 
     @Test
@@ -71,7 +92,7 @@ public class BidRequestPatcherImpTest {
 
         // when
         final boolean[] devicePassed = { false };
-        new BidRequestPatcherImp(
+        buildHook(
                 device -> {
                     assertThat(device).isNotNull();
                     devicePassed[0] = true;
@@ -80,7 +101,7 @@ public class BidRequestPatcherImpTest {
                 null,
                 null,
                 null
-        ).combine(bidRequest, null);
+        ).apply(bidRequest, null);
 
         // then
         assertThat(devicePassed).containsExactly(true);
@@ -94,7 +115,7 @@ public class BidRequestPatcherImpTest {
 
         // when
         final boolean[] requestPassed = { false };
-        new BidRequestPatcherImp(
+        buildHook(
                 device -> makeDummyPatchPlan(),
                 (builder, request) -> {
                     assertThat(request).isEqualTo(bidRequest);
@@ -102,7 +123,7 @@ public class BidRequestPatcherImpTest {
                 },
                 (evidence, plan) -> null,
                 null
-        ).combine(bidRequest, savedEvidence);
+        ).apply(bidRequest, savedEvidence);
 
         // then
         assertThat(requestPassed).containsExactly(true);
@@ -116,7 +137,7 @@ public class BidRequestPatcherImpTest {
 
         // when
         final boolean[] detectorCalled = { false };
-        final BidRequestPatcher requestPatcher = new BidRequestPatcherImp(
+        final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 device -> makeDummyPatchPlan(),
                 (builder, request) -> {},
                 (evidence, plan) -> {
@@ -127,7 +148,7 @@ public class BidRequestPatcherImpTest {
         );
 
         // then
-        assertThat(requestPatcher.combine(bidRequest, savedEvidence)).isNull();
+        assertThat(requestPatcher.apply(bidRequest, savedEvidence)).isNull();
         assertThat(detectorCalled).containsExactly(true);
     }
 
@@ -140,7 +161,7 @@ public class BidRequestPatcherImpTest {
 
         // when
         final boolean[] planPassed = { false };
-        final BidRequestPatcher requestPatcher = new BidRequestPatcherImp(
+        final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 device -> patchPlan,
                 (builder, request) -> {},
                 (evidence, plan) -> {
@@ -151,7 +172,7 @@ public class BidRequestPatcherImpTest {
         );
 
         // then
-        assertThat(requestPatcher.combine(bidRequest, savedEvidence)).isNull();
+        assertThat(requestPatcher.apply(bidRequest, savedEvidence)).isNull();
         assertThat(planPassed).containsExactly(true);
     }
 
@@ -166,7 +187,7 @@ public class BidRequestPatcherImpTest {
 
         // when
         final boolean[] evidenceMerged = { false };
-        final BidRequestPatcher requestPatcher = new BidRequestPatcherImp(
+        final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 device -> makeDummyPatchPlan(),
                 (builder, request) -> builder.deviceUA(fakeUA),
                 (evidence, plan) -> {
@@ -179,7 +200,7 @@ public class BidRequestPatcherImpTest {
         );
 
         // then
-        assertThat(requestPatcher.combine(bidRequest, savedEvidence)).isNull();
+        assertThat(requestPatcher.apply(bidRequest, savedEvidence)).isNull();
         assertThat(evidenceMerged).containsExactly(true);
     }
 
@@ -191,7 +212,7 @@ public class BidRequestPatcherImpTest {
 
         // when
         final boolean[] patcherCalled = { false };
-        final BidRequestPatcher requestPatcher = new BidRequestPatcherImp(
+        final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 device -> makeDummyPatchPlan(),
                 (builder, request) -> {},
                 (evidence, plan) -> mock(DeviceInfo.class),
@@ -202,7 +223,7 @@ public class BidRequestPatcherImpTest {
         );
 
         // then
-        assertThat(requestPatcher.combine(bidRequest, savedEvidence)).isNull();
+        assertThat(requestPatcher.apply(bidRequest, savedEvidence)).isNull();
         assertThat(patcherCalled).containsExactly(true);
     }
 
@@ -215,7 +236,7 @@ public class BidRequestPatcherImpTest {
 
         // when
         final boolean[] planPassed = { false };
-        final BidRequestPatcher requestPatcher = new BidRequestPatcherImp(
+        final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 device -> patchPlan,
                 (builder, request) -> {},
                 (evidence, plan) -> mock(DeviceInfo.class),
@@ -227,7 +248,7 @@ public class BidRequestPatcherImpTest {
         );
 
         // then
-        assertThat(requestPatcher.combine(bidRequest, savedEvidence)).isNull();
+        assertThat(requestPatcher.apply(bidRequest, savedEvidence)).isNull();
         assertThat(planPassed).containsExactly(true);
     }
 
@@ -241,7 +262,7 @@ public class BidRequestPatcherImpTest {
 
         // when
         final boolean[] devicePassed = { false };
-        final BidRequestPatcher requestPatcher = new BidRequestPatcherImp(
+        final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 device -> makeDummyPatchPlan(),
                 (builder, request) -> {},
                 (evidence, plan) -> mock(DeviceInfo.class),
@@ -253,7 +274,7 @@ public class BidRequestPatcherImpTest {
         );
 
         // then
-        assertThat(requestPatcher.combine(bidRequest, savedEvidence)).isNull();
+        assertThat(requestPatcher.apply(bidRequest, savedEvidence)).isNull();
         assertThat(devicePassed).containsExactly(true);
     }
 
@@ -266,7 +287,7 @@ public class BidRequestPatcherImpTest {
 
         // when
         final boolean[] newDataPassed = { false };
-        final BidRequestPatcher requestPatcher = new BidRequestPatcherImp(
+        final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 device -> makeDummyPatchPlan(),
                 (builder, request) -> {},
                 (evidence, plan) -> detectedData,
@@ -278,7 +299,7 @@ public class BidRequestPatcherImpTest {
         );
 
         // then
-        assertThat(requestPatcher.combine(bidRequest, savedEvidence)).isNull();
+        assertThat(requestPatcher.apply(bidRequest, savedEvidence)).isNull();
         assertThat(newDataPassed).containsExactly(true);
     }
 
@@ -290,14 +311,14 @@ public class BidRequestPatcherImpTest {
         final Device mergedDevice = Device.builder().build();
 
         // when
-        final BidRequestPatcher requestPatcher = new BidRequestPatcherImp(
+        final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 device -> makeDummyPatchPlan(),
                 (builder, request) -> {},
                 (evidence, plan) -> mock(DeviceInfo.class),
                 (device, plan, newData) -> mergedDevice);
 
         // then
-        assertThat(requestPatcher.combine(bidRequest, savedEvidence).getDevice()).isEqualTo(mergedDevice);
+        assertThat(requestPatcher.apply(bidRequest, savedEvidence).getDevice()).isEqualTo(mergedDevice);
     }
 
     private static DevicePatchPlan makeDummyPatchPlan() {

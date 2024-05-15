@@ -1,18 +1,35 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.evidencecollectors;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcutionRequest;
 
 import com.iab.openrtb.request.BidRequest;
 import com.iab.openrtb.request.Device;
 import com.iab.openrtb.request.UserAgent;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
+
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BidRequestReaderTest {
+    private static BiConsumer<CollectedEvidence.CollectedEvidenceBuilder, BidRequest> buildHook(
+            BiConsumer<UserAgent, Map<String, String>> userAgentEvidenceConverter)
+    {
+        final FiftyOneDeviceDetectionRawAuctionRequestHook hook = new FiftyOneDeviceDetectionRawAuctionRequestHook(
+                null,
+                null,
+                null,
+                null
+        );
+        hook.userAgentEvidenceConverter = userAgentEvidenceConverter;
+        return hook.bidRequestEvidenceCollector;
+    }
+
     @Test
     public void shouldNotFailOnNoDevice() {
         // just check for no throw
-        new BidRequestReader(null).evidenceFrom(BidRequest.builder().build()).injectInto(null);
+        buildHook(null).accept(null, BidRequest.builder().build());
     }
 
     @Test
@@ -25,7 +42,7 @@ public class BidRequestReaderTest {
 
         // when
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = CollectedEvidence.builder();
-        new BidRequestReader(null).evidenceFrom(bidRequest).injectInto(evidenceBuilder);
+        buildHook(null).accept(evidenceBuilder, bidRequest);
         final CollectedEvidence evidence = evidenceBuilder.build();
 
         // then
@@ -42,7 +59,7 @@ public class BidRequestReaderTest {
 
         // when
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = CollectedEvidence.builder();
-        new BidRequestReader((sua, headers) -> {}).evidenceFrom(bidRequest).injectInto(evidenceBuilder);
+        buildHook((sua, headers) -> {}).accept(evidenceBuilder, bidRequest);
         final CollectedEvidence evidence = evidenceBuilder.build();
 
         // then

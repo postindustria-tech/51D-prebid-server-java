@@ -3,7 +3,7 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 import com.iab.openrtb.request.Device;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.DeviceMirror;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 
 import java.math.BigDecimal;
 

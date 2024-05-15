@@ -1,7 +1,8 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.imps.evidencecollectors;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.entrypoint;
 
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionEntrypointHook;
 import org.prebid.server.hooks.v1.entrypoint.EntrypointPayload;
 import org.prebid.server.model.CaseInsensitiveMultiMap;
 
@@ -24,7 +25,9 @@ public class EntrypointDataReaderTest {
 
         // when
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = CollectedEvidence.builder();
-        new EntrypointDataReader().evidenceFrom(entrypointPayload).injectInto(evidenceBuilder);
+        new FiftyOneDeviceDetectionEntrypointHook()
+                .entrypointEvidenceCollector
+                .accept(evidenceBuilder, entrypointPayload);
         final CollectedEvidence evidence = evidenceBuilder.build();
 
         // then
