@@ -1,7 +1,6 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.config;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.DeviceInfoClone;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.AccountFilter;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.FiftyOneDeviceDetectionModule;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceDetector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceDetectorImp;
