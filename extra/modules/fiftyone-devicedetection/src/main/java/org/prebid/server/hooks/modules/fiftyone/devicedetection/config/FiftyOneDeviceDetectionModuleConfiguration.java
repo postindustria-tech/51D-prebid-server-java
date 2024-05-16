@@ -56,12 +56,11 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
     }
 
     @Bean
-    Module fiftyOneDeviceDetectionModule(AccountFilter accountFilter, DeviceDetector deviceDetector) {
-
+    Module fiftyOneDeviceDetectionModule(ModuleConfig moduleConfig, DeviceDetector deviceDetector) {
         final Set<? extends Hook<?, ? extends InvocationContext>> hooks = Stream.of(
                 new FiftyOneDeviceDetectionEntrypointHook(),
                 new FiftyOneDeviceDetectionRawAuctionRequestHook(
-                        accountFilter,
+                        moduleConfig.getAccountFilter(),
                         new DevicePatchPlannerImp(),
                         deviceDetector,
                         new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter))
