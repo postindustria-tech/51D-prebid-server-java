@@ -4,17 +4,13 @@ import io.vertx.core.Future;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.FiftyOneDeviceDetectionModule;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.ModuleContext;
 import org.prebid.server.hooks.v1.InvocationResult;
 import org.prebid.server.hooks.v1.entrypoint.EntrypointHook;
 import org.prebid.server.hooks.v1.entrypoint.EntrypointPayload;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 public class FiftyOneDeviceDetectionEntrypointHookTest {
