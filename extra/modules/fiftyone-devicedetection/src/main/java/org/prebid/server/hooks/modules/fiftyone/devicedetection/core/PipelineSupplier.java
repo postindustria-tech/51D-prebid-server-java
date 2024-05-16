@@ -4,6 +4,9 @@ import fiftyone.pipeline.core.flowelements.Pipeline;
 
 import java.util.function.Supplier;
 
+/**
+ * A container with shared {@link Pipeline}
+ */
 @FunctionalInterface
 public interface PipelineSupplier extends Supplier<Pipeline> {
 }

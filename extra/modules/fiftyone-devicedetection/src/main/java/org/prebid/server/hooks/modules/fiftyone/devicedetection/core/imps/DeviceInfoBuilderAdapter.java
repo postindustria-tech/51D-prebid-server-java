@@ -5,6 +5,7 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.WritableDev
 import java.math.BigDecimal;
 import java.util.function.BiConsumer;
 
+
 public class DeviceInfoBuilderAdapter<Box, BoxBuilder> implements WritableDeviceInfo {
     private final DeviceInfoBuilderMethodSet<Box, BoxBuilder> methods;
     private final BoxBuilder boxBuilder;

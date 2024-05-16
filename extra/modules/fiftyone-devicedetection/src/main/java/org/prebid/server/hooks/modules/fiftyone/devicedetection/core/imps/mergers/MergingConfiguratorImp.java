@@ -4,6 +4,12 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.MergingConf
 
 import java.util.List;
 
+/**
+ * Facilitates declarative description of a set of properties to be copied from one object to another.
+ *
+ * @param <Builder> Type of writable object to copy properties into.
+ * @param <ConfigFragment> Type of readable object to copy values from.
+ */
 public final class MergingConfiguratorImp<Builder, ConfigFragment> implements MergingConfigurator<Builder, ConfigFragment> {
     private final List<PropertyMerge<Builder, ConfigFragment>> propertiesToMerge;
 

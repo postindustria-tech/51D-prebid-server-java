@@ -19,34 +19,50 @@ public final class DeviceMirror implements DeviceInfo {
         this.device = device;
     }
 
+    /** @see com.iab.openrtb.request.Device#getDevicetype() */
     public Integer getDeviceType() {
         return device.getDevicetype();
     }
+    /** @see com.iab.openrtb.request.Device#getMake() */
     public String getMake() {
         return device.getMake();
     }
+    /** @see com.iab.openrtb.request.Device#getModel() */
     public String getModel() {
         return device.getModel();
     }
+    /** @see com.iab.openrtb.request.Device#getOs() */
     public String getOs() {
         return device.getOs();
     }
+    /** @see com.iab.openrtb.request.Device#getOsv() */
     public String getOsv() {
         return device.getOsv();
     }
+    /** @see com.iab.openrtb.request.Device#getH() */
     public Integer getH() {
         return device.getH();
     }
+    /** @see com.iab.openrtb.request.Device#getW() */
     public Integer getW() {
         return device.getW();
     }
+    /** @see com.iab.openrtb.request.Device#getPpi() */
     public Integer getPpi() {
         return device.getPpi();
     }
+    /** @see com.iab.openrtb.request.Device#getPxratio() */
     public BigDecimal getPixelRatio() {
         return device.getPxratio();
     }
 
+    /**
+     * Consists of four components separated by a hyphen symbol:
+     * Hardware-Platform-Browser-IsCrawler where
+     * each Component represents an ID of the corresponding Profile.
+     *
+     * @see fiftyone.devicedetection.hash.engine.onpremise.data.DeviceDataHash#getDeviceId()
+     */
     @Override
     public String getDeviceId() {
         final ExtDevice ext = device.getExt();
@@ -57,6 +73,18 @@ public final class DeviceMirror implements DeviceInfo {
         return (savedValue != null && savedValue.isTextual()) ? savedValue.textValue() : null;
     }
 
+    /**
+     * Consists of four components separated by a hyphen symbol:
+     * Hardware-Platform-Browser-IsCrawler where
+     * each Component represents an ID of the corresponding Profile.
+     *
+     * @see fiftyone.devicedetection.hash.engine.onpremise.data.DeviceDataHash#getDeviceId()
+     *
+     * @param deviceBuilder Writable builder to save device ID into.
+     * @param device Raw (non-builder) form of device before modification.
+     * @param deviceId New Device ID value.
+     * @return {@code deviceBuilder} with an updated value for Device ID.
+     */
     public static DeviceBuilder setDeviceId(DeviceBuilder deviceBuilder, Device device, String deviceId) {
         ExtDevice ext = null;
         if (device != null) {
