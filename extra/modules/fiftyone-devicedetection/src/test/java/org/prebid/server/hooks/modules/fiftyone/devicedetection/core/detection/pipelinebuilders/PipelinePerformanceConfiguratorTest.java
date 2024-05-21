@@ -1,4 +1,4 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.pipelinebuilders;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.pipelinebuilders;
 
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import fiftyone.pipeline.engines.Constants;

@@ -1,9 +1,8 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters;
 
 import fiftyone.devicedetection.shared.DeviceData;
 import fiftyone.pipeline.engines.data.AspectPropertyValueDefault;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceDataWrapper;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 
 import java.math.BigDecimal;

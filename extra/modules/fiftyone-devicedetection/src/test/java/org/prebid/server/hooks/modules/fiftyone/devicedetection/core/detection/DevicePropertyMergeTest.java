@@ -1,10 +1,9 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection;
 
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePropertyMerge;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePropertyMergeCondition;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
