@@ -2,32 +2,27 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.ValueSetter;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatch;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.SimplePropertyMerge;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.PropertyMerge;
 
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public final class DevicePropertyMerge<T> implements DevicePatch, DevicePropertyMergeCondition {
-    private final SimplePropertyMerge<ValueSetter<WritableDeviceInfo, T>, DeviceInfo, T> baseMerge;
+    private final PropertyMerge<WritableDeviceInfo, DeviceInfo, T> baseMerge;
 
     public DevicePropertyMerge(
-            ValueSetter<WritableDeviceInfo, T> setterFactory,
+            BiConsumer<WritableDeviceInfo, T> setter,
             Function<DeviceInfo, T> getter,
             Predicate<T> isUsable)
     {
-        this.baseMerge = new SimplePropertyMerge<>(setterFactory, getter, isUsable);
+        this.baseMerge = new PropertyMerge<>(getter, isUsable, setter);
     }
 
     @Override
     public boolean patch(WritableDeviceInfo writableDeviceInfo, DeviceInfo newData) {
-        final T value = baseMerge.getter().apply(newData);
-        if (value == null || !baseMerge.isUsable().test(value)) {
-            return false;
-        }
-        baseMerge.setter().set(writableDeviceInfo, value);
-        return true;
+        return baseMerge.test(writableDeviceInfo, newData);
     }
 
     @Override

@@ -44,8 +44,8 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
     @Bean
     DeviceDetector fiftyOneDeviceDetectionDeviceDetector(ModuleConfig moduleConfig) throws Exception {
         final var pipelineBuilder = new PipelineBuilderSpawnerImp().makeBuilder(moduleConfig.getDataFile());
-        new PipelineUpdateConfigurator().applyProperties(pipelineBuilder, moduleConfig.getDataFile().getUpdate());
-        new PipelinePerformanceConfigurator().applyProperties(pipelineBuilder, moduleConfig.getPerformance());
+        new PipelineUpdateConfigurator().accept(pipelineBuilder, moduleConfig.getDataFile().getUpdate());
+        new PipelinePerformanceConfigurator().accept(pipelineBuilder, moduleConfig.getPerformance());
         return new DeviceDetectorImp(
                 new PipelineSupplierImp(pipelineBuilder),
                 new PriorityEvidenceSelectorImp(),

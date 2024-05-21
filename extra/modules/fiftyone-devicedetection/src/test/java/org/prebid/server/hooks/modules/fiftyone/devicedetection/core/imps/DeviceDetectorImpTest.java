@@ -29,7 +29,6 @@ public class DeviceDetectorImpTest {
             final DeviceDetector deviceDetector = new DeviceDetectorImp(
                     () -> pipeline,
                     null,
-                    null,
                     null);
 
             // when and then
@@ -53,7 +52,6 @@ public class DeviceDetectorImpTest {
             final DeviceDetector deviceDetector = new DeviceDetectorImp(
                     () -> pipeline,
                     evidence -> Collections.emptyMap(),
-                    deviceType -> null,
                     null
             );
 
@@ -77,7 +75,6 @@ public class DeviceDetectorImpTest {
             final DeviceDetector deviceDetector = new DeviceDetectorImp(
                     () -> pipeline,
                     evidence -> Collections.emptyMap(),
-                    deviceType -> null,
                     (rawDevice, patchPlan, newData) -> device
             );
 

@@ -11,8 +11,8 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.Devi
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceInfoPatcher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatchPlanner;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.MergingConfiguratorImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.PropertyMergeImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.MergingConfigurator;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.PropertyMerge;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence.CollectedEvidenceBuilder;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.AccountFilter;
@@ -197,12 +197,12 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
     }
 
-    private static final MergingConfiguratorImp<Map<String, String>, BrandVersion> PLATFORM_MERGER = new MergingConfiguratorImp<>(
+    private static final MergingConfigurator<Map<String, String>, BrandVersion> PLATFORM_MERGER = new MergingConfigurator<>(
             List.of(
-                    new PropertyMergeImp<>(BrandVersion::getBrand, b -> !b.isEmpty(), (evidence, platformName) ->
+                    new PropertyMerge<>(BrandVersion::getBrand, b -> !b.isEmpty(), (evidence, platformName) ->
                             evidence.put("header.Sec-CH-UA-Platform", '"' + toHeaderSafe(platformName) + '"')
                     ),
-                    new PropertyMergeImp<>(BrandVersion::getVersion, v -> !v.isEmpty(), (evidence, platformVersions) -> {
+                    new PropertyMerge<>(BrandVersion::getVersion, v -> !v.isEmpty(), (evidence, platformVersions) -> {
                         final StringBuilder s = new StringBuilder();
                         s.append('"');
                         appendVersionList(s, platformVersions);
@@ -210,26 +210,26 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                         evidence.put("header.Sec-CH-UA-Platform-Version", s.toString());
                     })));
 
-    private static final MergingConfiguratorImp<Map<String, String>, UserAgent> AGENT_MERGER = new MergingConfiguratorImp<>(
+    private static final MergingConfigurator<Map<String, String>, UserAgent> AGENT_MERGER = new MergingConfigurator<>(
             List.of(
-                    new PropertyMergeImp<>(UserAgent::getBrowsers, b -> !b.isEmpty(), (evidence, versions) -> {
+                    new PropertyMerge<>(UserAgent::getBrowsers, b -> !b.isEmpty(), (evidence, versions) -> {
                         final String fullUA = brandListToString(versions);
                         evidence.put("header.Sec-CH-UA", fullUA);
                         evidence.put("header.Sec-CH-UA-Full-Version-List", fullUA);
                     }),
-                    new PropertyMergeImp<>(UserAgent::getPlatform, b -> true, PLATFORM_MERGER::applyProperties),
-                    new PropertyMergeImp<>(UserAgent::getMobile, b -> true, (evidence, isMobile) ->
+                    new PropertyMerge<>(UserAgent::getPlatform, b -> true, PLATFORM_MERGER::test),
+                    new PropertyMerge<>(UserAgent::getMobile, b -> true, (evidence, isMobile) ->
                             evidence.put("header.Sec-CH-UA-Mobile", "?" + isMobile)),
-                    new PropertyMergeImp<>(UserAgent::getArchitecture, s -> !s.isEmpty(), (evidence, architecture) ->
+                    new PropertyMerge<>(UserAgent::getArchitecture, s -> !s.isEmpty(), (evidence, architecture) ->
                             evidence.put("header.Sec-CH-UA-Arch", '"' + toHeaderSafe(architecture) + '"')),
-                    new PropertyMergeImp<>(UserAgent::getBitness, s -> !s.isEmpty(), (evidence, bitness) ->
+                    new PropertyMerge<>(UserAgent::getBitness, s -> !s.isEmpty(), (evidence, bitness) ->
                             evidence.put("header.Sec-CH-UA-Bitness", '"' + toHeaderSafe(bitness) + '"')),
-                    new PropertyMergeImp<>(UserAgent::getModel, s -> !s.isEmpty(), (evidence, model) ->
+                    new PropertyMerge<>(UserAgent::getModel, s -> !s.isEmpty(), (evidence, model) ->
                             evidence.put("header.Sec-CH-UA-Model", '"' + toHeaderSafe(model) + '"'))));
 
     protected void appendSecureHeaders(UserAgent userAgent, Map<String, String> evidence) {
         if (userAgent != null) {
-            AGENT_MERGER.applyProperties(evidence, userAgent);
+            AGENT_MERGER.test(evidence, userAgent);
         }
     }
 

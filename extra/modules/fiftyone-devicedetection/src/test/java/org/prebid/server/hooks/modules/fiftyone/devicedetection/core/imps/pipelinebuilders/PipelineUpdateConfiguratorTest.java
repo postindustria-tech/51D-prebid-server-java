@@ -4,8 +4,9 @@ import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelineUpdateConfigurator;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.MergingConfigurator;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFileUpdate;
+
+import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -19,11 +20,11 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldNotCrashWithNoConfig() {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final MergingConfigurator<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
+        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
                 = new PipelineUpdateConfigurator();
 
         // when
-        configurator.applyProperties(builder, null);
+        configurator.accept(builder, null);
 
         // then
         verify(builder, times(1)).setDataUpdateService(any());
@@ -33,14 +34,14 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldIgnoreEmptyUrl() {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final MergingConfigurator<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
+        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
                 = new PipelineUpdateConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setUrl("");
 
         // when
-        configurator.applyProperties(builder, config);
+        configurator.accept(builder, config);
 
         // then
         verify(builder, never()).setPerformanceProfile(any());
@@ -50,7 +51,7 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignURL() {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final MergingConfigurator<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
+        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
                 = new PipelineUpdateConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
@@ -59,7 +60,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
 
         // when
-        configurator.applyProperties(builder, config);
+        configurator.accept(builder, config);
 
         // then
         verify(builder).setDataUpdateUrl(argumentCaptor.capture());
@@ -70,14 +71,14 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldIgnoreEmptyKey() {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final MergingConfigurator<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
+        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
                 = new PipelineUpdateConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setLicenseKey("");
 
         // when
-        configurator.applyProperties(builder, config);
+        configurator.accept(builder, config);
 
         // then
         verify(builder, never()).setDataUpdateLicenseKey(any());
@@ -87,7 +88,7 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignKey() {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final MergingConfigurator<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
+        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
                 = new PipelineUpdateConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
@@ -96,7 +97,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
 
         // when
-        configurator.applyProperties(builder, config);
+        configurator.accept(builder, config);
 
         // then
         verify(builder).setDataUpdateLicenseKey(argumentCaptor.capture());
@@ -107,7 +108,7 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignAuto() {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final MergingConfigurator<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
+        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
                 = new PipelineUpdateConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
@@ -116,7 +117,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<Boolean> argumentCaptor = ArgumentCaptor.forClass(Boolean.class);
 
         // when
-        configurator.applyProperties(builder, config);
+        configurator.accept(builder, config);
 
         // then
         verify(builder).setAutoUpdate(argumentCaptor.capture());
@@ -127,7 +128,7 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignOnStartup() {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final MergingConfigurator<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
+        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
                 = new PipelineUpdateConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
@@ -136,7 +137,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<Boolean> argumentCaptor = ArgumentCaptor.forClass(Boolean.class);
 
         // when
-        configurator.applyProperties(builder, config);
+        configurator.accept(builder, config);
 
         // then
         verify(builder).setDataUpdateOnStartup(argumentCaptor.capture());
@@ -147,7 +148,7 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignWatchFileSystem() {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final MergingConfigurator<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
+        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
                 = new PipelineUpdateConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
@@ -156,7 +157,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<Boolean> argumentCaptor = ArgumentCaptor.forClass(Boolean.class);
 
         // when
-        configurator.applyProperties(builder, config);
+        configurator.accept(builder, config);
 
         // then
         verify(builder).setDataFileSystemWatcher(argumentCaptor.capture());
@@ -167,7 +168,7 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignPollingInterval() {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final MergingConfigurator<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
+        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
                 = new PipelineUpdateConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
@@ -176,7 +177,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<Integer> argumentCaptor = ArgumentCaptor.forClass(Integer.class);
 
         // when
-        configurator.applyProperties(builder, config);
+        configurator.accept(builder, config);
 
         // then
         verify(builder).setUpdatePollingInterval(argumentCaptor.capture());
