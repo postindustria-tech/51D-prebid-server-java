@@ -1,15 +1,25 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers;
 
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePropertyMerge;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePropertyMergeCondition;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatch;
+
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class DevicePropertyMergeTest {
+    private static <T> PropertyMerge<WritableDeviceInfo, DeviceInfo, T> buildPropertyMerge(
+        BiConsumer<WritableDeviceInfo, T> setter,
+        Function<DeviceInfo, T> getter,
+        Predicate<T> isUsable
+    ) {
+        return new PropertyMerge<>(getter, isUsable, setter);
+    }
 
     // --- `shouldReplacePropertyIn` method
 
@@ -18,17 +28,17 @@ public class DevicePropertyMergeTest {
         // given
         final DeviceInfo deviceData = mock(DeviceInfo.class);
         final boolean[] getterCalled = { false };
-        final DevicePropertyMergeCondition propertyMergeCondition = new DevicePropertyMerge<>(
+        final Predicate<DeviceInfo> propertyMergeCondition = buildPropertyMerge(
                 null,
                 data -> {
                     assertThat(data).isEqualTo(deviceData);
                     getterCalled[0] = true;
                     return null;
                 },
-                null);
+                null)::shouldReplacePropertyIn;
 
         // when and then
-        assertThat(propertyMergeCondition.shouldReplacePropertyIn(deviceData)).isTrue();
+        assertThat(propertyMergeCondition.test(deviceData)).isTrue();
         assertThat(getterCalled).containsExactly(true);
     }
 
@@ -37,17 +47,17 @@ public class DevicePropertyMergeTest {
         // given
         final String extractedValue = "dummy";
         final boolean[] validatorCalled = { false };
-        final DevicePropertyMergeCondition propertyMergeCondition = new DevicePropertyMerge<>(
+        final Predicate<DeviceInfo> propertyMergeCondition = buildPropertyMerge(
                 null,
                 data -> extractedValue,
                 value -> {
                     assertThat(value).isEqualTo(extractedValue);
                     validatorCalled[0] = true;
                     return false;
-                });
+                })::shouldReplacePropertyIn;
 
         // when and then
-        assertThat(propertyMergeCondition.shouldReplacePropertyIn(null)).isTrue();
+        assertThat(propertyMergeCondition.test(null)).isTrue();
         assertThat(validatorCalled).containsExactly(true);
     }
 
@@ -56,17 +66,17 @@ public class DevicePropertyMergeTest {
         // given
         final String extractedValue = "dummy";
         final boolean[] validatorCalled = { false };
-        final DevicePropertyMergeCondition propertyMergeCondition = new DevicePropertyMerge<>(
+        final Predicate<DeviceInfo> propertyMergeCondition = buildPropertyMerge(
                 null,
                 data -> extractedValue,
                 value -> {
                     assertThat(value).isEqualTo(extractedValue);
                     validatorCalled[0] = true;
                     return true;
-                });
+                })::shouldReplacePropertyIn;
 
         // when and then
-        assertThat(propertyMergeCondition.shouldReplacePropertyIn(null)).isFalse();
+        assertThat(propertyMergeCondition.test(null)).isFalse();
         assertThat(validatorCalled).containsExactly(true);
     }
 
@@ -79,14 +89,14 @@ public class DevicePropertyMergeTest {
         final boolean[] getterCalled = { false };
 
         // when
-        final DevicePatch propertyMerge = new DevicePropertyMerge<>(
+        final DevicePatch propertyMerge = buildPropertyMerge(
                 null,
                 data -> {
                     assertThat(data).isEqualTo(deviceData);
                     getterCalled[0] = true;
                     return null;
                 },
-                null);
+                null)::copySingleValue;
         final boolean patched = propertyMerge.patch(null, deviceData);
 
         // then
@@ -101,14 +111,14 @@ public class DevicePropertyMergeTest {
         final boolean[] validatorCalled = { false };
 
         // when
-        final DevicePatch propertyMerge = new DevicePropertyMerge<>(
+        final DevicePatch propertyMerge = buildPropertyMerge(
                 null,
                 data -> extractedValue,
                 value -> {
                     assertThat(value).isEqualTo(extractedValue);
                     validatorCalled[0] = true;
                     return false;
-                });
+                })::copySingleValue;
         final boolean patched = propertyMerge.patch(null, null);
 
         // then
@@ -124,7 +134,7 @@ public class DevicePropertyMergeTest {
         final boolean[] setterCalled = { false };
 
         // when
-        final DevicePatch propertyMerge = new DevicePropertyMerge<>(
+        final DevicePatch propertyMerge = buildPropertyMerge(
                 (builder, s) -> {
                     assertThat(s).isEqualTo(extractedValue);
                     setterCalled[0] = true;
@@ -134,7 +144,7 @@ public class DevicePropertyMergeTest {
                     assertThat(value).isEqualTo(extractedValue);
                     validatorCalled[0] = true;
                     return true;
-                });
+                })::copySingleValue;
         final boolean patched = propertyMerge.patch(null, null);
 
         // when and then

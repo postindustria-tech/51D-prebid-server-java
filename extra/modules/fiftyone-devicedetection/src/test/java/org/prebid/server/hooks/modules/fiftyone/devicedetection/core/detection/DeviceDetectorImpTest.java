@@ -11,6 +11,7 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.Dev
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.DeviceInfoClone;
 
 import java.util.Collections;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 public class DeviceDetectorImpTest {
     private static DeviceDetector buildDeviceDetector(
-            PipelineSupplier pipelineSupplier,
+            Supplier<Pipeline> pipelineSupplier,
             PriorityEvidenceSelector priorityEvidenceSelector,
             DeviceInfoPatcher<DeviceInfoClone> deviceInfoPatcher)
     {

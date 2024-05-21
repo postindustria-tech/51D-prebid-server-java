@@ -1,7 +1,6 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 /**
@@ -11,9 +10,9 @@ import java.util.function.BiPredicate;
  * @param <ConfigFragment> Type of readable object to copy values from.
  */
 public final class MergingConfigurator<Builder, ConfigFragment> implements BiPredicate<Builder, ConfigFragment> {
-    private final List<BiPredicate<Builder, ConfigFragment>> propertiesToMerge;
+    private final List<PropertyMerge<Builder, ConfigFragment, ?>> propertiesToMerge;
 
-    public MergingConfigurator(List<BiPredicate<Builder, ConfigFragment>> propertiesToMerge) {
+    public MergingConfigurator(List<PropertyMerge<Builder, ConfigFragment, ?>> propertiesToMerge) {
         this.propertiesToMerge = propertiesToMerge;
     }
 
@@ -23,8 +22,8 @@ public final class MergingConfigurator<Builder, ConfigFragment> implements BiPre
             return false;
         }
         boolean result = false;
-        for (BiPredicate<Builder, ConfigFragment> nextMerge: propertiesToMerge) {
-            if (nextMerge.test(builder, configFragment)) {
+        for (PropertyMerge<Builder, ConfigFragment, ?> nextMerge: propertiesToMerge) {
+            if (nextMerge.copySingleValue(builder, configFragment)) {
                 result = true;
             }
         }

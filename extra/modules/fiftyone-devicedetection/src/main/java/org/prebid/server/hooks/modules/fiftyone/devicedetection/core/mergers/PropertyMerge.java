@@ -1,7 +1,6 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -20,15 +19,18 @@ public record PropertyMerge<Target, ValueSource, Value>(
         Function<ValueSource, Value> getter,
         Predicate<Value> isUsable,
         BiConsumer<Target, Value> setter
-) implements BiPredicate<Target, ValueSource> {
-
-    @Override
-    public boolean test(Target target, ValueSource propertySource) {
+) {
+    public boolean copySingleValue(Target target, ValueSource propertySource) {
         final Value value = getter().apply(propertySource);
         if (value == null || !isUsable().test(value)) {
             return false;
         }
         setter().accept(target, value);
         return true;
+    }
+
+    public boolean shouldReplacePropertyIn(ValueSource valueSource) {
+        final Value value = getter().apply(valueSource);
+        return (value == null || !isUsable().test(value));
     }
 }

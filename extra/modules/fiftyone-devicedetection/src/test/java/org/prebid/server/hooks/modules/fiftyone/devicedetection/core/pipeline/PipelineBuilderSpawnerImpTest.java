@@ -2,7 +2,6 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.pipeline;
 
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PipelineBuilderSpawner;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 
