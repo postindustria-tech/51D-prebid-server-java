@@ -7,10 +7,15 @@ import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PriorityEvidenceSelectorImpTest {
+    private static Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
+        return new PriorityEvidenceSelectorImp().apply(collectedEvidence);
+    }
+    
     @Test
     public void shouldSelectSuaIfPresent() {
         // given
@@ -21,8 +26,7 @@ public class PriorityEvidenceSelectorImpTest {
                 .build();
 
         // when
-        final PriorityEvidenceSelector evidenceSelector = new PriorityEvidenceSelectorImp();
-        final Map<String, String> evidence = evidenceSelector.pickRelevantFrom(collectedEvidence);
+        final Map<String, String> evidence = pickRelevantFrom(collectedEvidence);
 
         // then
         assertThat(evidence).isNotSameAs(secureHeaders);
@@ -38,8 +42,7 @@ public class PriorityEvidenceSelectorImpTest {
                 .build();
 
         // when
-        final PriorityEvidenceSelector evidenceSelector = new PriorityEvidenceSelectorImp();
-        final Map<String, String> evidence = evidenceSelector.pickRelevantFrom(collectedEvidence);
+        final Map<String, String> evidence = pickRelevantFrom(collectedEvidence);
 
         // then
         assertThat(evidence.size()).isEqualTo(1);
@@ -58,8 +61,7 @@ public class PriorityEvidenceSelectorImpTest {
                 .build();
 
         // when
-        final PriorityEvidenceSelector evidenceSelector = new PriorityEvidenceSelectorImp();
-        final Map<String, String> evidence = evidenceSelector.pickRelevantFrom(collectedEvidence);
+        final Map<String, String> evidence = pickRelevantFrom(collectedEvidence);
 
         // then
         assertThat(evidence).isNotEqualTo(suaHeaders);
@@ -80,8 +82,7 @@ public class PriorityEvidenceSelectorImpTest {
                 .build();
 
         // when
-        final PriorityEvidenceSelector evidenceSelector = new PriorityEvidenceSelectorImp();
-        final Map<String, String> evidence = evidenceSelector.pickRelevantFrom(collectedEvidence);
+        final Map<String, String> evidence = pickRelevantFrom(collectedEvidence);
 
         // then
         final List<Map.Entry<String, String>> evidenceFragments = evidence.entrySet().stream().toList();
@@ -107,8 +108,7 @@ public class PriorityEvidenceSelectorImpTest {
                 .build();
 
         // when
-        final PriorityEvidenceSelector evidenceSelector = new PriorityEvidenceSelectorImp();
-        final Map<String, String> evidence = evidenceSelector.pickRelevantFrom(collectedEvidence);
+        final Map<String, String> evidence = pickRelevantFrom(collectedEvidence);
 
         // then
         final List<Map.Entry<String, String>> evidenceFragments = evidence.entrySet().stream().toList();
@@ -122,8 +122,7 @@ public class PriorityEvidenceSelectorImpTest {
         final CollectedEvidence collectedEvidence = CollectedEvidence.builder().build();
 
         // when
-        final PriorityEvidenceSelector evidenceSelector = new PriorityEvidenceSelectorImp();
-        final Map<String, String> evidence = evidenceSelector.pickRelevantFrom(collectedEvidence);
+        final Map<String, String> evidence = pickRelevantFrom(collectedEvidence);
 
         // then
         assertThat(evidence).isNotNull();

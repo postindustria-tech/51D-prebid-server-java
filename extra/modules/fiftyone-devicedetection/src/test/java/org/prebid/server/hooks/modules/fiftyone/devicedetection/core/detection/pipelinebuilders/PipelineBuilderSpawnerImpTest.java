@@ -10,13 +10,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class PipelineBuilderSpawnerImpTest {
+    private static PipelineBuilderSpawner<DeviceDetectionOnPremisePipelineBuilder> makeSpawner() {
+        return new PipelineBuilderSpawnerImp();
+    }
+    
     @Test
     public void shouldReturnNonNull() throws Exception {
         // given
         final DataFile dataFile = new DataFile();
         dataFile.setPath("dummy.hash");
         final PipelineBuilderSpawner<DeviceDetectionOnPremisePipelineBuilder> builderSpawner
-                = new PipelineBuilderSpawnerImp();
+                = makeSpawner();
 
         // when
         final DeviceDetectionOnPremisePipelineBuilder pipelineBuilder = builderSpawner.makeBuilder(dataFile);
@@ -31,7 +35,7 @@ public class PipelineBuilderSpawnerImpTest {
         dataFile.setPath("dummy.hash");
         dataFile.setMakeTempCopy(true);
         final PipelineBuilderSpawner<DeviceDetectionOnPremisePipelineBuilder> builderSpawner
-                = new PipelineBuilderSpawnerImp();
+                = makeSpawner();
 
         // when
         final DeviceDetectionOnPremisePipelineBuilder pipelineBuilder = builderSpawner.makeBuilder(dataFile);

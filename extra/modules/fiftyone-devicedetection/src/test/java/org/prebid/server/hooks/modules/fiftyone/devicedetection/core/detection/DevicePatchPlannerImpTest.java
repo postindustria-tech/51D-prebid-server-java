@@ -4,6 +4,7 @@ import com.iab.openrtb.request.Device;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DeviceInfoPatcherImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePatchPlannerImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 
 import java.math.BigDecimal;
@@ -28,13 +29,22 @@ public class DevicePatchPlannerImpTest {
             "fake-device-id"
     ).build();
 
+    private static DevicePatchPlan buildPatchPlanFor(Device device) {
+        return new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(device));
+    }
+    
+    private static Device patchDeviceInfo(Device rawDevice, DevicePatchPlan patchPlan, DeviceInfo newData) {
+        return new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
+                .patchDeviceInfo(rawDevice, patchPlan, newData);
+    }
+
     @Test
     public void shouldReturnAllPropertiesWhenDeviceIsEmpty() {
         // given
         final Device device = Device.builder().build();
 
         // when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(device));
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(device);
 
         // then
         assertThat(patchPlan.patches().size()).isEqualTo(PROPERTIES_COUNT);
@@ -43,7 +53,7 @@ public class DevicePatchPlannerImpTest {
     @Test
     public void shouldReturnZeroPropertiesWhenDeviceIsFull() {
         // given and when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(COMPLETE_DEVICE));
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(COMPLETE_DEVICE);
 
         // then
         assertThat(patchPlan.patches()).isEmpty();
@@ -58,8 +68,8 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(testDevice));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter).patchDeviceInfo(
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -79,8 +89,8 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(testDevice));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter).patchDeviceInfo(
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -100,8 +110,8 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(testDevice));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter).patchDeviceInfo(
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -121,8 +131,8 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(testDevice));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter).patchDeviceInfo(
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -142,8 +152,8 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(testDevice));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter).patchDeviceInfo(
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -163,8 +173,8 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(testDevice));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter).patchDeviceInfo(
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -184,8 +194,8 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(testDevice));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter).patchDeviceInfo(
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -205,8 +215,8 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(testDevice));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter).patchDeviceInfo(
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -226,8 +236,8 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(testDevice));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter).patchDeviceInfo(
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)
@@ -246,8 +256,8 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(testDevice));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter).patchDeviceInfo(
+        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
                 new DeviceMirror(COMPLETE_DEVICE)

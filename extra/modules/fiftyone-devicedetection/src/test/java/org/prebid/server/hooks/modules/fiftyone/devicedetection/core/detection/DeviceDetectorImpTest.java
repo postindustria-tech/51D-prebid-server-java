@@ -16,6 +16,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class DeviceDetectorImpTest {
+    private static DeviceDetector buildDeviceDetector(
+            PipelineSupplier pipelineSupplier,
+            PriorityEvidenceSelector priorityEvidenceSelector,
+            DeviceInfoPatcher<DeviceInfoClone> deviceInfoPatcher)
+    {
+        return new DeviceDetectorImp(pipelineSupplier, priorityEvidenceSelector, deviceInfoPatcher);
+    }
+
     @Test
     public void shouldRethrowOnFailure() throws Exception {
         // given
@@ -25,7 +33,7 @@ public class DeviceDetectorImpTest {
             when(pipeline.createFlowData()).thenThrow(e);
 
             // given
-            final DeviceDetector deviceDetector = new DeviceDetectorImp(
+            final DeviceDetector deviceDetector = buildDeviceDetector(
                     () -> pipeline,
                     null,
                     null);
@@ -48,7 +56,7 @@ public class DeviceDetectorImpTest {
                 return null;
             });
 
-            final DeviceDetector deviceDetector = new DeviceDetectorImp(
+            final DeviceDetector deviceDetector = buildDeviceDetector(
                     () -> pipeline,
                     evidence -> Collections.emptyMap(),
                     null
@@ -71,7 +79,7 @@ public class DeviceDetectorImpTest {
                     .make("Pumpkin&Co")
                     .build();
 
-            final DeviceDetector deviceDetector = new DeviceDetectorImp(
+            final DeviceDetector deviceDetector = buildDeviceDetector(
                     () -> pipeline,
                     evidence -> Collections.emptyMap(),
                     (rawDevice, patchPlan, newData) -> device

@@ -16,12 +16,16 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class PipelinePerformanceConfiguratorTest {
+    private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> makeConfigurator() {
+        return new PipelinePerformanceConfigurator();
+    }
+    
     @Test
     public void shouldIgnoreUnknownProfile() {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
-                = new PipelinePerformanceConfigurator();
+                = makeConfigurator();
 
         final PerformanceConfig config = new PerformanceConfig();
         config.setProfile("ghost");
@@ -38,7 +42,7 @@ public class PipelinePerformanceConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
-                = new PipelinePerformanceConfigurator();
+                = makeConfigurator();
 
         final PerformanceConfig config = new PerformanceConfig();
         config.setProfile("");
@@ -55,7 +59,7 @@ public class PipelinePerformanceConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
-                = new PipelinePerformanceConfigurator();
+                = makeConfigurator();
 
         final PerformanceConfig config = new PerformanceConfig();
         config.setProfile("mAxperFORMance");
@@ -76,7 +80,7 @@ public class PipelinePerformanceConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
-                = new PipelinePerformanceConfigurator();
+                = makeConfigurator();
 
         final PerformanceConfig config = new PerformanceConfig();
         config.setConcurrency(398476);
@@ -96,7 +100,7 @@ public class PipelinePerformanceConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
-                = new PipelinePerformanceConfigurator();
+                = makeConfigurator();
 
         final PerformanceConfig config = new PerformanceConfig();
         config.setDifference(498756);
@@ -116,7 +120,7 @@ public class PipelinePerformanceConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
-                = new PipelinePerformanceConfigurator();
+                = makeConfigurator();
 
         final PerformanceConfig config = new PerformanceConfig();
         config.setAllowUnmatched(true);
@@ -136,7 +140,7 @@ public class PipelinePerformanceConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
-                = new PipelinePerformanceConfigurator();
+                = makeConfigurator();
 
         final PerformanceConfig config = new PerformanceConfig();
         config.setDrift(1348);

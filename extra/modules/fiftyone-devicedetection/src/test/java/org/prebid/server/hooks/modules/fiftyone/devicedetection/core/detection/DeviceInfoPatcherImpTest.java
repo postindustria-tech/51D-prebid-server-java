@@ -13,6 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class DeviceInfoPatcherImpTest {
+    private static Device patchDeviceInfo(Device rawDevice, DevicePatchPlan patchPlan, DeviceInfo newData) {
+        return new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
+                .patchDeviceInfo(rawDevice, patchPlan, newData);
+    }
+
     @Test
     public void shouldReturnOldDeviceIfPlanIsEmpty() {
         // given
@@ -20,8 +25,7 @@ public class DeviceInfoPatcherImpTest {
         final DevicePatchPlan patchPlan = new DevicePatchPlan(Collections.emptySet());
 
         // when
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
-                .patchDeviceInfo(oldDevice, patchPlan, null);
+        final Device newDevice = patchDeviceInfo(oldDevice, patchPlan, null);
 
         // then
         assertThat(newDevice).isEqualTo(oldDevice);
@@ -34,8 +38,7 @@ public class DeviceInfoPatcherImpTest {
         final DevicePatchPlan patchPlan = simplePlan(((writableDeviceInfo, newData) -> false));
 
         // when
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
-                .patchDeviceInfo(oldDevice, patchPlan, null);
+        final Device newDevice = patchDeviceInfo(oldDevice, patchPlan, null);
 
         // then
         assertThat(newDevice).isEqualTo(oldDevice);
@@ -54,8 +57,7 @@ public class DeviceInfoPatcherImpTest {
             dataPassed[0] = true;
             return false;
         }));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
-                .patchDeviceInfo(oldDevice, patchPlan, mockedData);
+        final Device newDevice = patchDeviceInfo(oldDevice, patchPlan, mockedData);
 
         // then
         assertThat(newDevice).isEqualTo(oldDevice);
@@ -73,8 +75,7 @@ public class DeviceInfoPatcherImpTest {
             writableDeviceInfo.setModel(newModel);
             return true;
         }));
-        final Device newDevice = new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
-                .patchDeviceInfo(oldDevice, patchPlan, null);
+        final Device newDevice = patchDeviceInfo(oldDevice, patchPlan, null);
 
         // then
         assertThat(newDevice).isNotEqualTo(oldDevice);

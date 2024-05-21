@@ -16,12 +16,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class PipelineUpdateConfiguratorTest {
+    private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> makeConfigurator() {
+        return new PipelineUpdateConfigurator();
+    }
+
     @Test
     public void shouldNotCrashWithNoConfig() {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = new PipelineUpdateConfigurator();
+                = makeConfigurator();
 
         // when
         configurator.accept(builder, null);
@@ -35,7 +39,7 @@ public class PipelineUpdateConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = new PipelineUpdateConfigurator();
+                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setUrl("");
@@ -52,7 +56,7 @@ public class PipelineUpdateConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = new PipelineUpdateConfigurator();
+                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setUrl("http://void/");
@@ -72,7 +76,7 @@ public class PipelineUpdateConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = new PipelineUpdateConfigurator();
+                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setLicenseKey("");
@@ -89,7 +93,7 @@ public class PipelineUpdateConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = new PipelineUpdateConfigurator();
+                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setLicenseKey("687-398475-34876-384678-34756-3487");
@@ -109,7 +113,7 @@ public class PipelineUpdateConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = new PipelineUpdateConfigurator();
+                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setAuto(true);
@@ -129,7 +133,7 @@ public class PipelineUpdateConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = new PipelineUpdateConfigurator();
+                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setOnStartup(true);
@@ -149,7 +153,7 @@ public class PipelineUpdateConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = new PipelineUpdateConfigurator();
+                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setWatchFileSystem(true);
@@ -169,7 +173,7 @@ public class PipelineUpdateConfiguratorTest {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = new PipelineUpdateConfigurator();
+                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setPollingInterval(643);
