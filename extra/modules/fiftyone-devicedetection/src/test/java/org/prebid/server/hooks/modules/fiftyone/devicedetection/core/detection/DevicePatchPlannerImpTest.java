@@ -2,10 +2,12 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection;
 
 import com.iab.openrtb.request.Device;
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceInfoBuilderMethodSet;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DeviceInfoPatcherImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePatchPlannerImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatchPlan;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.EnrichmentResult;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 
 import java.math.BigDecimal;
@@ -35,8 +37,19 @@ public class DevicePatchPlannerImpTest {
     }
     
     private static Device patchDeviceInfo(Device rawDevice, DevicePatchPlan patchPlan, DeviceInfo newData) {
-        return new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
-                .patchDeviceInfo(rawDevice, patchPlan, newData);
+        final EnrichmentResult.EnrichmentResultBuilder<Device> resultBuilder = EnrichmentResult.builder();
+        final DeviceInfoBuilderMethodSet<Device, ?>.Adapter adapter
+                = DeviceMirror.BUILDER_METHOD_SET.makeAdapter(rawDevice);
+        if (new DeviceInfoPatcherImp().patchDeviceInfo(
+                adapter,
+                patchPlan,
+                newData,
+                resultBuilder
+        )) {
+            return adapter.rebuildBox();
+        }
+
+        return null;
     }
 
     @Test

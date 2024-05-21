@@ -4,14 +4,10 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.De
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceDetector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatchPlanner;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceRefiner;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PriorityEvidenceSelector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DeviceInfoPatcher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.EnrichmentResult;
-
-import java.util.Map;
 
 public class DeviceRefinerImp implements DeviceRefiner {
     private final DevicePatchPlanner devicePatchPlanner;

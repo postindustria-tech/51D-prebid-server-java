@@ -2,7 +2,9 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher;
 
 import com.iab.openrtb.request.Device;
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceInfoBuilderMethodSet;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.EnrichmentResult;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 
 import java.util.AbstractMap;
@@ -13,12 +15,23 @@ import static org.mockito.Mockito.mock;
 
 public class DeviceInfoPatcherImpTest {
     private static Device patchDeviceInfo(Device rawDevice, DevicePatchPlan patchPlan, DeviceInfo newData) {
-        return new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter)
-                .patchDeviceInfo(rawDevice, patchPlan, newData);
+        final EnrichmentResult.EnrichmentResultBuilder<Device> resultBuilder = EnrichmentResult.builder();
+        final DeviceInfoBuilderMethodSet<Device, ?>.Adapter adapter
+                = DeviceMirror.BUILDER_METHOD_SET.makeAdapter(rawDevice);
+        if (new DeviceInfoPatcherImp().patchDeviceInfo(
+                adapter,
+                patchPlan,
+                newData,
+                resultBuilder
+        )) {
+            return adapter.rebuildBox();
+        }
+
+        return null;
     }
 
     @Test
-    public void shouldReturnOldDeviceIfPlanIsEmpty() {
+    public void shouldReturnNullIfPlanIsEmpty() {
         // given
         final Device oldDevice = Device.builder().build();
         final DevicePatchPlan patchPlan = new DevicePatchPlan(Collections.emptySet());
@@ -27,11 +40,11 @@ public class DeviceInfoPatcherImpTest {
         final Device newDevice = patchDeviceInfo(oldDevice, patchPlan, null);
 
         // then
-        assertThat(newDevice).isEqualTo(oldDevice);
+        assertThat(newDevice).isNull();
     }
 
     @Test
-    public void shouldReturnOldDeviceIfPatchChangedNothing() {
+    public void shouldReturnNullIfPatchChangedNothing() {
         // given
         final Device oldDevice = Device.builder().build();
         final DevicePatchPlan patchPlan = simplePlan(((writableDeviceInfo, newData) -> false));
@@ -40,7 +53,7 @@ public class DeviceInfoPatcherImpTest {
         final Device newDevice = patchDeviceInfo(oldDevice, patchPlan, null);
 
         // then
-        assertThat(newDevice).isEqualTo(oldDevice);
+        assertThat(newDevice).isNull();
     }
 
     @Test
@@ -59,7 +72,7 @@ public class DeviceInfoPatcherImpTest {
         final Device newDevice = patchDeviceInfo(oldDevice, patchPlan, mockedData);
 
         // then
-        assertThat(newDevice).isEqualTo(oldDevice);
+        assertThat(newDevice).isNull();
         assertThat(dataPassed).containsExactly(true);
     }
 

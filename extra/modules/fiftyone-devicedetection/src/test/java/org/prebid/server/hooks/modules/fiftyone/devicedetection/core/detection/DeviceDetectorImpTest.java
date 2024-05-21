@@ -1,14 +1,17 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection;
 
+import com.iab.openrtb.request.Device;
 import fiftyone.devicedetection.shared.DeviceData;
 import fiftyone.pipeline.core.data.FlowData;
 import fiftyone.pipeline.core.flowelements.Pipeline;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceInfoBuilderMethodSet;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DeviceDetectorImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DeviceInfoPatcher;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.DeviceInfoClone;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.EnrichmentResult;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 
 import java.util.Collections;
 import java.util.function.Supplier;
@@ -21,9 +24,23 @@ public class DeviceDetectorImpTest {
     private static DeviceDetector buildDeviceDetector(
             Supplier<Pipeline> pipelineSupplier,
             PriorityEvidenceSelector priorityEvidenceSelector,
-            DeviceInfoPatcher<DeviceInfoClone> deviceInfoPatcher)
+            DeviceInfoPatcher deviceInfoPatcher)
     {
         return new DeviceDetectorImp(pipelineSupplier, priorityEvidenceSelector, deviceInfoPatcher);
+    }
+
+    private static DeviceInfo inferProperties(DeviceDetector deviceDetector) {
+        final EnrichmentResult.EnrichmentResultBuilder<Device> resultBuilder = EnrichmentResult.builder();
+        final DeviceInfoBuilderMethodSet<Device, Device.DeviceBuilder>.Adapter adapter
+                = DeviceMirror.BUILDER_METHOD_SET.makeAdapter(Device.builder().build());
+        if (deviceDetector.populateDeviceInfo(adapter, null, null, resultBuilder)) {
+            return new DeviceMirror(adapter.rebuildBox());
+        }
+        final Exception processingException = resultBuilder.build().processingException();
+        if (processingException != null) {
+            throw new RuntimeException(processingException);
+        }
+        return null;
     }
 
     @Test
@@ -41,7 +58,7 @@ public class DeviceDetectorImpTest {
                     null);
 
             // when and then
-            Assertions.assertThatThrownBy(() -> deviceDetector.inferProperties(null, null)).hasCause(e);
+            Assertions.assertThatThrownBy(() -> inferProperties(deviceDetector)).hasCause(e);
         }
     }
 
@@ -65,7 +82,7 @@ public class DeviceDetectorImpTest {
             );
 
             // when and then
-            assertThat(deviceDetector.inferProperties(null, null)).isNull();
+            assertThat(inferProperties(deviceDetector)).isNull();
             assertThat(getDeviceDataCalled).containsExactly(true);
         }
     }
@@ -77,18 +94,21 @@ public class DeviceDetectorImpTest {
             final FlowData flowData = mock(FlowData.class);
             when(pipeline.createFlowData()).thenReturn(flowData);
             when(flowData.get(DeviceData.class)).thenReturn(mock(DeviceData.class));
-            final DeviceInfoClone device = DeviceInfoClone.builder()
+            final Device device = Device.builder()
                     .make("Pumpkin&Co")
                     .build();
 
             final DeviceDetector deviceDetector = buildDeviceDetector(
                     () -> pipeline,
                     evidence -> Collections.emptyMap(),
-                    (rawDevice, patchPlan, newData) -> device
+                    (writableDevice, patchPlan, newData, resultBuilder) -> {
+                        writableDevice.setMake(device.getMake());
+                        return true;
+                    }
             );
 
             // when
-            final DeviceInfo newDevice = deviceDetector.inferProperties(null, null);
+            final DeviceInfo newDevice = inferProperties(deviceDetector);
 
             assertThat(newDevice).isNotNull();
             assertThat(newDevice.getMake()).isEqualTo(device.getMake());
