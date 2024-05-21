@@ -2,23 +2,25 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.
 
 import fiftyone.devicedetection.shared.DeviceData;
 import fiftyone.pipeline.core.data.FlowData;
+import fiftyone.pipeline.core.flowelements.Pipeline;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceDataWrapper;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.DeviceInfoClone;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceDetector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DeviceInfoPatcher;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PipelineSupplier;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PriorityEvidenceSelector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 
+import java.util.function.Supplier;
+
 public final class DeviceDetectorImp implements DeviceDetector {
-    private final PipelineSupplier pipelineSupplier;
+    private final Supplier<Pipeline> pipelineSupplier;
     private final PriorityEvidenceSelector priorityEvidenceSelector;
     private final DeviceInfoPatcher<DeviceInfoClone> deviceInfoPatcher;
 
     public DeviceDetectorImp(
-            PipelineSupplier pipelineSupplier,
+            Supplier<Pipeline> pipelineSupplier,
             PriorityEvidenceSelector priorityEvidenceSelector,
             DeviceInfoPatcher<DeviceInfoClone> deviceInfoPatcher)
     {

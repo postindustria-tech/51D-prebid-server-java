@@ -1,5 +1,6 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.config;
 
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.pipeline.PipelineProvider;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.DeviceInfoClone;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.FiftyOneDeviceDetectionModule;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceDetector;
@@ -8,10 +9,6 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.Devi
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePatchPlannerImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DeviceInfoPatcherImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PriorityEvidenceSelectorImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelineBuilderSpawnerImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelinePerformanceConfigurator;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelineSupplierImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelineUpdateConfigurator;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionEntrypointHook;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.ModuleConfig;
@@ -43,11 +40,8 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
 
     @Bean
     DeviceDetector fiftyOneDeviceDetectionDeviceDetector(ModuleConfig moduleConfig) throws Exception {
-        final var pipelineBuilder = new PipelineBuilderSpawnerImp().makeBuilder(moduleConfig.getDataFile());
-        new PipelineUpdateConfigurator().accept(pipelineBuilder, moduleConfig.getDataFile().getUpdate());
-        new PipelinePerformanceConfigurator().accept(pipelineBuilder, moduleConfig.getPerformance());
         return new DeviceDetectorImp(
-                new PipelineSupplierImp(pipelineBuilder),
+                new PipelineProvider(moduleConfig.getDataFile(), moduleConfig.getPerformance()),
                 new PriorityEvidenceSelectorImp(),
                 new DeviceInfoPatcherImp<>(DeviceInfoClone.BUILDER_METHOD_SET::makeAdapter));
     }

@@ -1,17 +1,34 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.pipelinebuilders;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.pipeline;
 
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PipelineBuilderSpawner;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelineBuilderSpawnerImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PipelineBuilderSpawnerImpTest {
-    private static PipelineBuilderSpawner<DeviceDetectionOnPremisePipelineBuilder> makeSpawner() {
-        return new PipelineBuilderSpawnerImp();
+    private static PipelineBuilderSpawner<DeviceDetectionOnPremisePipelineBuilder> makeSpawner() throws Exception {
+        return new PipelineProvider(null, null) {
+            @Override
+            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(
+                    DataFile dataFile,
+                    PerformanceConfig performanceConfig
+            ) throws Exception {
+                final DeviceDetectionOnPremisePipelineBuilder builder
+                        = mock(DeviceDetectionOnPremisePipelineBuilder.class);
+                when(builder.build()).thenReturn(null);
+                return builder;
+            }
+
+            @Override
+            public DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
+                return super.makeRawBuilder(dataFile);
+            }
+        }::makeRawBuilder;
     }
     
     @Test

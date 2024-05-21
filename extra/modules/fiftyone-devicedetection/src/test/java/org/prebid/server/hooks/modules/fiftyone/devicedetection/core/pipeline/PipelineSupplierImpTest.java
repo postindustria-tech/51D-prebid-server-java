@@ -1,9 +1,10 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.pipelinebuilders;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.pipeline;
 
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import fiftyone.pipeline.core.flowelements.Pipeline;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelineSupplierImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 
 import java.util.function.Supplier;
 
@@ -12,8 +13,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class PipelineSupplierImpTest {
-    private static Supplier<Pipeline> makeSupplier(DeviceDetectionOnPremisePipelineBuilder builder) throws Exception {
-        return new PipelineSupplierImp(builder);
+    private static Supplier<Pipeline> makeSupplier(DeviceDetectionOnPremisePipelineBuilder builder)  throws Exception {
+        return new PipelineProvider(null, null) {
+            @Override
+            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(
+                    DataFile dataFile,
+                    PerformanceConfig performanceConfig
+            ) {
+                return builder;
+            }
+        };
     }
 
     @Test

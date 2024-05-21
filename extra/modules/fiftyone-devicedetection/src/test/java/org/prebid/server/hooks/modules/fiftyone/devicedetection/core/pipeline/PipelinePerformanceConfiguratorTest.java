@@ -1,10 +1,10 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.pipelinebuilders;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.pipeline;
 
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import fiftyone.pipeline.engines.Constants;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelinePerformanceConfigurator;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 
 import java.util.function.BiConsumer;
@@ -14,14 +14,34 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class PipelinePerformanceConfiguratorTest {
-    private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> makeConfigurator() {
-        return new PipelinePerformanceConfigurator();
+    private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> makeConfigurator() throws Exception {
+        return new PipelineProvider(null, null) {
+            @Override
+            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(
+                    DataFile dataFile,
+                    PerformanceConfig performanceConfig
+            ) throws Exception {
+                final DeviceDetectionOnPremisePipelineBuilder builder
+                        = mock(DeviceDetectionOnPremisePipelineBuilder.class);
+                when(builder.build()).thenReturn(null);
+                return builder;
+            }
+
+            @Override
+            public void applyPerformanceOptions(
+                    DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+                    PerformanceConfig performanceConfig)
+            {
+                super.applyPerformanceOptions(pipelineBuilder, performanceConfig);
+            }
+        }::applyPerformanceOptions;
     }
     
     @Test
-    public void shouldIgnoreUnknownProfile() {
+    public void shouldIgnoreUnknownProfile() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
@@ -38,7 +58,7 @@ public class PipelinePerformanceConfiguratorTest {
     }
 
     @Test
-    public void shouldIgnoreEmptyProfile() {
+    public void shouldIgnoreEmptyProfile() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
@@ -55,7 +75,7 @@ public class PipelinePerformanceConfiguratorTest {
     }
 
     @Test
-    public void shouldAssignMaxPerformance() {
+    public void shouldAssignMaxPerformance() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
@@ -76,7 +96,7 @@ public class PipelinePerformanceConfiguratorTest {
     }
 
     @Test
-    public void shouldAssignConcurrency() {
+    public void shouldAssignConcurrency() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
@@ -96,7 +116,7 @@ public class PipelinePerformanceConfiguratorTest {
     }
 
     @Test
-    public void shouldAssignDifference() {
+    public void shouldAssignDifference() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
@@ -116,7 +136,7 @@ public class PipelinePerformanceConfiguratorTest {
     }
 
     @Test
-    public void shouldAssignAllowUnmatched() {
+    public void shouldAssignAllowUnmatched() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
@@ -136,7 +156,7 @@ public class PipelinePerformanceConfiguratorTest {
     }
 
     @Test
-    public void shouldAssignDrift() {
+    public void shouldAssignDrift() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> configurator
