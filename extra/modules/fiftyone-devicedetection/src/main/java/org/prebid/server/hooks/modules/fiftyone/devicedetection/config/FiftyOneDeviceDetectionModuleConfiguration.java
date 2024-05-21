@@ -1,14 +1,9 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.config;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceRefiner;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DeviceRefinerImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceRefinerImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.pipeline.PipelineProvider;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.FiftyOneDeviceDetectionModule;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceDetector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DeviceDetectorImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePatchPlannerImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DeviceInfoPatcherImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PriorityEvidenceSelectorImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionEntrypointHook;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.ModuleConfig;
@@ -41,13 +36,9 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
     @Bean
     DeviceRefiner fiftyOneDeviceDetectionDeviceRefiner(ModuleConfig moduleConfig) throws Exception {
         return new DeviceRefinerImp(
-                new DevicePatchPlannerImp(),
-                new DeviceDetectorImp(
-                        new PipelineProvider(
-                                moduleConfig.getDataFile(),
-                                moduleConfig.getPerformance()),
-                        new PriorityEvidenceSelectorImp(),
-                        new DeviceInfoPatcherImp()));
+                new PipelineProvider(
+                        moduleConfig.getDataFile(),
+                        moduleConfig.getPerformance()));
     }
 
     @Bean
