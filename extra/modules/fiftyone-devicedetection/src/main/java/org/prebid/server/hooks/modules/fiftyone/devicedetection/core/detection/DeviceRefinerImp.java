@@ -146,24 +146,4 @@ public class DeviceRefinerImp implements DeviceRefiner {
         enrichmentResultBuilder.enrichedFields(patchedFields);
         return true;
     }
-
-//    @Override
-//    public Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> buildPatchPlanFor(DeviceInfo deviceInfo)
-
-//    @Override
-//    public boolean populateDeviceInfo(
-//            WritableDeviceInfo writableDeviceInfo,
-//            CollectedEvidence collectedEvidence,
-//            Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> devicePatchPlan,
-//            EnrichmentResult.EnrichmentResultBuilder<?> enrichmentResultBuilder)
-
-//    @Override
-//    public Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence)
-
-//    @Override
-//    public boolean patchDeviceInfo(
-//            WritableDeviceInfo writableDeviceInfo,
-//            Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan,
-//            DeviceInfo newData,
-//            EnrichmentResult.EnrichmentResultBuilder<?> enrichmentResultBuilder)
 }

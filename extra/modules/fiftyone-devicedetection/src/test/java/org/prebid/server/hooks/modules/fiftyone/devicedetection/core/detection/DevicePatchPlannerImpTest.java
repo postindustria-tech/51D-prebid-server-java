@@ -3,14 +3,15 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection;
 import com.iab.openrtb.request.Device;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceInfoBuilderMethodSet;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DeviceInfoPatcherImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePatchPlannerImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.EnrichmentResult;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.BiPredicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,20 +33,40 @@ public class DevicePatchPlannerImpTest {
             "fake-device-id"
     ).build();
 
-    private static DevicePatchPlan buildPatchPlanFor(Device device) {
-        return new DevicePatchPlannerImp().buildPatchPlanFor(new DeviceMirror(device));
+    private static Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> buildPatchPlanFor(Device device) {
+        return new DeviceRefinerImp(null) {
+            @Override
+            public Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> buildPatchPlanFor(DeviceInfo deviceInfo) {
+                return super.buildPatchPlanFor(deviceInfo);
+            }
+        }.buildPatchPlanFor(new DeviceMirror(device));
     }
     
-    private static Device patchDeviceInfo(Device rawDevice, DevicePatchPlan patchPlan, DeviceInfo newData) {
+    private static Device patchDeviceInfo(Device rawDevice, Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan, DeviceInfo newData) {
         final EnrichmentResult.EnrichmentResultBuilder<Device> resultBuilder = EnrichmentResult.builder();
         final DeviceInfoBuilderMethodSet<Device, ?>.Adapter adapter
                 = DeviceMirror.BUILDER_METHOD_SET.makeAdapter(rawDevice);
-        if (new DeviceInfoPatcherImp().patchDeviceInfo(
-                adapter,
-                patchPlan,
-                newData,
-                resultBuilder
-        )) {
+        if (new DeviceRefinerImp(null) {
+            @Override
+            public boolean patchDeviceInfo(
+                    WritableDeviceInfo writableDeviceInfo,
+                    Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan,
+                    DeviceInfo newData,
+                    EnrichmentResult.EnrichmentResultBuilder<?> enrichmentResultBuilder)
+            {
+                return super.patchDeviceInfo(
+                        writableDeviceInfo,
+                        patchPlan,
+                        newData,
+                        enrichmentResultBuilder
+                );
+            }}
+                .patchDeviceInfo(
+                    adapter,
+                    patchPlan,
+                    newData,
+                    resultBuilder)
+        ) {
             return adapter.rebuildBox();
         }
 
@@ -58,20 +79,19 @@ public class DevicePatchPlannerImpTest {
         final Device device = Device.builder().build();
 
         // when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(device);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(device);
 
         // then
-        assertThat(patchPlan.patches().size()).isEqualTo(PROPERTIES_COUNT);
+        assertThat(patchPlan.size()).isEqualTo(PROPERTIES_COUNT);
     }
 
     @Test
     public void shouldReturnZeroPropertiesWhenDeviceIsFull() {
         // given and when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(COMPLETE_DEVICE);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(COMPLETE_DEVICE);
 
         // then
-        assertThat(patchPlan.patches()).isEmpty();
-        assertThat(patchPlan.isEmpty()).isTrue();
+        assertThat(patchPlan).isEmpty();
     }
 
     @Test
@@ -82,7 +102,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(testDevice);
         final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
@@ -90,7 +110,7 @@ public class DevicePatchPlannerImpTest {
         );
 
         // then
-        assertThat(patchPlan.patches().size()).isEqualTo(1);
+        assertThat(patchPlan.size()).isEqualTo(1);
         assertThat(newDevice.getDevicetype()).isEqualTo(COMPLETE_DEVICE.getDevicetype());
     }
 
@@ -103,7 +123,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(testDevice);
         final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
@@ -111,7 +131,7 @@ public class DevicePatchPlannerImpTest {
         );
 
         // then
-        assertThat(patchPlan.patches().size()).isEqualTo(1);
+        assertThat(patchPlan.size()).isEqualTo(1);
         assertThat(newDevice.getMake()).isEqualTo(COMPLETE_DEVICE.getMake());
     }
 
@@ -124,7 +144,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(testDevice);
         final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
@@ -132,7 +152,7 @@ public class DevicePatchPlannerImpTest {
         );
 
         // then
-        assertThat(patchPlan.patches().size()).isEqualTo(1);
+        assertThat(patchPlan.size()).isEqualTo(1);
         assertThat(newDevice.getModel()).isEqualTo(COMPLETE_DEVICE.getModel());
     }
 
@@ -145,7 +165,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(testDevice);
         final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
@@ -153,7 +173,7 @@ public class DevicePatchPlannerImpTest {
         );
 
         // then
-        assertThat(patchPlan.patches().size()).isEqualTo(1);
+        assertThat(patchPlan.size()).isEqualTo(1);
         assertThat(newDevice.getOs()).isEqualTo(COMPLETE_DEVICE.getOs());
     }
 
@@ -166,7 +186,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(testDevice);
         final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
@@ -174,7 +194,7 @@ public class DevicePatchPlannerImpTest {
         );
 
         // then
-        assertThat(patchPlan.patches().size()).isEqualTo(1);
+        assertThat(patchPlan.size()).isEqualTo(1);
         assertThat(newDevice.getOsv()).isEqualTo(COMPLETE_DEVICE.getOsv());
     }
 
@@ -187,7 +207,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(testDevice);
         final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
@@ -195,7 +215,7 @@ public class DevicePatchPlannerImpTest {
         );
 
         // then
-        assertThat(patchPlan.patches().size()).isEqualTo(1);
+        assertThat(patchPlan.size()).isEqualTo(1);
         assertThat(newDevice.getH()).isEqualTo(COMPLETE_DEVICE.getH());
     }
 
@@ -208,7 +228,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(testDevice);
         final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
@@ -216,7 +236,7 @@ public class DevicePatchPlannerImpTest {
         );
 
         // then
-        assertThat(patchPlan.patches().size()).isEqualTo(1);
+        assertThat(patchPlan.size()).isEqualTo(1);
         assertThat(newDevice.getW()).isEqualTo(COMPLETE_DEVICE.getW());
     }
 
@@ -229,7 +249,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(testDevice);
         final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
@@ -237,7 +257,7 @@ public class DevicePatchPlannerImpTest {
         );
 
         // then
-        assertThat(patchPlan.patches().size()).isEqualTo(1);
+        assertThat(patchPlan.size()).isEqualTo(1);
         assertThat(newDevice.getPpi()).isEqualTo(COMPLETE_DEVICE.getPpi());
     }
 
@@ -250,7 +270,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(testDevice);
         final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
@@ -258,7 +278,7 @@ public class DevicePatchPlannerImpTest {
         );
 
         // then
-        assertThat(patchPlan.patches().size()).isEqualTo(1);
+        assertThat(patchPlan.size()).isEqualTo(1);
         assertThat(newDevice.getPxratio()).isEqualTo(COMPLETE_DEVICE.getPxratio());
     }
 
@@ -270,7 +290,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final DevicePatchPlan patchPlan = buildPatchPlanFor(testDevice);
+        final Collection<Map.Entry<String, BiPredicate<WritableDeviceInfo, DeviceInfo>>> patchPlan = buildPatchPlanFor(testDevice);
         final Device newDevice = patchDeviceInfo(
                 testDevice,
                 patchPlan,
@@ -278,7 +298,7 @@ public class DevicePatchPlannerImpTest {
         );
 
         // then
-        assertThat(patchPlan.patches().size()).isEqualTo(1);
+        assertThat(patchPlan.size()).isEqualTo(1);
         assertThat(new DeviceMirror(newDevice).getDeviceId())
                 .isEqualTo(new DeviceMirror(COMPLETE_DEVICE).getDeviceId());
     }

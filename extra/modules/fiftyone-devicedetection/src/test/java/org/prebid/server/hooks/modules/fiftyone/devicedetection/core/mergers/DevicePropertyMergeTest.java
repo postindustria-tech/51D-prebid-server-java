@@ -3,9 +3,11 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatch;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -89,7 +91,7 @@ public class DevicePropertyMergeTest {
         final boolean[] getterCalled = { false };
 
         // when
-        final DevicePatch propertyMerge = buildPropertyMerge(
+        final BiPredicate<WritableDeviceInfo, DeviceInfo> propertyMerge = buildPropertyMerge(
                 null,
                 data -> {
                     assertThat(data).isEqualTo(deviceData);
@@ -97,7 +99,7 @@ public class DevicePropertyMergeTest {
                     return null;
                 },
                 null)::copySingleValue;
-        final boolean patched = propertyMerge.patch(null, deviceData);
+        final boolean patched = propertyMerge.test(null, deviceData);
 
         // then
         assertThat(patched).isFalse();
@@ -111,7 +113,7 @@ public class DevicePropertyMergeTest {
         final boolean[] validatorCalled = { false };
 
         // when
-        final DevicePatch propertyMerge = buildPropertyMerge(
+        final BiPredicate<WritableDeviceInfo, DeviceInfo> propertyMerge = buildPropertyMerge(
                 null,
                 data -> extractedValue,
                 value -> {
@@ -119,7 +121,7 @@ public class DevicePropertyMergeTest {
                     validatorCalled[0] = true;
                     return false;
                 })::copySingleValue;
-        final boolean patched = propertyMerge.patch(null, null);
+        final boolean patched = propertyMerge.test(null, null);
 
         // then
         assertThat(patched).isFalse();
@@ -134,7 +136,7 @@ public class DevicePropertyMergeTest {
         final boolean[] setterCalled = { false };
 
         // when
-        final DevicePatch propertyMerge = buildPropertyMerge(
+        final BiPredicate<WritableDeviceInfo, DeviceInfo> propertyMerge = buildPropertyMerge(
                 (builder, s) -> {
                     assertThat(s).isEqualTo(extractedValue);
                     setterCalled[0] = true;
@@ -145,7 +147,7 @@ public class DevicePropertyMergeTest {
                     validatorCalled[0] = true;
                     return true;
                 })::copySingleValue;
-        final boolean patched = propertyMerge.patch(null, null);
+        final boolean patched = propertyMerge.test(null, null);
 
         // when and then
         assertThat(patched).isTrue();

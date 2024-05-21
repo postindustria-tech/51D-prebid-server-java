@@ -7,13 +7,17 @@ import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PriorityEvidenceSelectorImpTest {
     private static Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
-        return new PriorityEvidenceSelectorImp().apply(collectedEvidence);
+        return new DeviceRefinerImp(null) {
+            @Override
+            public Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
+                return super.pickRelevantFrom(collectedEvidence);
+            }
+        }.pickRelevantFrom(collectedEvidence);
     }
     
     @Test
