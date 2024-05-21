@@ -3,7 +3,7 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 import fiftyone.devicedetection.shared.DeviceData;
 import fiftyone.pipeline.engines.data.AspectPropertyValueDefault;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 
 import java.math.BigDecimal;
 import java.util.Collections;

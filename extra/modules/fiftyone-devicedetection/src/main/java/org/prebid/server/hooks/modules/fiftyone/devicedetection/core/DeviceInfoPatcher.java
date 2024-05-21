@@ -1,5 +1,7 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core;
 
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
+
 /**
  * A function that applies a set of property overrides to
  * an instance of {@link DeviceInfoBox}

@@ -6,7 +6,7 @@ import fiftyone.pipeline.core.flowelements.Pipeline;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceDetector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.DeviceInfoClone;
 
 import java.util.Collections;

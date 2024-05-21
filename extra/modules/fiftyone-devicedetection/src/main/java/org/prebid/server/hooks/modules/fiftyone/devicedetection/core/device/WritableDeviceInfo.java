@@ -1,4 +1,4 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device;
 
 import java.math.BigDecimal;
 

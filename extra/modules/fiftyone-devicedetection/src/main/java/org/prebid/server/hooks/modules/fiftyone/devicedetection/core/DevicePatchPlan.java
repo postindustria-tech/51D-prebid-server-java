@@ -1,5 +1,8 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core;
 
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
+
 import java.util.Collection;
 import java.util.Map;
 

@@ -7,7 +7,7 @@ import com.iab.openrtb.request.UserAgent;
 import org.prebid.server.auction.model.AuctionContext;
 import org.prebid.server.hooks.execution.v1.auction.AuctionRequestPayloadImpl;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceDetector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfoPatcher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlanner;

@@ -7,7 +7,7 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceDetec
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfoPatcher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlanner;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 

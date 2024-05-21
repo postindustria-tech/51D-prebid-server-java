@@ -1,6 +1,6 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 
 import java.util.function.Predicate;
 

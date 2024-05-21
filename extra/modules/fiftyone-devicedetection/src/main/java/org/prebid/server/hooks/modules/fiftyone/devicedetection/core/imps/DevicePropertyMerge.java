@@ -1,7 +1,7 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.WritableDeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.ValueSetter;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatch;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.SimplePropertyMerge;

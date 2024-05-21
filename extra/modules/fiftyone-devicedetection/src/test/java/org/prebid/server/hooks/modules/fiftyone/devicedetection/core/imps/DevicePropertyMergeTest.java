@@ -1,7 +1,7 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatch;
 
 import static org.assertj.core.api.Assertions.assertThat;

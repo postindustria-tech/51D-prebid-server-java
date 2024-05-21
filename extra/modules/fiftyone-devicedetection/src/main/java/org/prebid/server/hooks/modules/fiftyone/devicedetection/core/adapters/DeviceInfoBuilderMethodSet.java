@@ -1,7 +1,7 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters;
 
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.WritableDeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
 
 import java.math.BigDecimal;
 import java.util.function.BiConsumer;

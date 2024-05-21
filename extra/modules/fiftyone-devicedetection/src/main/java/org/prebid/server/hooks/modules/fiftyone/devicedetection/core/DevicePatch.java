@@ -1,5 +1,8 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core;
 
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
+
 /**
  * Attempts to get a single property from {@link DeviceInfo}
  * and assign it to the respective property in {@link WritableDeviceInfo}.

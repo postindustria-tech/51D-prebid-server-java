@@ -10,7 +10,7 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceTypeC
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PipelineSupplier;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PriorityEvidenceSelector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 
 public final class DeviceDetectorImp implements DeviceDetector {
     private final PipelineSupplier pipelineSupplier;

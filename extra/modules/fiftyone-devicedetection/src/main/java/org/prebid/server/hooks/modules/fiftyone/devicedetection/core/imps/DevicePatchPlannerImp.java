@@ -1,10 +1,10 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.WritableDeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatch;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlanner;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 
 import java.math.BigDecimal;
 import java.util.AbstractMap;
