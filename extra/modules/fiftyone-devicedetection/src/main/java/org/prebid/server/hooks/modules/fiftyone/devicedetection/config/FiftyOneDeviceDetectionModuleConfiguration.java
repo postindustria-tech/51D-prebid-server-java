@@ -6,7 +6,7 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.D
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DeviceDetectorImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePatchPlannerImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DeviceInfoPatcherImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DeviceInfoPatcherImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PriorityEvidenceSelectorImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelineBuilderSpawnerImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelinePerformanceConfigurator;

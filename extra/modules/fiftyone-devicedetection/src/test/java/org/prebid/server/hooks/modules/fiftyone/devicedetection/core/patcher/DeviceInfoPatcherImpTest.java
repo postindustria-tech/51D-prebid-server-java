@@ -1,8 +1,7 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher;
 
 import com.iab.openrtb.request.Device;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DeviceInfoPatcherImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 

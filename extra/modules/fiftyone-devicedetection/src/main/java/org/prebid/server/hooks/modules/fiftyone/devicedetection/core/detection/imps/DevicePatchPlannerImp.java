@@ -1,8 +1,8 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatch;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatchPlan;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatch;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatchPlanner;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 

@@ -1,4 +1,4 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;

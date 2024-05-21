@@ -1,10 +1,7 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher;
 
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatch;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceInfoBuilderMethodSet;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceInfoPatcher;
 
 import java.util.Map;
 import java.util.function.Function;

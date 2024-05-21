@@ -1,6 +1,7 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatchPlan;
 
 import java.util.function.Function;
 

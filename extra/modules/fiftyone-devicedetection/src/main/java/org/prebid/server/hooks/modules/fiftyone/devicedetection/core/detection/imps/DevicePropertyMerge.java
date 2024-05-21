@@ -2,7 +2,7 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatch;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatch;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.PropertyMerge;
 
 import java.util.function.BiConsumer;
