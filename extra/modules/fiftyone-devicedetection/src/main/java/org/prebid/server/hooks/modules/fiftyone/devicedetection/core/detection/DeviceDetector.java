@@ -1,26 +1,15 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection;
 
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.EnrichmentResult;
 
-import java.util.function.BiFunction;
-
-/**
- * A transformer that given a set of evidence (e.g. HTTP headers)
- * and a set of expected properties
- * produces a new object with those properties estimated based on provided evidence.
- */
 @FunctionalInterface
-public interface DeviceDetector extends BiFunction<CollectedEvidence, DevicePatchPlan, DeviceInfo> {
-    /**
-     * Alias of {@link #apply}.
-     *
-     * @param collectedEvidence A set of available information on device (HTTP headers etc.)
-     * @param devicePatchPlan A set of property descriptors/transfer methods
-     * @return A representation of device populated with expected properties by estimation/inference
-     */
-    default DeviceInfo inferProperties(CollectedEvidence collectedEvidence, DevicePatchPlan devicePatchPlan) {
-        return apply(collectedEvidence, devicePatchPlan);
-    }
+public interface DeviceDetector {
+    boolean populateDeviceInfo(
+            WritableDeviceInfo writableDeviceInfo,
+            CollectedEvidence collectedEvidence,
+            DevicePatchPlan devicePatchPlan,
+            EnrichmentResult.EnrichmentResultBuilder<?> enrichmentResultBuilder);
 }

@@ -1,11 +1,11 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.config;
 
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceRefiner;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DeviceRefinerImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.pipeline.PipelineProvider;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.DeviceInfoClone;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.FiftyOneDeviceDetectionModule;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceDetector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DeviceDetectorImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePatchPlannerImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DeviceInfoPatcherImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PriorityEvidenceSelectorImp;
@@ -39,22 +39,24 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
     }
 
     @Bean
-    DeviceDetector fiftyOneDeviceDetectionDeviceDetector(ModuleConfig moduleConfig) throws Exception {
-        return new DeviceDetectorImp(
-                new PipelineProvider(moduleConfig.getDataFile(), moduleConfig.getPerformance()),
-                new PriorityEvidenceSelectorImp(),
-                new DeviceInfoPatcherImp<>(DeviceInfoClone.BUILDER_METHOD_SET::makeAdapter));
+    DeviceRefiner fiftyOneDeviceDetectionDeviceRefiner(ModuleConfig moduleConfig) throws Exception {
+        return new DeviceRefinerImp(
+                new DevicePatchPlannerImp(),
+                new DeviceDetectorImp(
+                        new PipelineProvider(
+                                moduleConfig.getDataFile(),
+                                moduleConfig.getPerformance()),
+                        new PriorityEvidenceSelectorImp(),
+                        new DeviceInfoPatcherImp()));
     }
 
     @Bean
-    Module fiftyOneDeviceDetectionModule(ModuleConfig moduleConfig, DeviceDetector deviceDetector) {
+    Module fiftyOneDeviceDetectionModule(ModuleConfig moduleConfig, DeviceRefiner deviceRefiner) {
         final Set<? extends Hook<?, ? extends InvocationContext>> hooks = Stream.of(
                 new FiftyOneDeviceDetectionEntrypointHook(),
                 new FiftyOneDeviceDetectionRawAuctionRequestHook(
                         moduleConfig.getAccountFilter(),
-                        new DevicePatchPlannerImp(),
-                        deviceDetector,
-                        new DeviceInfoPatcherImp<>(DeviceMirror.BUILDER_METHOD_SET::makeAdapter))
+                        deviceRefiner)
         ).collect(Collectors.toSet());
 
         return new FiftyOneDeviceDetectionModule(hooks);

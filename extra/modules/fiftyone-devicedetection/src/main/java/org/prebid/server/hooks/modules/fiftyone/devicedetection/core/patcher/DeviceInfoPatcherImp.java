@@ -1,33 +1,33 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher;
 
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceInfoBuilderMethodSet;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.EnrichmentResult;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
-public final class DeviceInfoPatcherImp<DeviceInfoBox, DeviceInfoBoxBuilder> implements DeviceInfoPatcher<DeviceInfoBox>
-{
-    private final Function<DeviceInfoBox, DeviceInfoBuilderMethodSet<DeviceInfoBox, DeviceInfoBoxBuilder>.Adapter> adapterFactory;
-
-    public DeviceInfoPatcherImp(Function<DeviceInfoBox,
-            DeviceInfoBuilderMethodSet<DeviceInfoBox, DeviceInfoBoxBuilder>.Adapter> adapterFactory) {
-        this.adapterFactory = adapterFactory;
-    }
-
-    public DeviceInfoBox patchDeviceInfo(
-            DeviceInfoBox rawDevice,
+public final class DeviceInfoPatcherImp implements DeviceInfoPatcher {
+    @Override
+    public boolean patchDeviceInfo(
+            WritableDeviceInfo writableDeviceInfo,
             DevicePatchPlan patchPlan,
-            DeviceInfo newData)
+            DeviceInfo newData,
+            EnrichmentResult.EnrichmentResultBuilder<?> enrichmentResultBuilder)
     {
-        DeviceInfoBuilderMethodSet<DeviceInfoBox, DeviceInfoBoxBuilder>.Adapter writableDevice = adapterFactory.apply(rawDevice);
-        boolean didChange = false;
+        final List<String> patchedFields = new ArrayList<>();
         for (Map.Entry<String, DevicePatch> namedPatch : patchPlan.patches()) {
-            final boolean propChanged = namedPatch.getValue().patch(writableDevice, newData);
+            final boolean propChanged = namedPatch.getValue().patch(writableDeviceInfo, newData);
             if (propChanged) {
-                didChange = true;
+                patchedFields.add(namedPatch.getKey());
             }
         }
-        return didChange ? writableDevice.rebuildBox() : rawDevice;
+        if (patchedFields.isEmpty()) {
+            return false;
+        }
+
+        enrichmentResultBuilder.enrichedFields(patchedFields);
+        return true;
     }
 }

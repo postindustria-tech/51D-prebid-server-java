@@ -6,15 +6,12 @@ import com.iab.openrtb.request.Device;
 import com.iab.openrtb.request.UserAgent;
 import org.prebid.server.auction.model.AuctionContext;
 import org.prebid.server.hooks.execution.v1.auction.AuctionRequestPayloadImpl;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceDetector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DeviceInfoPatcher;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher.DevicePatchPlan;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatchPlanner;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceRefiner;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.MergingConfigurator;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.PropertyMerge;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence.CollectedEvidenceBuilder;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.EnrichmentResult;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.AccountFilter;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.ModuleContext;
@@ -39,20 +36,14 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     private static final String CODE = "fiftyone-devicedetection-raw-auction-request-hook";
 
     private final AccountFilter accountFilter;
-    private final DevicePatchPlanner devicePatchPlanner;
-    private final DeviceDetector deviceDetector;
-    private final DeviceInfoPatcher<Device> deviceInfoPatcher;
+    private final DeviceRefiner deviceRefiner;
 
     public FiftyOneDeviceDetectionRawAuctionRequestHook(
             AccountFilter accountFilter,
-            DevicePatchPlanner devicePatchPlanner,
-            DeviceDetector deviceDetector,
-            DeviceInfoPatcher<Device> deviceInfoPatcher)
+            DeviceRefiner deviceRefiner)
     {
         this.accountFilter = accountFilter;
-        this.devicePatchPlanner = devicePatchPlanner;
-        this.deviceDetector = deviceDetector;
-        this.deviceInfoPatcher = deviceInfoPatcher;
+        this.deviceRefiner = deviceRefiner;
     }
 
     @Override
@@ -135,26 +126,25 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
             return null;
         }
         final Device existingDevice = ObjectUtil.firstNonNull(bidRequest::getDevice, () -> Device.builder().build());
-        final DevicePatchPlan patchPlan = devicePatchPlanner.buildPatchPlanFor(new DeviceMirror(existingDevice));
-
-        if (patchPlan == null || patchPlan.isEmpty()) {
-            return null;
-        }
 
         final CollectedEvidenceBuilder evidenceBuilder = collectedEvidence.toBuilder();
         collectEvidence(evidenceBuilder, bidRequest);
-        final DeviceInfo detectedDevice = deviceDetector.inferProperties(evidenceBuilder.build(), patchPlan);
-        if (detectedDevice == null) {
+
+        EnrichmentResult<Device> mergeResult = deviceRefiner.enrichDeviceInfo(
+                new DeviceMirror(existingDevice),
+                evidenceBuilder.build(),
+                DeviceMirror.BUILDER_METHOD_SET.makeAdapter(existingDevice));
+        if (mergeResult == null) {
             return null;
         }
 
-        Device mergedDevice = deviceInfoPatcher.patchDeviceInfo(existingDevice, patchPlan, detectedDevice);
-        if (mergedDevice == null || mergedDevice == existingDevice) {
+        final Device mergedDevice = mergeResult.enrichedDevice();
+        if (mergedDevice == null) {
             return null;
         }
 
         return bidRequest.toBuilder()
-                .device(mergedDevice)
+                .device(mergeResult.enrichedDevice())
                 .build();
     }
 

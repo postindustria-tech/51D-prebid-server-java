@@ -1,14 +1,16 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.patcher;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.EnrichmentResult;
 
-/**
- * A function that applies a set of property overrides to
- * an instance of {@link DeviceInfoBox}
- *
- * @param <DeviceInfoBox> Type of writable object to accept overrides.
- */
+import java.util.Collection;
+
 @FunctionalInterface
-public interface DeviceInfoPatcher<DeviceInfoBox> {
-    DeviceInfoBox patchDeviceInfo(DeviceInfoBox rawDevice, DevicePatchPlan patchPlan, DeviceInfo newData);
+public interface DeviceInfoPatcher {
+    boolean patchDeviceInfo(
+            WritableDeviceInfo writableDeviceInfo,
+            DevicePatchPlan patchPlan,
+            DeviceInfo newData,
+            EnrichmentResult.EnrichmentResultBuilder<?> enrichmentResultBuilder);
 }
