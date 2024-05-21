@@ -3,7 +3,7 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary;
 import lombok.Builder;
 import lombok.Value;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceInfoBuilderMethodSet;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceInfoBuilderMethodSet;
 
 import java.math.BigDecimal;
 

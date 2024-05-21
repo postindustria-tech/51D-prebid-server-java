@@ -2,6 +2,7 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatch;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceInfoBuilderMethodSet;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfoPatcher;
 
@@ -10,10 +11,10 @@ import java.util.function.Function;
 
 public final class DeviceInfoPatcherImp<DeviceInfoBox, DeviceInfoBoxBuilder> implements DeviceInfoPatcher<DeviceInfoBox>
 {
-    private final Function<DeviceInfoBox, DeviceInfoBuilderAdapter<DeviceInfoBox, DeviceInfoBoxBuilder>> adapterFactory;
+    private final Function<DeviceInfoBox, DeviceInfoBuilderMethodSet<DeviceInfoBox, DeviceInfoBoxBuilder>.Adapter> adapterFactory;
 
     public DeviceInfoPatcherImp(Function<DeviceInfoBox,
-            DeviceInfoBuilderAdapter<DeviceInfoBox, DeviceInfoBoxBuilder>> adapterFactory) {
+            DeviceInfoBuilderMethodSet<DeviceInfoBox, DeviceInfoBoxBuilder>.Adapter> adapterFactory) {
         this.adapterFactory = adapterFactory;
     }
 
@@ -22,7 +23,7 @@ public final class DeviceInfoPatcherImp<DeviceInfoBox, DeviceInfoBoxBuilder> imp
             DevicePatchPlan patchPlan,
             DeviceInfo newData)
     {
-        DeviceInfoBuilderAdapter<DeviceInfoBox, DeviceInfoBoxBuilder> writableDevice = adapterFactory.apply(rawDevice);
+        DeviceInfoBuilderMethodSet<DeviceInfoBox, DeviceInfoBoxBuilder>.Adapter writableDevice = adapterFactory.apply(rawDevice);
         boolean didChange = false;
         for (Map.Entry<String, DevicePatch> namedPatch : patchPlan.patches()) {
             final boolean propChanged = namedPatch.getValue().patch(writableDevice, newData);
