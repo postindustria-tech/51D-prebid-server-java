@@ -2,9 +2,9 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary;
 
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceInfoPatcherImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DevicePatchPlannerImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatchPlan;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DeviceInfoPatcherImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.DevicePatchPlannerImp;
 
 import java.math.BigDecimal;
 

@@ -1,9 +1,9 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.pipelinebuilders;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders;
 
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import fiftyone.pipeline.engines.Constants;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.MergingConfiguratorImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.PropertyMergeImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.MergingConfiguratorImp;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.PropertyMergeImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 
 import java.util.List;

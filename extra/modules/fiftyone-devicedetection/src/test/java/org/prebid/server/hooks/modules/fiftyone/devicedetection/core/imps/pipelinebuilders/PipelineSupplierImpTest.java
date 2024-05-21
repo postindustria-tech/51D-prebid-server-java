@@ -3,7 +3,8 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.pipel
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import fiftyone.pipeline.core.flowelements.Pipeline;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PipelineSupplier;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PipelineSupplier;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelineSupplierImp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

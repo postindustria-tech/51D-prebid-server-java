@@ -1,4 +1,4 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 

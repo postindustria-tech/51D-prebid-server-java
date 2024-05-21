@@ -3,7 +3,8 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.pipel
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.MergingConfigurator;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelineUpdateConfigurator;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.MergingConfigurator;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFileUpdate;
 
 import static org.assertj.core.api.Assertions.assertThat;

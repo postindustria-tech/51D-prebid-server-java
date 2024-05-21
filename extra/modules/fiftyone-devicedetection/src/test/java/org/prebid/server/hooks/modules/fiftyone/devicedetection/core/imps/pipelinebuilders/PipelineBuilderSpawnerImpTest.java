@@ -2,7 +2,8 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.pipel
 
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PipelineBuilderSpawner;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PipelineBuilderSpawner;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelineBuilderSpawnerImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
 
 import static org.assertj.core.api.Assertions.assertThat;

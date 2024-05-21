@@ -1,8 +1,8 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.pipelinebuilders;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders;
 
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import fiftyone.pipeline.core.flowelements.Pipeline;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PipelineSupplier;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PipelineSupplier;
 
 public final class PipelineSupplierImp implements PipelineSupplier {
     private final Pipeline pipeline;

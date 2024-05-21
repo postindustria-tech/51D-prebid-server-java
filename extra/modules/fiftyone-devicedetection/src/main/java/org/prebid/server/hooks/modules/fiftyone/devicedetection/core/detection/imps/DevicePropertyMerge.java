@@ -1,10 +1,10 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.WritableDeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers.ValueSetter;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatch;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.SimplePropertyMerge;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.ValueSetter;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatch;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.SimplePropertyMerge;
 
 import java.util.function.Function;
 import java.util.function.Predicate;

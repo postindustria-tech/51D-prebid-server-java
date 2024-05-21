@@ -1,6 +1,4 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers;
-
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.MergingConfigurator;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers;
 
 import java.util.List;
 

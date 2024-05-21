@@ -3,12 +3,12 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcu
 import com.iab.openrtb.request.BidRequest;
 import com.iab.openrtb.request.Device;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceDetector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfoPatcher;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlanner;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceDetector;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceInfoPatcher;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatchPlanner;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatchPlan;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 
 import java.util.AbstractMap;

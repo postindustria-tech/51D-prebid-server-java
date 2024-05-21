@@ -1,6 +1,4 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers;
-
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.SimplePropertyMerge;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers;
 
 import java.util.function.Function;
 import java.util.function.Predicate;

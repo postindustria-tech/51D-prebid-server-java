@@ -1,13 +1,12 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 
-import com.iab.openrtb.request.UserAgent;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PriorityEvidenceSelector;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PriorityEvidenceSelector;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PriorityEvidenceSelectorImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 
 import java.util.AbstractMap;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

@@ -1,6 +1,5 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection;
 
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PriorityEvidenceSelector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 
 import java.util.Collection;

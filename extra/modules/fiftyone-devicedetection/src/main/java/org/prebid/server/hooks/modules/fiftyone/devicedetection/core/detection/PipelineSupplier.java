@@ -1,4 +1,4 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection;
 
 import fiftyone.pipeline.core.flowelements.Pipeline;
 

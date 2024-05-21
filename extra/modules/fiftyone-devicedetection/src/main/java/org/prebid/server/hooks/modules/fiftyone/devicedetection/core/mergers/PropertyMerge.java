@@ -1,4 +1,4 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.mergers;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers;
 
 import java.util.function.BiConsumer;
 

@@ -4,7 +4,8 @@ import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import fiftyone.pipeline.engines.Constants;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.MergingConfigurator;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps.pipelinebuilders.PipelinePerformanceConfigurator;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.mergers.MergingConfigurator;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;

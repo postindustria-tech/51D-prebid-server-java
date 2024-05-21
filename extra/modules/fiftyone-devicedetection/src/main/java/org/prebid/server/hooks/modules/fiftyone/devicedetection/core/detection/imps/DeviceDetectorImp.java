@@ -1,14 +1,14 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.imps;
 
 import fiftyone.devicedetection.shared.DeviceData;
 import fiftyone.pipeline.core.data.FlowData;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceDataWrapper;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.DeviceInfoClone;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceDetector;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DevicePatchPlan;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.DeviceInfoPatcher;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PipelineSupplier;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.PriorityEvidenceSelector;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceDetector;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DevicePatchPlan;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceInfoPatcher;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PipelineSupplier;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.PriorityEvidenceSelector;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 
