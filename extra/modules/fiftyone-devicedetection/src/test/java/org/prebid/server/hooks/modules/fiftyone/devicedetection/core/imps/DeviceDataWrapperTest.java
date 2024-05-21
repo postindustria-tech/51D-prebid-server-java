@@ -3,11 +3,13 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps;
 import fiftyone.devicedetection.shared.DeviceData;
 import fiftyone.pipeline.engines.data.AspectPropertyValueDefault;
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceDataWrapper;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -17,10 +19,19 @@ public class DeviceDataWrapperTest {
     private static final Integer TEST_VALUE_INT = 29;
     private static final String TEST_VALUE_STRING = "dummy";
 
+    private static DeviceDataWrapper buildWrapper(DeviceData deviceData, Function<String, Integer> deviceTypeConverter){
+        return new DeviceDataWrapper(deviceData) {
+            @Override
+            protected Integer convertDeviceType(String deviceType) {
+                return deviceTypeConverter.apply(deviceType);
+            }
+        };
+    }
+
     @Test
     public void shouldReturnAllNullWhenDataIsNull() {
         // given
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(null, null);
+        final DeviceInfo dataWrapper = buildWrapper(null, null);
 
         // when and then
         assertThat(dataWrapper.getDeviceType()).isNull();
@@ -38,7 +49,7 @@ public class DeviceDataWrapperTest {
     @Test
     public void shouldReturnAllNullWhenDataReturnsNoProperty() {
         // given
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(mock(DeviceData.class), null);
+        final DeviceInfo dataWrapper = buildWrapper(mock(DeviceData.class), null);
 
         // when and then
         assertThat(dataWrapper.getDeviceType()).isNull();
@@ -58,7 +69,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getDeviceType()).thenThrow(new RuntimeException());
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getDeviceType()).isNull();
@@ -69,7 +80,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getDeviceType()).thenReturn(new AspectPropertyValueDefault<>(null));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getDeviceType()).isNull();
@@ -83,7 +94,7 @@ public class DeviceDataWrapperTest {
 
         // when
         final boolean[] converterCalled = { false };
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, s -> {
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, s -> {
             assertThat(s).isEqualTo(TEST_VALUE_STRING);
             converterCalled[0] = true;
             return TEST_VALUE_INT;
@@ -100,7 +111,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getHardwareVendor()).thenThrow(new RuntimeException());
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getMake()).isNull();
@@ -111,7 +122,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getHardwareVendor()).thenReturn(new AspectPropertyValueDefault<>(null));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getMake()).isNull();
@@ -122,7 +133,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getHardwareVendor()).thenReturn(new AspectPropertyValueDefault<>(TEST_VALUE_STRING));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getMake()).isEqualTo(TEST_VALUE_STRING);
@@ -135,7 +146,7 @@ public class DeviceDataWrapperTest {
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getHardwareModel()).thenThrow(new RuntimeException());
         when(deviceData.getHardwareName()).thenThrow(new RuntimeException());
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getModel()).isNull();
@@ -146,7 +157,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getHardwareModel()).thenReturn(new AspectPropertyValueDefault<>(TEST_VALUE_STRING));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getModel()).isEqualTo(TEST_VALUE_STRING);
@@ -158,7 +169,7 @@ public class DeviceDataWrapperTest {
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getHardwareModel()).thenReturn(new AspectPropertyValueDefault<>(null));
         when(deviceData.getHardwareName()).thenReturn(new AspectPropertyValueDefault<>(null));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getModel()).isNull();
@@ -170,7 +181,7 @@ public class DeviceDataWrapperTest {
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getHardwareModel()).thenReturn(new AspectPropertyValueDefault<>(""));
         when(deviceData.getHardwareName()).thenReturn(new AspectPropertyValueDefault<>(Collections.emptyList()));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getModel()).isNull();
@@ -182,7 +193,7 @@ public class DeviceDataWrapperTest {
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getHardwareModel()).thenReturn(new AspectPropertyValueDefault<>("Unknown"));
         when(deviceData.getHardwareName()).thenReturn(new AspectPropertyValueDefault<>(List.of("zoom", "broom")));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getModel()).isEqualTo("zoom,broom");
@@ -194,7 +205,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getPlatformName()).thenThrow(new RuntimeException());
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getOs()).isNull();
@@ -205,7 +216,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getPlatformName()).thenReturn(new AspectPropertyValueDefault<>(null));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getOs()).isNull();
@@ -216,7 +227,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getPlatformName()).thenReturn(new AspectPropertyValueDefault<>(TEST_VALUE_STRING));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getOs()).isEqualTo(TEST_VALUE_STRING);
@@ -228,7 +239,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getPlatformVersion()).thenThrow(new RuntimeException());
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getOsv()).isNull();
@@ -239,7 +250,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getPlatformVersion()).thenReturn(new AspectPropertyValueDefault<>(null));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getOsv()).isNull();
@@ -250,7 +261,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getPlatformVersion()).thenReturn(new AspectPropertyValueDefault<>(TEST_VALUE_STRING));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getOsv()).isEqualTo(TEST_VALUE_STRING);
@@ -262,7 +273,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getScreenPixelsHeight()).thenThrow(new RuntimeException());
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getH()).isNull();
@@ -273,7 +284,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getScreenPixelsHeight()).thenReturn(new AspectPropertyValueDefault<>(null));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getH()).isNull();
@@ -284,7 +295,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getScreenPixelsHeight()).thenReturn(new AspectPropertyValueDefault<>(TEST_VALUE_INT));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getH()).isEqualTo(TEST_VALUE_INT);
@@ -296,7 +307,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getScreenPixelsWidth()).thenThrow(new RuntimeException());
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getW()).isNull();
@@ -307,7 +318,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getScreenPixelsWidth()).thenReturn(new AspectPropertyValueDefault<>(null));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getW()).isNull();
@@ -318,7 +329,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getScreenPixelsWidth()).thenReturn(new AspectPropertyValueDefault<>(TEST_VALUE_INT));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getW()).isEqualTo(TEST_VALUE_INT);
@@ -330,7 +341,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getScreenPixelsHeight()).thenThrow(new RuntimeException());
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getPpi()).isNull();
@@ -341,7 +352,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getScreenPixelsHeight()).thenReturn(new AspectPropertyValueDefault<>(null));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getPpi()).isNull();
@@ -354,7 +365,7 @@ public class DeviceDataWrapperTest {
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getScreenPixelsHeight()).thenReturn(new AspectPropertyValueDefault<>(TEST_VALUE_INT));
         when(deviceData.getScreenInchesHeight()).thenThrow(new RuntimeException());
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getPpi()).isNull();
@@ -366,7 +377,7 @@ public class DeviceDataWrapperTest {
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getScreenPixelsHeight()).thenReturn(new AspectPropertyValueDefault<>(TEST_VALUE_INT));
         when(deviceData.getScreenInchesHeight()).thenReturn(new AspectPropertyValueDefault<>(null));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getPpi()).isNull();
@@ -378,7 +389,7 @@ public class DeviceDataWrapperTest {
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getScreenPixelsHeight()).thenReturn(new AspectPropertyValueDefault<>(TEST_VALUE_INT));
         when(deviceData.getScreenInchesHeight()).thenReturn(new AspectPropertyValueDefault<>(0.0));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getPpi()).isNull();
@@ -393,7 +404,7 @@ public class DeviceDataWrapperTest {
                 .thenReturn(new AspectPropertyValueDefault<>(TEST_VALUE_INT * testFactor));
         when(deviceData.getScreenInchesHeight())
                 .thenReturn(new AspectPropertyValueDefault<>((double)TEST_VALUE_INT));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getPpi()).isEqualTo(testFactor);
@@ -405,7 +416,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getPixelRatio()).thenThrow(new RuntimeException());
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getPixelRatio()).isNull();
@@ -416,7 +427,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getPixelRatio()).thenReturn(new AspectPropertyValueDefault<>(null));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getPixelRatio()).isNull();
@@ -428,7 +439,7 @@ public class DeviceDataWrapperTest {
         final double testValue = 4.2;
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getPixelRatio()).thenReturn(new AspectPropertyValueDefault<>(testValue));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getPixelRatio()).isEqualTo(BigDecimal.valueOf(testValue));
@@ -440,7 +451,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getDeviceId()).thenThrow(new RuntimeException());
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getDeviceId()).isNull();
@@ -451,7 +462,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getDeviceId()).thenReturn(new AspectPropertyValueDefault<>(null));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getDeviceId()).isNull();
@@ -462,7 +473,7 @@ public class DeviceDataWrapperTest {
         // given
         final DeviceData deviceData = mock(DeviceData.class);
         when(deviceData.getDeviceId()).thenReturn(new AspectPropertyValueDefault<>(TEST_VALUE_STRING));
-        final DeviceInfo dataWrapper = new DeviceDataWrapper(deviceData, null);
+        final DeviceInfo dataWrapper = buildWrapper(deviceData, null);
 
         // when and then
         assertThat(dataWrapper.getDeviceId()).isEqualTo(TEST_VALUE_STRING);

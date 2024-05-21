@@ -7,7 +7,6 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.Device
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.adapters.DeviceMirror;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DevicePatchPlannerImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceInfoPatcherImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.DeviceTypeConverterImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.PriorityEvidenceSelectorImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.pipelinebuilders.PipelineBuilderSpawnerImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.imps.pipelinebuilders.PipelinePerformanceConfigurator;
@@ -50,7 +49,6 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
         return new DeviceDetectorImp(
                 new PipelineSupplierImp(pipelineBuilder),
                 new PriorityEvidenceSelectorImp(),
-                new DeviceTypeConverterImp(),
                 new DeviceInfoPatcherImp<>(DeviceInfoClone.BUILDER_METHOD_SET::makeAdapter));
     }
 
