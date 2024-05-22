@@ -1,9 +1,5 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.config;
 
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceDataWrapper;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceRefiner;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceRefinerImp;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.pipeline.PipelineProvider;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.FiftyOneDeviceDetectionModule;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionEntrypointHook;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
@@ -35,21 +31,10 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
     }
 
     @Bean
-    DeviceRefiner fiftyOneDeviceDetectionDeviceRefiner(ModuleConfig moduleConfig) throws Exception {
-        return new DeviceRefinerImp(
-                new PipelineProvider(
-                        moduleConfig.getDataFile(),
-                        moduleConfig.getPerformance(),
-                        DeviceDataWrapper.PROPERTIES_USED));
-    }
-
-    @Bean
-    Module fiftyOneDeviceDetectionModule(ModuleConfig moduleConfig, DeviceRefiner deviceRefiner) {
+    Module fiftyOneDeviceDetectionModule(ModuleConfig moduleConfig) throws Exception {
         final Set<? extends Hook<?, ? extends InvocationContext>> hooks = Stream.of(
                 new FiftyOneDeviceDetectionEntrypointHook(),
-                new FiftyOneDeviceDetectionRawAuctionRequestHook(
-                        moduleConfig.getAccountFilter(),
-                        deviceRefiner)
+                new FiftyOneDeviceDetectionRawAuctionRequestHook(moduleConfig)
         ).collect(Collectors.toSet());
 
         return new FiftyOneDeviceDetectionModule(hooks);

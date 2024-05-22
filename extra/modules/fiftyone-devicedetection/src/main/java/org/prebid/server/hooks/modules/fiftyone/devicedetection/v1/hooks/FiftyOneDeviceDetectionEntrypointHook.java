@@ -1,7 +1,6 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks;
 
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence.CollectedEvidenceBuilder;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.ModuleContext;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.model.InvocationResultImpl;
 import org.prebid.server.hooks.v1.InvocationAction;
@@ -26,9 +25,6 @@ public class FiftyOneDeviceDetectionEntrypointHook implements EntrypointHook {
             EntrypointPayload payload,
             InvocationContext invocationContext)
     {
-        final CollectedEvidenceBuilder evidenceBuilder = CollectedEvidence.builder();
-        collectEvidence(evidenceBuilder, payload);
-
         return Future.succeededFuture(
                 InvocationResultImpl.<EntrypointPayload>builder()
                         .status(InvocationStatus.success)
@@ -36,12 +32,13 @@ public class FiftyOneDeviceDetectionEntrypointHook implements EntrypointHook {
                         .moduleContext(
                                 ModuleContext
                                         .builder()
-                                        .collectedEvidence(evidenceBuilder.build())
+                                        .collectedEvidence(
+                                                CollectedEvidence
+                                                        .builder()
+                                                        .rawHeaders(payload.headers().entries())
+                                                        .build()
+                                        )
                                         .build())
                         .build());
-    }
-
-    protected void collectEvidence(CollectedEvidenceBuilder evidenceBuilder, EntrypointPayload entrypointPayload) {
-        evidenceBuilder.rawHeaders(entrypointPayload.headers().entries());
     }
 }
