@@ -5,6 +5,7 @@ import fiftyone.pipeline.engines.data.AspectPropertyValue;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.device.DeviceInfo;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -12,6 +13,20 @@ import java.util.function.Function;
 import static java.util.Map.entry;
 
 public class DeviceDataWrapper implements DeviceInfo {
+    public static final Collection<String> PROPERTIES_USED = List.of(
+            "devicetype",
+            "hardwarevendor",
+            "hardwaremodel",
+            "hardwarename",
+            "platformname",
+            "platformversion",
+            "screenpixelsheight",
+            "screenpixelswidth",
+            "screeninchesheight",
+            "pixelratio",
+            "deviceid"
+    );
+
     private final DeviceData deviceData;
 
     public DeviceDataWrapper(DeviceData deviceData) {

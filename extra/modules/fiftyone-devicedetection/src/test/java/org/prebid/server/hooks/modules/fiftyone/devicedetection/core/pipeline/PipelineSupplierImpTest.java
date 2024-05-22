@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,11 +16,12 @@ import static org.mockito.Mockito.when;
 
 public class PipelineSupplierImpTest {
     private static Supplier<Pipeline> makeSupplier(DeviceDetectionOnPremisePipelineBuilder builder)  throws Exception {
-        return new PipelineProvider(null, null) {
+        return new PipelineProvider(null, null, Collections.emptySet()) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(
                     DataFile dataFile,
-                    PerformanceConfig performanceConfig
+                    PerformanceConfig performanceConfig,
+                    Collection<String> properties
             ) {
                 return builder;
             }

@@ -1,5 +1,6 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.config;
 
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters.DeviceDataWrapper;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceRefiner;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.detection.DeviceRefinerImp;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.core.pipeline.PipelineProvider;
@@ -38,7 +39,8 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
         return new DeviceRefinerImp(
                 new PipelineProvider(
                         moduleConfig.getDataFile(),
-                        moduleConfig.getPerformance()));
+                        moduleConfig.getPerformance(),
+                        DeviceDataWrapper.PROPERTIES_USED));
     }
 
     @Bean

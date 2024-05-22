@@ -9,6 +9,8 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.Dat
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFileUpdate;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -24,7 +26,7 @@ public class PipelineProviderTest {
             BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> updateOptionsMerger,
             BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> performanceOptionsMerger
     )  throws Exception {
-        return new PipelineProvider(dataFile, performanceConfig) {
+        return new PipelineProvider(dataFile, performanceConfig, Collections.emptySet()) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
                 return builderSpawner.makeBuilder(dataFile);
@@ -46,9 +48,10 @@ public class PipelineProviderTest {
             @Override
             public DeviceDetectionOnPremisePipelineBuilder makeBuilder(
                     DataFile dataFile,
-                    PerformanceConfig performanceConfig
+                    PerformanceConfig performanceConfig,
+                    Collection<String> properties
             ) throws Exception {
-                return super.makeBuilder(dataFile, performanceConfig);
+                return super.makeBuilder(dataFile, performanceConfig, properties);
             }
         };
     }

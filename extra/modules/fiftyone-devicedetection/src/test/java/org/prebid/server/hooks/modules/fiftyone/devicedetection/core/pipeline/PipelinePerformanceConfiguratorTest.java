@@ -7,6 +7,8 @@ import org.mockito.ArgumentCaptor;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,11 +20,12 @@ import static org.mockito.Mockito.when;
 
 public class PipelinePerformanceConfiguratorTest {
     private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> makeConfigurator() throws Exception {
-        return new PipelineProvider(null, null) {
+        return new PipelineProvider(null, null, Collections.emptySet()) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(
                     DataFile dataFile,
-                    PerformanceConfig performanceConfig
+                    PerformanceConfig performanceConfig,
+                    Collection<String> properties
             ) throws Exception {
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);

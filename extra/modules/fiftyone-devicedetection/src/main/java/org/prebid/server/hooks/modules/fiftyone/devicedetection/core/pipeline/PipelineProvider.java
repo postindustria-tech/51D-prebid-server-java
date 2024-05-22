@@ -11,24 +11,32 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.Dat
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFileUpdate;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class PipelineProvider implements Supplier<Pipeline> {
+
     private final Pipeline pipeline;
 
-    public PipelineProvider(DataFile dataFile, PerformanceConfig performanceConfig) throws Exception {
-        final DeviceDetectionOnPremisePipelineBuilder builder = makeBuilder(dataFile, performanceConfig);
+    public PipelineProvider(
+            DataFile dataFile,
+            PerformanceConfig performanceConfig,
+            Collection<String> properties) throws Exception {
+
+        final DeviceDetectionOnPremisePipelineBuilder builder = makeBuilder(dataFile, performanceConfig, properties);
         pipeline = builder.build();
     }
 
     protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(
             DataFile dataFile,
-            PerformanceConfig performanceConfig
-    ) throws Exception {
+            PerformanceConfig performanceConfig,
+            Collection<String> properties) throws Exception {
+
         final DeviceDetectionOnPremisePipelineBuilder builder = makeRawBuilder(dataFile);
         applyUpdateOptions(builder, dataFile.getUpdate());
         applyPerformanceOptions(builder, performanceConfig);
+        properties.forEach(builder::setProperty);
         return builder;
     }
 
