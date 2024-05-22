@@ -15,7 +15,6 @@ import fiftyone.pipeline.engines.Constants;
 import fiftyone.pipeline.engines.data.AspectPropertyValue;
 import fiftyone.pipeline.engines.services.DataUpdateServiceDefault;
 import lombok.Builder;
-import lombok.Getter;
 import org.prebid.server.auction.model.AuctionContext;
 import org.prebid.server.hooks.execution.v1.auction.AuctionRequestPayloadImpl;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
@@ -49,7 +48,6 @@ import java.util.function.Function;
 
 import static java.util.Map.entry;
 
-@Getter
 public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionRequestHook {
 
     private static final String CODE = "fiftyone-devicedetection-raw-auction-request-hook";
@@ -288,7 +286,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
     }
 
-    private EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
+    protected EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
         final List<String> updatedFields = new ArrayList<>();
         final Device.DeviceBuilder deviceBuilder = device.toBuilder();
 
@@ -654,4 +652,12 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         Collection<String> enrichedFields,
         Exception processingException
     ) {}
+
+    protected ModuleConfig getModuleConfig() {
+        return moduleConfig;
+    }
+
+    protected Pipeline getPipeline() {
+        return pipeline;
+    }
 }

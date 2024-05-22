@@ -49,6 +49,11 @@ public class PipelineProviderTest {
             {
                 performanceOptionsMerger.accept(pipelineBuilder, performanceConfig);
             }
+
+            @Override
+            public Pipeline getPipeline() {
+                return super.getPipeline();
+            }
         }::getPipeline;
     }
     @Test
