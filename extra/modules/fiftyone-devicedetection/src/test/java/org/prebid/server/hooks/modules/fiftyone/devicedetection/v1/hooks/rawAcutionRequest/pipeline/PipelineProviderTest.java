@@ -1,9 +1,7 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.pipeline;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcutionRequest.pipeline;
 
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
-import fiftyone.devicedetection.DeviceDetectionPipelineBuilder;
 import fiftyone.pipeline.core.flowelements.Pipeline;
-import fiftyone.pipeline.engines.services.DataUpdateServiceDefault;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFileUpdate;
@@ -11,8 +9,6 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.Mod
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 

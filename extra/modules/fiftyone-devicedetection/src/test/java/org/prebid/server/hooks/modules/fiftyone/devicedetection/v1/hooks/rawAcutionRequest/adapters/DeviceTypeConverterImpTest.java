@@ -1,4 +1,4 @@
-package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters;
+package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcutionRequest.adapters;
 
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
