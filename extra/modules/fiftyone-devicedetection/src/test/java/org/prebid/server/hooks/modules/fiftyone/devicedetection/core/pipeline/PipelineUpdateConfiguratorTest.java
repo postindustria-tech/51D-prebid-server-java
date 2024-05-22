@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFileUpdate;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -21,13 +22,9 @@ import static org.mockito.Mockito.when;
 
 public class PipelineUpdateConfiguratorTest {
     private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> makeConfigurator() throws Exception {
-        return new PipelineProvider(null, null, Collections.emptySet()) {
+        return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
-            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(
-                    DataFile dataFile,
-                    PerformanceConfig performanceConfig,
-                    Collection<String> properties
-            ) throws Exception {
+            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -42,20 +39,6 @@ public class PipelineUpdateConfiguratorTest {
                 super.applyUpdateOptions(pipelineBuilder, updateConfig);
             }
         }::applyUpdateOptions;
-    }
-
-    @Test
-    public void shouldNotCrashWithNoConfig() throws Exception {
-        // given
-        final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = makeConfigurator();
-
-        // when
-        configurator.accept(builder, null);
-
-        // then
-        verify(builder, times(1)).setDataUpdateService(any());
     }
 
     @Test

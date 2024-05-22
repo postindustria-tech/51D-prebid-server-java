@@ -2,6 +2,7 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcu
 
 import com.iab.openrtb.request.BrandVersion;
 import com.iab.openrtb.request.UserAgent;
+import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 
@@ -11,15 +12,21 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class UserAgentEvidenceConverterImpTest {
 
-    private static BiConsumer<UserAgent, Map<String, String>> buildConverter()
+    private static BiConsumer<UserAgent, Map<String, String>> buildConverter() throws Exception
     {
-        return new FiftyOneDeviceDetectionRawAuctionRequestHook(
-                null,
-                null
-        ) {
+        return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
+            @Override
+            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+                final DeviceDetectionOnPremisePipelineBuilder builder
+                        = mock(DeviceDetectionOnPremisePipelineBuilder.class);
+                when(builder.build()).thenReturn(null);
+                return builder;
+            }
             @Override
             public void appendSecureHeaders(UserAgent userAgent, Map<String, String> evidence) {
                 super.appendSecureHeaders(userAgent, evidence);
@@ -28,7 +35,7 @@ public class UserAgentEvidenceConverterImpTest {
     }
 
     @Test
-    public void shouldReturnEmptyMapOnEmptyUserAgent() {
+    public void shouldReturnEmptyMapOnEmptyUserAgent() throws Exception {
         // given
         final UserAgent userAgent = UserAgent.builder().build();
 
@@ -42,7 +49,7 @@ public class UserAgentEvidenceConverterImpTest {
     }
 
     @Test
-    public void shouldAddBrowsers() {
+    public void shouldAddBrowsers() throws Exception {
         // given
         final UserAgent userAgent = UserAgent.builder()
                 .browsers(List.of(
@@ -65,7 +72,7 @@ public class UserAgentEvidenceConverterImpTest {
     }
 
     @Test
-    public void shouldAddPlatform() {
+    public void shouldAddPlatform() throws Exception {
         final UserAgent userAgent = UserAgent.builder()
                 .platform(new BrandVersion("Cyborg", List.of("19", "5"), null))
                 .build();
@@ -84,7 +91,7 @@ public class UserAgentEvidenceConverterImpTest {
     }
 
     @Test
-    public void shouldAddIsMobile() {
+    public void shouldAddIsMobile() throws Exception {
         final UserAgent userAgent = UserAgent.builder()
                 .mobile(5)
                 .build();
@@ -101,7 +108,7 @@ public class UserAgentEvidenceConverterImpTest {
     }
 
     @Test
-    public void shouldAddArchitecture() {
+    public void shouldAddArchitecture() throws Exception {
         final UserAgent userAgent = UserAgent.builder()
                 .architecture("LEG")
                 .build();
@@ -118,7 +125,7 @@ public class UserAgentEvidenceConverterImpTest {
     }
 
     @Test
-    public void shouldAddtBitness() {
+    public void shouldAddtBitness() throws Exception {
         final UserAgent userAgent = UserAgent.builder()
                 .bitness("doubtful")
                 .build();
@@ -135,7 +142,7 @@ public class UserAgentEvidenceConverterImpTest {
     }
 
     @Test
-    public void shouldAddModel() {
+    public void shouldAddModel() throws Exception {
         final UserAgent userAgent = UserAgent.builder()
                 .model("reflectivity")
                 .build();

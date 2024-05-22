@@ -7,7 +7,9 @@ import fiftyone.pipeline.engines.services.DataUpdateServiceDefault;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFileUpdate;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.ModuleConfig;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,7 +28,14 @@ public class PipelineProviderTest {
             BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> updateOptionsMerger,
             BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> performanceOptionsMerger
     )  throws Exception {
-        return new PipelineProvider(dataFile, performanceConfig, Collections.emptySet()) {
+        final ModuleConfig moduleConfig = new ModuleConfig();
+        moduleConfig.setDataFile(dataFile);
+        moduleConfig.setPerformance(performanceConfig);
+        return new FiftyOneDeviceDetectionRawAuctionRequestHook(moduleConfig) {
+            @Override
+            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+                return super.makeBuilder();
+            }
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
                 return builderSpawner.makeBuilder(dataFile);
@@ -44,16 +53,7 @@ public class PipelineProviderTest {
             {
                 performanceOptionsMerger.accept(pipelineBuilder, performanceConfig);
             }
-
-            @Override
-            public DeviceDetectionOnPremisePipelineBuilder makeBuilder(
-                    DataFile dataFile,
-                    PerformanceConfig performanceConfig,
-                    Collection<String> properties
-            ) throws Exception {
-                return super.makeBuilder(dataFile, performanceConfig, properties);
-            }
-        };
+        }::getPipeline;
     }
     @Test
     public void shouldUseJoinedBuilder() throws Exception {

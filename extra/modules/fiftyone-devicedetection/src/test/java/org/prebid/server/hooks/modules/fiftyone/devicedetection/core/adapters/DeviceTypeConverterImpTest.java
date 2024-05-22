@@ -1,12 +1,24 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.core.adapters;
 
+import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class DeviceTypeConverterImpTest {
-    private static Integer convertDeviceType(String deviceType) {
-        return new DeviceDataWrapper(null) {
+    private static Integer convertDeviceType(String deviceType) throws Exception {
+        return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
+            @Override
+            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+                final DeviceDetectionOnPremisePipelineBuilder builder
+                        = mock(DeviceDetectionOnPremisePipelineBuilder.class);
+                when(builder.build()).thenReturn(null);
+                return builder;
+            }
+
             @Override
             public Integer convertDeviceType(String deviceType) {
                 return super.convertDeviceType(deviceType);
@@ -15,7 +27,7 @@ public class DeviceTypeConverterImpTest {
     }
 
     @Test
-    public void shouldReturnFourForPhone() {
+    public void shouldReturnFourForPhone() throws Exception {
         // given
         final String typeString = "Phone";
 
@@ -27,7 +39,7 @@ public class DeviceTypeConverterImpTest {
     }
 
     @Test
-    public void shouldReturnSevenForMediaHub() {
+    public void shouldReturnSevenForMediaHub() throws Exception {
         // given
         final String typeString = "MediaHub";
 
@@ -39,7 +51,7 @@ public class DeviceTypeConverterImpTest {
     }
 
     @Test
-    public void shouldReturnNullForUnexpectedValue() {
+    public void shouldReturnZeroForUnexpectedValue() throws Exception {
         // given
         final String typeString = "BattleStar Atlantis";
 
@@ -47,6 +59,6 @@ public class DeviceTypeConverterImpTest {
         final Integer foundValue = convertDeviceType(typeString);
 
         // then
-        assertThat(foundValue).isNull();
+        assertThat(foundValue).isEqualTo(0);
     }
 }

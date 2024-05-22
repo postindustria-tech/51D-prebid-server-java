@@ -450,7 +450,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
     protected Integer convertDeviceType(String deviceType) {
         return Optional
-                .of(MAPPING.get(deviceType))
+                .ofNullable(MAPPING.get(deviceType))
                 .orElse(ORTBDeviceType.UNKNOWN.ordinal());
     }
 

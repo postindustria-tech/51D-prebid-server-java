@@ -3,6 +3,7 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcu
 import com.iab.openrtb.request.BidRequest;
 import com.iab.openrtb.request.Device;
 import com.iab.openrtb.request.UserAgent;
+import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
@@ -11,15 +12,21 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BidRequestReaderTest {
     private static BiConsumer<CollectedEvidence.CollectedEvidenceBuilder, BidRequest> buildHook(
-            BiConsumer<UserAgent, Map<String, String>> userAgentEvidenceConverter)
+            BiConsumer<UserAgent, Map<String, String>> userAgentEvidenceConverter) throws Exception
     {
-        return new FiftyOneDeviceDetectionRawAuctionRequestHook(
-                null,
-                null
-        ) {
+        return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
+            @Override
+            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+                final DeviceDetectionOnPremisePipelineBuilder builder
+                        = mock(DeviceDetectionOnPremisePipelineBuilder.class);
+                when(builder.build()).thenReturn(null);
+                return builder;
+            }
             @Override
             public void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
                 super.collectEvidence(evidenceBuilder, bidRequest);
@@ -33,13 +40,13 @@ public class BidRequestReaderTest {
     }
 
     @Test
-    public void shouldNotFailOnNoDevice() {
+    public void shouldNotFailOnNoDevice() throws Exception {
         // just check for no throw
         buildHook(null).accept(null, BidRequest.builder().build());
     }
 
     @Test
-    public void shouldAddUA() {
+    public void shouldAddUA() throws Exception {
         // given
         final String testUA = "MindScape Crawler";
         final BidRequest bidRequest = BidRequest.builder()
@@ -56,7 +63,7 @@ public class BidRequestReaderTest {
     }
 
     @Test
-    public void shouldAddSUA() {
+    public void shouldAddSUA() throws Exception {
         // given
         final UserAgent testSUA = UserAgent.builder().build();
         final BidRequest bidRequest = BidRequest.builder()
