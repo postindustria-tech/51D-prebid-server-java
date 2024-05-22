@@ -24,7 +24,11 @@ public class DeviceDataWrapper implements DeviceInfo {
             "screenpixelswidth",
             "screeninchesheight",
             "pixelratio",
-            "deviceid"
+            "deviceid",
+
+            "BrowserName",
+            "BrowserVersion",
+            "IsCrawler"
     );
 
     private final DeviceData deviceData;
