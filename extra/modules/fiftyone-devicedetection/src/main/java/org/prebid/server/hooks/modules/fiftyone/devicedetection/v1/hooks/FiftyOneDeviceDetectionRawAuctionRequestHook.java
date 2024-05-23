@@ -394,7 +394,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
             final String deviceID = getSafe(deviceData, DeviceData::getDeviceId);
             if (deviceID != null && !deviceID.isEmpty()) {
                 setDeviceId(deviceBuilder, device, deviceID);
-                updatedFields.add("ext" + EXT_DEVICE_ID_KEY);
+                updatedFields.add("ext." + EXT_DEVICE_ID_KEY);
             }
         }
 
@@ -620,7 +620,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
      *
      * @see fiftyone.devicedetection.hash.engine.onpremise.data.DeviceDataHash#getDeviceId()
      */
-    private String getDeviceId(Device device) {
+    public static String getDeviceId(Device device) {
         final ExtDevice ext = device.getExt();
         if (ext == null) {
             return null;
@@ -640,7 +640,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
      * @param device Raw (non-builder) form of device before modification.
      * @param deviceId New Device ID value.
      */
-    private static void setDeviceId(Device.DeviceBuilder deviceBuilder, Device device, String deviceId) {
+    public static void setDeviceId(Device.DeviceBuilder deviceBuilder, Device device, String deviceId) {
         ExtDevice ext = null;
         if (device != null) {
             ext = device.getExt();
