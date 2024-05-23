@@ -164,6 +164,7 @@ public class DevicePatchPlannerImpTest {
         final DeviceData deviceData = mock(DeviceData.class);
         final String expectedModel = "NinjaTech8888";
         when(deviceData.getHardwareName()).thenReturn(mockValue(Collections.singletonList(expectedModel)));
+        when(deviceData.getHardwareModel()).thenThrow(new RuntimeException());
 
         // when
         final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
