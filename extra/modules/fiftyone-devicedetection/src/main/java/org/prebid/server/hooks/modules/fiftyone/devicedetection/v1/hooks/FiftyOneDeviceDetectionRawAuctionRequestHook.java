@@ -72,7 +72,6 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
             "screenpixelswidth",
             "screeninchesheight",
             "pixelratio",
-            "deviceid",
 
             "BrowserName",
             "BrowserVersion",
