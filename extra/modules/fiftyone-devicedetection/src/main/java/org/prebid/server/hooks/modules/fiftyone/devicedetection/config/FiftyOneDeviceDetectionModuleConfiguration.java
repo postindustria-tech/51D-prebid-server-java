@@ -24,14 +24,17 @@ import java.util.stream.Stream;
         factory = YamlPropertySourceFactory.class)
 @ConditionalOnProperty(prefix = "hooks." + FiftyOneDeviceDetectionModule.CODE, name = "enabled", havingValue = "true")
 public class FiftyOneDeviceDetectionModuleConfiguration {
+
     @Bean
     @ConfigurationProperties(prefix = "hooks.modules." + FiftyOneDeviceDetectionModule.CODE)
     ModuleConfig moduleConfig() {
+
         return new ModuleConfig();
     }
 
     @Bean
     Module fiftyOneDeviceDetectionModule(ModuleConfig moduleConfig) throws Exception {
+
         final Set<? extends Hook<?, ? extends InvocationContext>> hooks = Stream.of(
                 new FiftyOneDeviceDetectionEntrypointHook(),
                 new FiftyOneDeviceDetectionRawAuctionRequestHook(moduleConfig)

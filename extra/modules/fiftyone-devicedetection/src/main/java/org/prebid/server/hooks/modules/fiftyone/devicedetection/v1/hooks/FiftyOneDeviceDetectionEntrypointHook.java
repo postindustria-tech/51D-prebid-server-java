@@ -17,14 +17,15 @@ public class FiftyOneDeviceDetectionEntrypointHook implements EntrypointHook {
 
     @Override
     public String code() {
+
         return CODE;
     }
 
     @Override
     public Future<InvocationResult<EntrypointPayload>> call(
             EntrypointPayload payload,
-            InvocationContext invocationContext)
-    {
+            InvocationContext invocationContext) {
+
         return Future.succeededFuture(
                 InvocationResultImpl.<EntrypointPayload>builder()
                         .status(InvocationStatus.success)

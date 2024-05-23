@@ -31,13 +31,18 @@ public class BidRequestPatcherImpTest {
                 when(builder.build()).thenReturn(null);
                 return builder;
             }
+
             @Override
             public BidRequest enrichDevice(BidRequest bidRequest, CollectedEvidence collectedEvidence) {
+
                 return super.enrichDevice(bidRequest, collectedEvidence);
             }
 
             @Override
-            protected void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
+            protected void collectEvidence(
+                    CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder,
+                    BidRequest bidRequest) {
+
                 bidRequestEvidenceCollector.accept(evidenceBuilder, bidRequest);
             }
 

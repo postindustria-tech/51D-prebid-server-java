@@ -41,10 +41,12 @@ public class AccountControlImpTest {
                 when(builder.build()).thenReturn(null);
                 return builder;
             }
+
             @Override
             public boolean isAccountAllowed(AuctionInvocationContext invocationContext) {
                 return super.isAccountAllowed(invocationContext);
             }
+
         }::isAccountAllowed;
     }
 
