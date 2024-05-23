@@ -16,7 +16,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class PipelineUpdateConfiguratorTest {
-    private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> makeConfigurator() throws Exception {
+    private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder,
+            DataFileUpdate> makeConfigurator() throws Exception {
 
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
@@ -31,11 +32,12 @@ public class PipelineUpdateConfiguratorTest {
             @Override
             public void applyUpdateOptions(
                     DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
-                    DataFileUpdate updateConfig)
-            {
+                    DataFileUpdate updateConfig) {
+
                 super.applyUpdateOptions(pipelineBuilder, updateConfig);
             }
-        }::applyUpdateOptions;
+        }
+            ::applyUpdateOptions;
     }
 
     @Test

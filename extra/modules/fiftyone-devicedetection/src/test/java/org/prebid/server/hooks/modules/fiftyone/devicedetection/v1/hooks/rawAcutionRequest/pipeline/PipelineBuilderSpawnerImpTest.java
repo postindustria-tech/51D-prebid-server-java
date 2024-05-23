@@ -27,9 +27,10 @@ public class PipelineBuilderSpawnerImpTest {
 
                 return super.makeRawBuilder(dataFile);
             }
-        }::makeRawBuilder;
+        }
+            ::makeRawBuilder;
     }
-    
+
     @Test
     public void shouldReturnNonNull() throws Exception {
 
@@ -45,6 +46,7 @@ public class PipelineBuilderSpawnerImpTest {
         // then
         assertThat(pipelineBuilder).isNotNull();
     }
+
     @Test
     public void shouldReturnNonNullWithCopy() throws Exception {
 

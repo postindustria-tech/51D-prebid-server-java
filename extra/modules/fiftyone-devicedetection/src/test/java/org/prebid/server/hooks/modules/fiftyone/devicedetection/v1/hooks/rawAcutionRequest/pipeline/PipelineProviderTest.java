@@ -23,7 +23,7 @@ public class PipelineProviderTest {
             PipelineBuilderSpawner<DeviceDetectionOnPremisePipelineBuilder> builderSpawner,
             BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> updateOptionsMerger,
             BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> performanceOptionsMerger
-    )  throws Exception {
+    ) throws Exception {
         final ModuleConfig moduleConfig = new ModuleConfig();
         moduleConfig.setDataFile(dataFile);
         moduleConfig.setPerformance(performanceConfig);
@@ -33,6 +33,7 @@ public class PipelineProviderTest {
 
                 return super.makeBuilder();
             }
+
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
 
@@ -40,7 +41,9 @@ public class PipelineProviderTest {
             }
 
             @Override
-            protected void applyUpdateOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder, DataFileUpdate updateConfig) {
+            protected void applyUpdateOptions(
+                    DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+                    DataFileUpdate updateConfig) {
 
                 updateOptionsMerger.accept(pipelineBuilder, updateConfig);
             }
@@ -48,8 +51,8 @@ public class PipelineProviderTest {
             @Override
             protected void applyPerformanceOptions(
                     DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
-                    PerformanceConfig performanceConfig)
-            {
+                    PerformanceConfig performanceConfig) {
+
                 performanceOptionsMerger.accept(pipelineBuilder, performanceConfig);
             }
 
@@ -58,8 +61,10 @@ public class PipelineProviderTest {
 
                 return super.getPipeline();
             }
-        }::getPipeline;
+        }
+            ::getPipeline;
     }
+
     @Test
     public void shouldUseJoinedBuilder() throws Exception {
 

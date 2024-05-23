@@ -26,6 +26,7 @@ public class PriorityEvidenceSelectorImpTest {
                 when(builder.build()).thenReturn(null);
                 return builder;
             }
+
             @Override
             public Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
 
@@ -33,7 +34,7 @@ public class PriorityEvidenceSelectorImpTest {
             }
         }.pickRelevantFrom(collectedEvidence);
     }
-    
+
     @Test
     public void shouldSelectSuaIfPresent() throws Exception {
 
@@ -70,6 +71,7 @@ public class PriorityEvidenceSelectorImpTest {
         assertThat(evidenceFragment.getKey()).isEqualTo("header.user-agent");
         assertThat(evidenceFragment.getValue()).isEqualTo(collectedEvidence.deviceUA());
     }
+
     @Test
     public void shouldMergeUaWithSuaIfBothPresent() throws Exception {
 

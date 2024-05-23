@@ -17,7 +17,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class PipelinePerformanceConfiguratorTest {
-    private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder, PerformanceConfig> makeConfigurator() throws Exception {
+    private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder,
+            PerformanceConfig> makeConfigurator() throws Exception {
 
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
@@ -32,13 +33,14 @@ public class PipelinePerformanceConfiguratorTest {
             @Override
             public void applyPerformanceOptions(
                     DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
-                    PerformanceConfig performanceConfig)
-            {
+                    PerformanceConfig performanceConfig) {
+
                 super.applyPerformanceOptions(pipelineBuilder, performanceConfig);
             }
-        }::applyPerformanceOptions;
+        }
+            ::applyPerformanceOptions;
     }
-    
+
     @Test
     public void shouldIgnoreUnknownProfile() throws Exception {
 

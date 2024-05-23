@@ -12,19 +12,21 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class PipelineSupplierImpTest {
-    private static Supplier<Pipeline> makeSupplier(DeviceDetectionOnPremisePipelineBuilder builder)  throws Exception {
+    private static Supplier<Pipeline> makeSupplier(DeviceDetectionOnPremisePipelineBuilder builder) throws Exception {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
 
                 return builder;
             }
+
             @Override
             public Pipeline getPipeline() {
 
                 return super.getPipeline();
             }
-        }::getPipeline;
+        }
+            ::getPipeline;
     }
 
     @Test
