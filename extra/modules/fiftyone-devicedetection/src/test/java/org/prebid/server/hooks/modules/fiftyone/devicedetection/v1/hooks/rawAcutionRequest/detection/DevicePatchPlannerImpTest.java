@@ -50,6 +50,7 @@ public class DevicePatchPlannerImpTest {
         COMPLETE_DEVICE.getExt().addProperty(EXT_DEVICE_ID_KEY,new TextNode( "fake-device-id"));
     }
     private static <T> AspectPropertyValue<T> mockValue(T value) {
+
         return new AspectPropertyValue<T>() {
             @Override
             public boolean hasValue() {
