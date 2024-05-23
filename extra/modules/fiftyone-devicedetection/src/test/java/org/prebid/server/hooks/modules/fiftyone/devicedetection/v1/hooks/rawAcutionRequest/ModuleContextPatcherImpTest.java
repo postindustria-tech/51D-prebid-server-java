@@ -18,8 +18,8 @@ public class ModuleContextPatcherImpTest {
     private static BiFunction<
             ModuleContext,
             Consumer<CollectedEvidence.CollectedEvidenceBuilder>,
-            ModuleContext> buildPatcher() throws Exception
-    {
+            ModuleContext> buildPatcher() throws Exception {
+
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
@@ -29,19 +29,23 @@ public class ModuleContextPatcherImpTest {
                 when(builder.build()).thenReturn(null);
                 return builder;
             }
+
             @Override
-            public ModuleContext addEvidenceToContext(ModuleContext moduleContext, Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
+            public ModuleContext addEvidenceToContext(
+                    ModuleContext moduleContext,
+                    Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
 
                 return super.addEvidenceToContext(moduleContext, evidenceInjector);
             }
-        }::addEvidenceToContext;
+        }
+            ::addEvidenceToContext;
     }
 
     @Test
     public void shouldMakeNewContextIfNullIsPassedIn() throws Exception {
 
         // given and when
-        final ModuleContext newContext = buildPatcher().apply(null, b -> {});
+        final ModuleContext newContext = buildPatcher().apply(null, b -> { });
 
         // then
         assertThat(newContext).isNotNull();
@@ -54,7 +58,7 @@ public class ModuleContextPatcherImpTest {
         // given and when
         final ModuleContext newContext = buildPatcher().apply(
                 ModuleContext.builder().build(),
-                b -> {});
+                b -> { });
 
         // then
         assertThat(newContext).isNotNull();

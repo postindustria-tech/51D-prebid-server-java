@@ -50,7 +50,8 @@ public class AccountControlImpTest {
                 return super.isAccountAllowed(invocationContext);
             }
 
-        }::isAccountAllowed;
+        }
+            ::isAccountAllowed;
     }
 
     @Test

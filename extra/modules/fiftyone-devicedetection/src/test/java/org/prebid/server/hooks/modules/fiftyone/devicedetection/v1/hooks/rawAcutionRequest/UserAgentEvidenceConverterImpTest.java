@@ -17,8 +17,8 @@ import static org.mockito.Mockito.when;
 
 public class UserAgentEvidenceConverterImpTest {
 
-    private static BiConsumer<UserAgent, Map<String, String>> buildConverter() throws Exception
-    {
+    private static BiConsumer<UserAgent, Map<String, String>> buildConverter() throws Exception {
+
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
@@ -28,12 +28,14 @@ public class UserAgentEvidenceConverterImpTest {
                 when(builder.build()).thenReturn(null);
                 return builder;
             }
+
             @Override
             public void appendSecureHeaders(UserAgent userAgent, Map<String, String> evidence) {
 
                 super.appendSecureHeaders(userAgent, evidence);
             }
-        }::appendSecureHeaders;
+        }
+            ::appendSecureHeaders;
     }
 
     @Test
@@ -166,6 +168,4 @@ public class UserAgentEvidenceConverterImpTest {
         assertThat(evidence.size()).isEqualTo(1);
         assertThat(evidence.get("header.Sec-CH-UA-Model")).isEqualTo(expectedModel);
     }
-
-
 }

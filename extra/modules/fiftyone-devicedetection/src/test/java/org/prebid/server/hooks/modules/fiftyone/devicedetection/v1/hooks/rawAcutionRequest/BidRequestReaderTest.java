@@ -17,8 +17,8 @@ import static org.mockito.Mockito.when;
 
 public class BidRequestReaderTest {
     private static BiConsumer<CollectedEvidence.CollectedEvidenceBuilder, BidRequest> buildHook(
-            BiConsumer<UserAgent, Map<String, String>> userAgentEvidenceConverter) throws Exception
-    {
+            BiConsumer<UserAgent, Map<String, String>> userAgentEvidenceConverter) throws Exception {
+
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
@@ -28,8 +28,11 @@ public class BidRequestReaderTest {
                 when(builder.build()).thenReturn(null);
                 return builder;
             }
+
             @Override
-            public void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
+            public void collectEvidence(
+                    CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder,
+                    BidRequest bidRequest) {
 
                 super.collectEvidence(evidenceBuilder, bidRequest);
             }
@@ -39,7 +42,8 @@ public class BidRequestReaderTest {
 
                 userAgentEvidenceConverter.accept(userAgent, evidence);
             }
-        }::collectEvidence;
+        }
+            ::collectEvidence;
     }
 
     @Test
@@ -78,7 +82,7 @@ public class BidRequestReaderTest {
 
         // when
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = CollectedEvidence.builder();
-        buildHook((sua, headers) -> {}).accept(evidenceBuilder, bidRequest);
+        buildHook((sua, headers) -> { }).accept(evidenceBuilder, bidRequest);
         final CollectedEvidence evidence = evidenceBuilder.build();
 
         // then

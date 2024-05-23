@@ -51,11 +51,12 @@ public class BidRequestPatcherImpTest {
             @Override
             protected EnrichmentResult populateDeviceInfo(
                     Device device,
-                    CollectedEvidence collectedEvidence)
-            {
+                    CollectedEvidence collectedEvidence) {
+
                 return deviceRefiner.apply(device, collectedEvidence);
             }
-        }::enrichDevice;
+        }
+            ::enrichDevice;
     }
 
     @Test
@@ -81,7 +82,7 @@ public class BidRequestPatcherImpTest {
         // when
         final boolean[] refinerCalled = { false };
         final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
-                (builder, request) -> {},
+                (builder, request) -> { },
                 (device, evidence) -> {
                     refinerCalled[0] = true;
                     return FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult.builder().build();
@@ -130,7 +131,7 @@ public class BidRequestPatcherImpTest {
 
         // when
         final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
-                (builder, request) -> {},
+                (builder, request) -> { },
                 (device, collectedEvidence) -> FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult
                         .builder()
                         .enrichedDevice(mergedDevice)
