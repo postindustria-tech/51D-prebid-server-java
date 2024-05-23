@@ -6,16 +6,20 @@ import fiftyone.devicedetection.shared.DeviceData;
 import fiftyone.pipeline.core.data.FlowData;
 import fiftyone.pipeline.core.flowelements.Pipeline;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class DeviceEnrichmentTest {
@@ -27,7 +31,8 @@ public class DeviceEnrichmentTest {
                     BiFunction<
                             Device,
                             DeviceData,
-                            FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult> patcher) throws Exception {
+                            FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult> patcher,
+                    Function<CollectedEvidence, Map<String, String>> evidenceCollector) throws Exception {
 
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
@@ -41,6 +46,11 @@ public class DeviceEnrichmentTest {
             @Override
             protected EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
                 return patcher.apply(device, deviceData);
+            }
+
+            @Override
+            protected Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
+                return evidenceCollector.apply(collectedEvidence);
             }
 
             @Override
@@ -70,7 +80,7 @@ public class DeviceEnrichmentTest {
                 Device,
                 CollectedEvidence,
                 FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult> hook
-                = buildHook(() -> pipeline, null);
+                = buildHook(() -> pipeline, null, null);
         final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result = hook.apply(null, null);
 
         // then
@@ -85,19 +95,30 @@ public class DeviceEnrichmentTest {
         final Exception e = new RuntimeException();
         when(pipeline.createFlowData()).thenReturn(flowData);
         doThrow(e).when(flowData).process();
+        final CollectedEvidence collectedEvidence = CollectedEvidence.builder().build();
+        final Map<String, String> evidence = Collections.singletonMap("k", "v");
+        final ArgumentCaptor<Map<String, String>> evidenceCaptor = ArgumentCaptor.forClass(Map.class);
 
         // when
+        final boolean[] collectorCalled = { false };
         final BiFunction<
                 Device,
                 CollectedEvidence,
                 FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult> hook
-                = buildHook(() -> pipeline, null);
+                = buildHook(() -> pipeline, null, ev -> {
+                    collectorCalled[0] = true;
+                    assertThat(ev).isEqualTo(collectedEvidence);
+                    return evidence;
+                });
         final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result = hook.apply(
                 null,
-                CollectedEvidence.builder().build());
+                collectedEvidence);
 
         // then
         assertThat(result.processingException()).isEqualTo(e);
+        assertThat(collectorCalled).containsExactly(true);
+        verify(flowData).addEvidence(evidenceCaptor.capture());
+        assertThat(evidenceCaptor.getAllValues()).containsExactly(evidence);
     }
 
     @Test
@@ -108,19 +129,33 @@ public class DeviceEnrichmentTest {
         final Exception e = new RuntimeException();
         when(pipeline.createFlowData()).thenReturn(flowData);
         when(flowData.get(DeviceData.class)).thenReturn(null);
+        final CollectedEvidence collectedEvidence = CollectedEvidence.builder().build();
+        final Map<String, String> evidence = Collections.singletonMap("x", "z");
+        final ArgumentCaptor<Map<String, String>> evidenceCaptor = ArgumentCaptor.forClass(Map.class);
 
         // when
+        final boolean[] collectorCalled = { false };
         final BiFunction<
                 Device,
                 CollectedEvidence,
                 FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult> hook
-                = buildHook(() -> pipeline, null);
+                = buildHook(
+                        () -> pipeline,
+                        null,
+                        ev -> {
+                            collectorCalled[0] = true;
+                            assertThat(ev).isEqualTo(collectedEvidence);
+                            return evidence;
+                        });
         final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result = hook.apply(
                 null,
-                CollectedEvidence.builder().build());
+                collectedEvidence);
 
         // then
         assertThat(result).isNull();
+        assertThat(collectorCalled).containsExactly(true);
+        verify(flowData).addEvidence(evidenceCaptor.capture());
+        assertThat(evidenceCaptor.getAllValues()).containsExactly(evidence);
     }
 
     @Test
@@ -137,9 +172,13 @@ public class DeviceEnrichmentTest {
                 = FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult.builder()
                 .enrichedDevice(mergedDevice)
                 .build();
+        final CollectedEvidence collectedEvidence = CollectedEvidence.builder().build();
+        final Map<String, String> evidence = Collections.singletonMap("q", "w");
+        final ArgumentCaptor<Map<String, String>> evidenceCaptor = ArgumentCaptor.forClass(Map.class);
 
         // when
         final boolean[] patcherCalled = { false };
+        final boolean[] collectorCalled = { false };
         final BiFunction<
                 Device,
                 CollectedEvidence,
@@ -150,6 +189,11 @@ public class DeviceEnrichmentTest {
                     assertThat(dev).isEqualTo(device);
                     assertThat(devData).isEqualTo(deviceData);
                     return preparedResult;
+                },
+                ev -> {
+                    collectorCalled[0] = true;
+                    assertThat(ev).isEqualTo(collectedEvidence);
+                    return evidence;
                 });
         final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result = hook.apply(
                 device,
@@ -158,5 +202,8 @@ public class DeviceEnrichmentTest {
         // then
         assertThat(patcherCalled).containsExactly(true);
         assertThat(result).isEqualTo(preparedResult);
+        assertThat(collectorCalled).containsExactly(true);
+        verify(flowData).addEvidence(evidenceCaptor.capture());
+        assertThat(evidenceCaptor.getAllValues()).containsExactly(evidence);
     }
 }
