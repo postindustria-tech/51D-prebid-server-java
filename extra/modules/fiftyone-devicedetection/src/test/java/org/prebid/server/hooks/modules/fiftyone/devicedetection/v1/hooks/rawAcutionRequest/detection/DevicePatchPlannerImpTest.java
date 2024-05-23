@@ -72,9 +72,9 @@ public class DevicePatchPlannerImpTest {
             @Override
             public EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
 
-                return super.patchDevice(device, buildCompleteDeviceData());
+                return super.patchDevice(device, deviceData);
             }
-        }.patchDevice(device, buildCompleteDeviceData());
+        }.patchDevice(device, deviceData);
     }
 
     @Test
