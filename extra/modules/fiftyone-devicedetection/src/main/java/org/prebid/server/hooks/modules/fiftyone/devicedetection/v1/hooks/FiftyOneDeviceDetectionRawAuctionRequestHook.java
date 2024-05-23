@@ -46,8 +46,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static java.util.Map.entry;
-
 public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionRequestHook {
 
     private static final String CODE = "fiftyone-devicedetection-raw-auction-request-hook";
@@ -56,6 +54,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     private final Pipeline pipeline;
 
     public FiftyOneDeviceDetectionRawAuctionRequestHook(ModuleConfig moduleConfig) throws Exception {
+
         this.moduleConfig = moduleConfig;
         final DeviceDetectionOnPremisePipelineBuilder builder = makeBuilder();
         pipeline = builder.build();
@@ -81,8 +80,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
             "PlatformVendor",
             "Javascript",
             "GeoLocation",
-            "HardwareModelVariants"
-    );
+            "HardwareModelVariants");
 
     protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
 
@@ -96,6 +94,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
+
         final Boolean shouldMakeDataCopy = dataFile.getMakeTempCopy();
         return new DeviceDetectionPipelineBuilder()
                 .useOnPremise(dataFile.getPath(), shouldMakeDataCopy != null && shouldMakeDataCopy);
@@ -103,8 +102,8 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
     protected void applyPerformanceOptions(
             DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
-            PerformanceConfig performanceConfig)
-    {
+            PerformanceConfig performanceConfig) {
+
         final String profile = performanceConfig.getProfile();
         if (profile != null && !profile.isEmpty()) {
             final String lowercasedProfile = profile.toLowerCase();
@@ -137,7 +136,10 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
     }
 
-    protected void applyUpdateOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder, DataFileUpdate updateConfig) {
+    protected void applyUpdateOptions(
+            DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+            DataFileUpdate updateConfig) {
+
         pipelineBuilder.setDataUpdateService(new DataUpdateServiceDefault());
 
         final var auto = updateConfig.getAuto();
@@ -173,14 +175,15 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
     @Override
     public String code() {
+
         return CODE;
     }
 
     @Override
     public Future<InvocationResult<AuctionRequestPayload>> call(
             AuctionRequestPayload payload,
-            AuctionInvocationContext invocationContext)
-    {
+            AuctionInvocationContext invocationContext) {
+
         if (!isAccountAllowed(invocationContext)) {
             return Future.succeededFuture(
                     InvocationResultImpl.<AuctionRequestPayload>builder()
@@ -191,11 +194,11 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
 
         final ModuleContext moduleContext = addEvidenceToContext(
-                (ModuleContext)invocationContext.moduleContext(),
+                (ModuleContext) invocationContext.moduleContext(),
                 builder -> collectEvidence(builder, payload.bidRequest())
         );
 
-        return  Future.succeededFuture(
+        return Future.succeededFuture(
                 InvocationResultImpl.<AuctionRequestPayload>builder()
                         .status(InvocationStatus.success)
                         .action(InvocationAction.update)
@@ -206,12 +209,13 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     protected boolean isAccountAllowed(AuctionInvocationContext invocationContext) {
+
         final AccountFilter accountFilter = getModuleConfig().getAccountFilter();
         if (accountFilter == null) {
             return true;
         }
         final List<String> allowList = accountFilter.getAllowList();
-        final boolean hasAllowList = (allowList != null && !allowList.isEmpty());
+        final boolean hasAllowList = allowList != null && !allowList.isEmpty();
         do {
             if (invocationContext == null) {
                 break;
@@ -231,14 +235,14 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
             if (hasAllowList) {
                 return allowList.contains(accountId);
             }
-        } while(false);
+        } while (false);
         return !hasAllowList;
     }
 
     private AuctionRequestPayload updatePayload(
             AuctionRequestPayload existingPayload,
-            CollectedEvidence collectedEvidence)
-    {
+            CollectedEvidence collectedEvidence) {
+
         final BidRequest currentRequest = existingPayload.bidRequest();
         final BidRequest patchedRequest = enrichDevice(currentRequest, collectedEvidence);
         if (patchedRequest == null || patchedRequest == currentRequest) {
@@ -248,6 +252,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     protected BidRequest enrichDevice(BidRequest bidRequest, CollectedEvidence collectedEvidence) {
+
         if (bidRequest == null) {
             return null;
         }
@@ -256,7 +261,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = collectedEvidence.toBuilder();
         collectEvidence(evidenceBuilder, bidRequest);
 
-        EnrichmentResult mergeResult = populateDeviceInfo(existingDevice, evidenceBuilder.build());
+        final EnrichmentResult mergeResult = populateDeviceInfo(existingDevice, evidenceBuilder.build());
         if (mergeResult == null) {
             return null;
         }
@@ -273,12 +278,12 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
     protected EnrichmentResult populateDeviceInfo(
             Device device,
-            CollectedEvidence collectedEvidence)
-    {
+            CollectedEvidence collectedEvidence) {
+
         try (FlowData data = getPipeline().createFlowData()) {
             data.addEvidence(pickRelevantFrom(collectedEvidence));
             data.process();
-            DeviceData deviceData = data.get(DeviceData.class);
+            final DeviceData deviceData = data.get(DeviceData.class);
             if (device == null) {
                 return null;
             }
@@ -292,6 +297,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     protected EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
+
         final List<String> updatedFields = new ArrayList<>();
         final Device.DeviceBuilder deviceBuilder = device.toBuilder();
 
@@ -373,7 +379,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
             if (pixelsHeight != null) {
                 final Double inchesHeight = getSafe(deviceData, DeviceData::getScreenInchesHeight);
                 if (!(inchesHeight == null || inchesHeight == 0)) {
-                    deviceBuilder.ppi((int)Math.round(pixelsHeight / inchesHeight));
+                    deviceBuilder.ppi((int) Math.round(pixelsHeight / inchesHeight));
                     updatedFields.add("ppi");
                 }
             }
@@ -409,6 +415,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     private <T> T getSafe(DeviceData deviceData, Function<DeviceData, AspectPropertyValue<T>> propertyGetter) {
+
         try {
             final AspectPropertyValue<T> propertyValue = propertyGetter.apply(deviceData);
             if (propertyValue != null && propertyValue.hasValue()) {
@@ -432,32 +439,35 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         SET_TOP_BOX,
         OOH_DEVICE
     }
+
     private static final Map<String, Integer> MAPPING = Map.ofEntries(
-            entry("Phone", ORTBDeviceType.PHONE.ordinal()),
-            entry("Console", ORTBDeviceType.SET_TOP_BOX.ordinal()),
-            entry("Desktop", ORTBDeviceType.PERSONAL_COMPUTER.ordinal()),
-            entry("EReader", ORTBDeviceType.PERSONAL_COMPUTER.ordinal()),
-            entry("IoT", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
-            entry("Kiosk", ORTBDeviceType.OOH_DEVICE.ordinal()),
-            entry("MediaHub", ORTBDeviceType.SET_TOP_BOX.ordinal()),
-            entry("Mobile", ORTBDeviceType.MOBILE_TABLET.ordinal()),
-            entry("Router", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
-            entry("SmallScreen", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
-            entry("SmartPhone", ORTBDeviceType.MOBILE_TABLET.ordinal()),
-            entry("SmartSpeaker", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
-            entry("SmartWatch", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
-            entry("Tablet", ORTBDeviceType.TABLET.ordinal()),
-            entry("Tv", ORTBDeviceType.CONNECTED_TV.ordinal()),
-            entry("Vehicle Display", ORTBDeviceType.PERSONAL_COMPUTER.ordinal())
+            Map.entry("Phone", ORTBDeviceType.PHONE.ordinal()),
+            Map.entry("Console", ORTBDeviceType.SET_TOP_BOX.ordinal()),
+            Map.entry("Desktop", ORTBDeviceType.PERSONAL_COMPUTER.ordinal()),
+            Map.entry("EReader", ORTBDeviceType.PERSONAL_COMPUTER.ordinal()),
+            Map.entry("IoT", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
+            Map.entry("Kiosk", ORTBDeviceType.OOH_DEVICE.ordinal()),
+            Map.entry("MediaHub", ORTBDeviceType.SET_TOP_BOX.ordinal()),
+            Map.entry("Mobile", ORTBDeviceType.MOBILE_TABLET.ordinal()),
+            Map.entry("Router", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
+            Map.entry("SmallScreen", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
+            Map.entry("SmartPhone", ORTBDeviceType.MOBILE_TABLET.ordinal()),
+            Map.entry("SmartSpeaker", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
+            Map.entry("SmartWatch", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
+            Map.entry("Tablet", ORTBDeviceType.TABLET.ordinal()),
+            Map.entry("Tv", ORTBDeviceType.CONNECTED_TV.ordinal()),
+            Map.entry("Vehicle Display", ORTBDeviceType.PERSONAL_COMPUTER.ordinal())
     );
 
     protected Integer convertDeviceType(String deviceType) {
+
         return Optional
                 .ofNullable(MAPPING.get(deviceType))
                 .orElse(ORTBDeviceType.UNKNOWN.ordinal());
     }
 
     protected Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
+
         final Map<String, String> evidence = new HashMap<>();
 
         final String ua = collectedEvidence.deviceUA();
@@ -474,7 +484,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
         final Collection<Map.Entry<String, String>> headers = collectedEvidence.rawHeaders();
         if (headers != null && !headers.isEmpty()) {
-            for(Map.Entry<String, String> nextRawHeader : headers) {
+            for (Map.Entry<String, String> nextRawHeader : headers) {
                 evidence.put("header." + nextRawHeader.getKey(), nextRawHeader.getValue());
             }
         }
@@ -484,9 +494,9 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
     protected ModuleContext addEvidenceToContext(
             ModuleContext moduleContext,
-            Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector)
-    {
-        ModuleContext.ModuleContextBuilder contextBuilder;
+            Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
+
+        final ModuleContext.ModuleContextBuilder contextBuilder;
         CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = null;
         if (moduleContext != null) {
             contextBuilder = moduleContext.toBuilder();
@@ -506,7 +516,10 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                 .build();
     }
 
-    protected void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
+    protected void collectEvidence(
+            CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder,
+            BidRequest bidRequest) {
+
         final Device device = bidRequest.getDevice();
         if (device == null) {
             return;
@@ -524,6 +537,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     protected void appendSecureHeaders(UserAgent userAgent, Map<String, String> evidence) {
+
         if (userAgent == null) {
             return;
         }
@@ -551,7 +565,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                 evidence.put("header.Sec-CH-UA-Platform-Version", s.toString());
             }
         }
-        
+
         final Integer isMobile = userAgent.getMobile();
         if (isMobile != null) {
             evidence.put("header.Sec-CH-UA-Mobile", "?" + isMobile);
@@ -570,10 +584,11 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         final String model = userAgent.getModel();
         if (model != null && !model.isEmpty()) {
             evidence.put("header.Sec-CH-UA-Model", '"' + toHeaderSafe(model) + '"');
-        };
+        }
     }
 
     private static String brandListToString(List<BrandVersion> versions) {
+
         final StringBuilder s = new StringBuilder();
         for (BrandVersion nextBrandVersion : versions) {
             final String brandName = nextBrandVersion.getBrand();
@@ -593,6 +608,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     private static void appendVersionList(StringBuilder s, List<String> versions) {
+
         if (versions == null || versions.isEmpty()) {
             return;
         }
@@ -607,6 +623,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     private static String toHeaderSafe(String rawValue) {
+
         return rawValue.replace("\"", "\\\"");
     }
 
@@ -620,6 +637,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
      * @see fiftyone.devicedetection.hash.engine.onpremise.data.DeviceDataHash#getDeviceId()
      */
     public static String getDeviceId(Device device) {
+
         final ExtDevice ext = device.getExt();
         if (ext == null) {
             return null;
@@ -640,6 +658,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
      * @param deviceId New Device ID value.
      */
     public static void setDeviceId(Device.DeviceBuilder deviceBuilder, Device device, String deviceId) {
+
         ExtDevice ext = null;
         if (device != null) {
             ext = device.getExt();
@@ -653,16 +672,19 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
     @Builder
     public record EnrichmentResult(
-        Device enrichedDevice,
-        Collection<String> enrichedFields,
-        Exception processingException
-    ) {}
+            Device enrichedDevice,
+            Collection<String> enrichedFields,
+            Exception processingException
+    ) {
+    }
 
     protected ModuleConfig getModuleConfig() {
+
         return moduleConfig;
     }
 
     protected Pipeline getPipeline() {
+
         return pipeline;
     }
 }
