@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 public class PipelineBuilderSpawnerImpTest {
     private static PipelineBuilderSpawner<DeviceDetectionOnPremisePipelineBuilder> makeSpawner() throws Exception {
+
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
@@ -29,6 +30,7 @@ public class PipelineBuilderSpawnerImpTest {
     
     @Test
     public void shouldReturnNonNull() throws Exception {
+
         // given
         final DataFile dataFile = new DataFile();
         dataFile.setPath("dummy.hash");
@@ -43,6 +45,7 @@ public class PipelineBuilderSpawnerImpTest {
     }
     @Test
     public void shouldReturnNonNullWithCopy() throws Exception {
+
         // given
         final DataFile dataFile = new DataFile();
         dataFile.setPath("dummy.hash");

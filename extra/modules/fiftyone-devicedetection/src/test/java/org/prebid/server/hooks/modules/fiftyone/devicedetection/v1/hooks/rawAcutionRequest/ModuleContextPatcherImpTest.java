@@ -37,6 +37,7 @@ public class ModuleContextPatcherImpTest {
 
     @Test
     public void shouldMakeNewContextIfNullIsPassedIn() throws Exception {
+
         // given and when
         final ModuleContext newContext = buildPatcher().apply(null, b -> {});
 
@@ -47,6 +48,7 @@ public class ModuleContextPatcherImpTest {
 
     @Test
     public void shouldMakeNewEvidenceIfNoneWasPresent() throws Exception {
+
         // given and when
         final ModuleContext newContext = buildPatcher().apply(
                 ModuleContext.builder().build(),
@@ -59,6 +61,7 @@ public class ModuleContextPatcherImpTest {
 
     @Test
     public void shouldMergeEvidences() throws Exception {
+
         // given and when
         final String ua = "mad-hatter";
         final HashMap<String, String> sua = new HashMap<>();

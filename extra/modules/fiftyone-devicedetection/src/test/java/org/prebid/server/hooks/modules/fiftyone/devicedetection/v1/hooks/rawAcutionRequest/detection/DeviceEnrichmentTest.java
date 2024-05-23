@@ -70,6 +70,7 @@ public class DeviceEnrichmentTest {
 
     @Test
     public void shouldReportErrorOnPipelineException() throws Exception {
+
         // given
         final Pipeline pipeline = mock(Pipeline.class);
         final Exception e = new RuntimeException();
@@ -89,6 +90,7 @@ public class DeviceEnrichmentTest {
 
     @Test
     public void shouldReportErrorOnProcessException() throws Exception {
+
         // given
         final Pipeline pipeline = mock(Pipeline.class);
         final FlowData flowData = mock(FlowData.class);
@@ -123,6 +125,7 @@ public class DeviceEnrichmentTest {
 
     @Test
     public void shouldReturnNullOnNullDeviceData() throws Exception {
+
         // given
         final Pipeline pipeline = mock(Pipeline.class);
         final FlowData flowData = mock(FlowData.class);
@@ -160,6 +163,7 @@ public class DeviceEnrichmentTest {
 
     @Test
     public void shouldReturnPatchResult() throws Exception {
+
         // given
         final Pipeline pipeline = mock(Pipeline.class);
         final FlowData flowData = mock(FlowData.class);

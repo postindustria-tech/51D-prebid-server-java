@@ -27,6 +27,7 @@ public class PipelineSupplierImpTest {
 
     @Test
     public void shouldReturnBuiltPipeline() throws Exception {
+
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
 

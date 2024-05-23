@@ -41,12 +41,14 @@ public class BidRequestReaderTest {
 
     @Test
     public void shouldNotFailOnNoDevice() throws Exception {
+
         // just check for no throw
         buildHook(null).accept(null, BidRequest.builder().build());
     }
 
     @Test
     public void shouldAddUA() throws Exception {
+
         // given
         final String testUA = "MindScape Crawler";
         final BidRequest bidRequest = BidRequest.builder()
@@ -64,6 +66,7 @@ public class BidRequestReaderTest {
 
     @Test
     public void shouldAddSUA() throws Exception {
+
         // given
         final UserAgent testSUA = UserAgent.builder().build();
         final BidRequest bidRequest = BidRequest.builder()

@@ -23,6 +23,7 @@ public class BidRequestPatcherImpTest {
                     CollectedEvidence,
                     FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult> deviceRefiner
     ) throws Exception {
+
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
@@ -58,6 +59,7 @@ public class BidRequestPatcherImpTest {
 
     @Test
     public void shouldReturnNullWhenRequestIsNull() throws Exception {
+
         // given
         final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 null,
@@ -70,6 +72,7 @@ public class BidRequestPatcherImpTest {
 
     @Test
     public void shouldReturnNullWhenMergedDeviceIsNull() throws Exception {
+
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
         final CollectedEvidence savedEvidence = CollectedEvidence.builder().build();
@@ -91,6 +94,7 @@ public class BidRequestPatcherImpTest {
 
     @Test
     public void shouldPassMergedEvidenceToDeviceRefiner() throws Exception {
+
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
         final CollectedEvidence savedEvidence = CollectedEvidence.builder()
@@ -117,6 +121,7 @@ public class BidRequestPatcherImpTest {
 
     @Test
     public void shouldInjectReturnedDevice() throws Exception {
+
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
         final CollectedEvidence savedEvidence = CollectedEvidence.builder().build();

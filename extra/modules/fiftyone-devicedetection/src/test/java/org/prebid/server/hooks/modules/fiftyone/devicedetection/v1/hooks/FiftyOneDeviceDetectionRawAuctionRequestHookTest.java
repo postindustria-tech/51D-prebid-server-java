@@ -31,6 +31,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
             BiFunction<ModuleContext, Consumer<CollectedEvidence.CollectedEvidenceBuilder>, ModuleContext> moduleContextPatcher,
             BiFunction<BidRequest, CollectedEvidence, BidRequest> bidRequestPatcher
     ) throws Exception {
+
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
@@ -64,6 +65,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
     @Test
     public void codeShouldStartWithModuleCode() throws Exception {
+
         // given
         final RawAuctionRequestHook hook = buildHook(
                 null,
@@ -77,6 +79,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
     @Test
     public void shouldPassInvocationContextToAccountControl() throws Exception {
+
         // given
         final AuctionInvocationContext mockedContext = mock(AuctionInvocationContext.class);
 
@@ -105,6 +108,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
     @Test
     public void shouldPassPayloadAndBuilderThroughModulePatcher() throws Exception {
+
         // given
         final AuctionRequestPayload payload = mock(AuctionRequestPayload.class);
         final BidRequest rawBidRequest = BidRequest.builder().build();
@@ -146,6 +150,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
     @Test
     public void shouldReturnOldPayloadIfPatcherReturnedNull() throws Exception {
+
         // given
         final AuctionRequestPayload payload = mock(AuctionRequestPayload.class);
         final BidRequest rawBidRequest = BidRequest.builder().build();
@@ -184,6 +189,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
     @Test
     public void shouldReturnOldPayloadIfPatcherReturnedOldRequest() throws Exception {
+
         // given
         final AuctionRequestPayload payload = mock(AuctionRequestPayload.class);
         when(payload.bidRequest()).thenReturn(BidRequest.builder().build());
@@ -223,6 +229,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
     @Test
     public void shouldReturnNewPayloadIfPatcherReturnedNewRequest() throws Exception {
+
         // given
         final AuctionRequestPayload payload = mock(AuctionRequestPayload.class);
         when(payload.bidRequest()).thenReturn(BidRequest.builder()

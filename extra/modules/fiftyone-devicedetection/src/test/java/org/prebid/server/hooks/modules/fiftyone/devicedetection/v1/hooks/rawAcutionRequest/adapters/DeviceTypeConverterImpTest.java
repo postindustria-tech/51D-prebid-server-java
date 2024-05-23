@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 public class DeviceTypeConverterImpTest {
     private static Integer convertDeviceType(String deviceType) throws Exception {
+
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
@@ -28,6 +29,7 @@ public class DeviceTypeConverterImpTest {
 
     @Test
     public void shouldReturnFourForPhone() throws Exception {
+
         // given
         final String typeString = "Phone";
 
@@ -40,6 +42,7 @@ public class DeviceTypeConverterImpTest {
 
     @Test
     public void shouldReturnSevenForMediaHub() throws Exception {
+
         // given
         final String typeString = "MediaHub";
 
@@ -52,6 +55,7 @@ public class DeviceTypeConverterImpTest {
 
     @Test
     public void shouldReturnZeroForUnexpectedValue() throws Exception {
+
         // given
         final String typeString = "BattleStar Atlantis";
 

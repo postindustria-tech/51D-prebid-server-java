@@ -58,6 +58,7 @@ public class PipelineProviderTest {
     }
     @Test
     public void shouldUseJoinedBuilder() throws Exception {
+
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
 

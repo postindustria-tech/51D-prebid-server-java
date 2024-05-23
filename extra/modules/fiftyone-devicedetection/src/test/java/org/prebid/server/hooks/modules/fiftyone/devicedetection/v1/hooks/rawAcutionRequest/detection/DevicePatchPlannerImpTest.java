@@ -101,6 +101,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnAllPropertiesWhenDeviceIsEmpty() throws Exception {
+
         // given
         final Device device = Device.builder().build();
 
@@ -114,6 +115,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnNullWhenDeviceIsFull() throws Exception {
+
         // given and when
         final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
                 = patchDevice(COMPLETE_DEVICE, COMPLETE_DEVICE_DATA);
@@ -124,6 +126,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnDeviceTypePatchWhenItIsMissing() throws Exception {
+
         // given
         final Device testDevice = COMPLETE_DEVICE.toBuilder()
                 .devicetype(null)
@@ -141,6 +144,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnMakePatchWhenItIsMissing() throws Exception {
+
         // given
         final Device testDevice = COMPLETE_DEVICE.toBuilder()
                 .make(null)
@@ -158,6 +162,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnHWNameForModelIfHWModelIsMissing() throws Exception {
+
         // given
         final Device testDevice = COMPLETE_DEVICE.toBuilder()
                 .model(null)
@@ -179,6 +184,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnModelPatchWhenItIsMissing() throws Exception {
+
         // given
         final Device testDevice = COMPLETE_DEVICE.toBuilder()
                 .model(null)
@@ -196,6 +202,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnOsPatchWhenItIsMissing() throws Exception {
+
         // given
         final Device testDevice = COMPLETE_DEVICE.toBuilder()
                 .os(null)
@@ -213,6 +220,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnOsvPatchWhenItIsMissing() throws Exception {
+
         // given
         final Device testDevice = COMPLETE_DEVICE.toBuilder()
                 .osv(null)
@@ -230,6 +238,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnHPatchWhenItIsMissing() throws Exception {
+
         // given
         final Device testDevice = COMPLETE_DEVICE.toBuilder()
                 .h(null)
@@ -247,6 +256,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnWPatchWhenItIsMissing() throws Exception {
+
         // given
         final Device testDevice = COMPLETE_DEVICE.toBuilder()
                 .w(null)
@@ -264,6 +274,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnPpiPatchWhenItIsMissing() throws Exception {
+
         // given
         final Device testDevice = COMPLETE_DEVICE.toBuilder()
                 .ppi(null)
@@ -281,6 +292,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnPXRatioPatchWhenItIsMissing() throws Exception {
+
         // given
         final Device testDevice = COMPLETE_DEVICE.toBuilder()
                 .pxratio(null)
@@ -297,6 +309,7 @@ public class DevicePatchPlannerImpTest {
 
     @Test
     public void shouldReturnDeviceIDPatchWhenItIsMissing() throws Exception {
+
         // given
         final Device testDevice = COMPLETE_DEVICE.toBuilder()
                 .ext(null)
