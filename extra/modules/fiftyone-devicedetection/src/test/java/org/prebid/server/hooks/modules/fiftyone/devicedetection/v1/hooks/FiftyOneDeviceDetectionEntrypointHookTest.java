@@ -11,7 +11,6 @@ import org.prebid.server.hooks.v1.entrypoint.EntrypointPayload;
 import org.prebid.server.model.CaseInsensitiveMultiMap;
 
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -60,7 +59,7 @@ public class FiftyOneDeviceDetectionEntrypointHookTest {
         // then
         assertThat(result.succeeded()).isTrue();
         assertThat(result.result().moduleContext()).isInstanceOf(ModuleContext.class);
-        final CollectedEvidence evidence = ((ModuleContext)result.result().moduleContext()).collectedEvidence();
+        final CollectedEvidence evidence = ((ModuleContext) result.result().moduleContext()).collectedEvidence();
         assertThat(evidence).isNotNull();
         assertThat(evidence.rawHeaders()).hasSize(1);
         final Map.Entry<String, String> firstHeader = evidence.rawHeaders().stream().findFirst().get();

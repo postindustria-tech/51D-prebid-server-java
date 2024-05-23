@@ -28,7 +28,8 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     private static FiftyOneDeviceDetectionRawAuctionRequestHook buildHook(
             Predicate<AuctionInvocationContext> accountControl,
             BiConsumer<CollectedEvidence.CollectedEvidenceBuilder, BidRequest> bidRequestEvidenceCollector,
-            BiFunction<ModuleContext, Consumer<CollectedEvidence.CollectedEvidenceBuilder>, ModuleContext> moduleContextPatcher,
+            BiFunction<ModuleContext,
+                    Consumer<CollectedEvidence.CollectedEvidenceBuilder>, ModuleContext> moduleContextPatcher,
             BiFunction<BidRequest, CollectedEvidence, BidRequest> bidRequestPatcher
     ) throws Exception {
 
@@ -55,13 +56,17 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
             }
 
             @Override
-            protected ModuleContext addEvidenceToContext(ModuleContext moduleContext, Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
+            protected ModuleContext addEvidenceToContext(
+                    ModuleContext moduleContext,
+                    Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
 
                 return moduleContextPatcher.apply(moduleContext, evidenceInjector);
             }
 
             @Override
-            protected void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
+            protected void collectEvidence(
+                    CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder,
+                    BidRequest bidRequest) {
 
                 bidRequestEvidenceCollector.accept(evidenceBuilder, bidRequest);
             }
