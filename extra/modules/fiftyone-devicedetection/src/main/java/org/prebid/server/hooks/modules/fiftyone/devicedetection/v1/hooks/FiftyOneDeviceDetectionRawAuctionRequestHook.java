@@ -76,7 +76,13 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
             "BrowserName",
             "BrowserVersion",
-            "IsCrawler"
+            "IsCrawler",
+
+            "BrowserVendor",
+            "PlatformVendor",
+            "Javascript",
+            "GeoLocation",
+            "HardwareModelVariants"
     );
 
     protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
