@@ -15,6 +15,7 @@ public class PipelineBuilderSpawnerImpTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -23,6 +24,7 @@ public class PipelineBuilderSpawnerImpTest {
 
             @Override
             public DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
+
                 return super.makeRawBuilder(dataFile);
             }
         }::makeRawBuilder;

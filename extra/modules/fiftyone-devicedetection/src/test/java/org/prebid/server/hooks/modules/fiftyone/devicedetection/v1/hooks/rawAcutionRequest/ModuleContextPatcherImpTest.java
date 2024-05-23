@@ -23,6 +23,7 @@ public class ModuleContextPatcherImpTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -30,6 +31,7 @@ public class ModuleContextPatcherImpTest {
             }
             @Override
             public ModuleContext addEvidenceToContext(ModuleContext moduleContext, Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
+
                 return super.addEvidenceToContext(moduleContext, evidenceInjector);
             }
         }::addEvidenceToContext;

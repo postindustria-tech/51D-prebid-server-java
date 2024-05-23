@@ -22,6 +22,7 @@ public class BidRequestReaderTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -29,11 +30,13 @@ public class BidRequestReaderTest {
             }
             @Override
             public void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
+
                 super.collectEvidence(evidenceBuilder, bidRequest);
             }
 
             @Override
             protected void appendSecureHeaders(UserAgent userAgent, Map<String, String> evidence) {
+
                 userAgentEvidenceConverter.accept(userAgent, evidence);
             }
         }::collectEvidence;

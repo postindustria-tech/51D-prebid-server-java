@@ -35,6 +35,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -43,21 +44,25 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
             @Override
             protected boolean isAccountAllowed(AuctionInvocationContext invocationContext) {
+
                 return accountControl.test(invocationContext);
             }
 
             @Override
             protected BidRequest enrichDevice(BidRequest bidRequest, CollectedEvidence collectedEvidence) {
+
                 return bidRequestPatcher.apply(bidRequest, collectedEvidence);
             }
 
             @Override
             protected ModuleContext addEvidenceToContext(ModuleContext moduleContext, Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
+
                 return moduleContextPatcher.apply(moduleContext, evidenceInjector);
             }
 
             @Override
             protected void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
+
                 bidRequestEvidenceCollector.accept(evidenceBuilder, bidRequest);
             }
         };

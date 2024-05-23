@@ -37,6 +37,7 @@ public class AccountControlImpTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(moduleConfig) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -45,6 +46,7 @@ public class AccountControlImpTest {
 
             @Override
             public boolean isAccountAllowed(AuctionInvocationContext invocationContext) {
+
                 return super.isAccountAllowed(invocationContext);
             }
 

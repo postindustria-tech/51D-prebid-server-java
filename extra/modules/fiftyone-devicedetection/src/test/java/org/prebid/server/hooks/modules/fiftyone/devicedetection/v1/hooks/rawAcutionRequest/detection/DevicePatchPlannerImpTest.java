@@ -54,6 +54,7 @@ public class DevicePatchPlannerImpTest {
         return new AspectPropertyValue<T>() {
             @Override
             public boolean hasValue() {
+
                 return true;
             }
 
@@ -64,16 +65,19 @@ public class DevicePatchPlannerImpTest {
 
             @Override
             public void setValue(T t) {
+
                 throw new UnsupportedOperationException();
             }
 
             @Override
             public String getNoValueMessage() {
+
                 throw new UnsupportedOperationException();
             }
 
             @Override
             public void setNoValueMessage(String s) {
+
                 throw new UnsupportedOperationException();
             }
         };
@@ -86,6 +90,7 @@ public class DevicePatchPlannerImpTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -94,6 +99,7 @@ public class DevicePatchPlannerImpTest {
 
             @Override
             public EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
+
                 return super.patchDevice(device, deviceData);
             }
         }.patchDevice(device, deviceData);

@@ -23,8 +23,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class DeviceEnrichmentTest {
-    private static BiFunction<
-            Device,
+
+    private static BiFunction<Device,
             CollectedEvidence,
             FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult> buildHook(
                     Supplier<Pipeline> pipelineSupplier,
@@ -37,6 +37,7 @@ public class DeviceEnrichmentTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -45,27 +46,31 @@ public class DeviceEnrichmentTest {
 
             @Override
             protected EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
+
                 return patcher.apply(device, deviceData);
             }
 
             @Override
             protected Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
+
                 return evidenceCollector.apply(collectedEvidence);
             }
 
             @Override
             protected Pipeline getPipeline() {
+
                 return pipelineSupplier.get();
             }
 
             @Override
             public EnrichmentResult populateDeviceInfo(
                     Device device,
-                    CollectedEvidence collectedEvidence)
-            {
+                    CollectedEvidence collectedEvidence) {
+
                 return super.populateDeviceInfo(device, collectedEvidence);
             }
-        }::populateDeviceInfo;
+        }
+            ::populateDeviceInfo;
     }
 
     @Test

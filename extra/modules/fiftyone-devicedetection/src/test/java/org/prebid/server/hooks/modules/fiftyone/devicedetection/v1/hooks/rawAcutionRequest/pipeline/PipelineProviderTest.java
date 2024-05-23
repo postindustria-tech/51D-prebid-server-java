@@ -30,15 +30,18 @@ public class PipelineProviderTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(moduleConfig) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 return super.makeBuilder();
             }
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
+
                 return builderSpawner.makeBuilder(dataFile);
             }
 
             @Override
             protected void applyUpdateOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder, DataFileUpdate updateConfig) {
+
                 updateOptionsMerger.accept(pipelineBuilder, updateConfig);
             }
 
@@ -52,6 +55,7 @@ public class PipelineProviderTest {
 
             @Override
             public Pipeline getPipeline() {
+
                 return super.getPipeline();
             }
         }::getPipeline;

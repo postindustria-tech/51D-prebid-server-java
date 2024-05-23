@@ -14,6 +14,7 @@ public class DeviceTypeConverterImpTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -22,6 +23,7 @@ public class DeviceTypeConverterImpTest {
 
             @Override
             public Integer convertDeviceType(String deviceType) {
+
                 return super.convertDeviceType(deviceType);
             }
         }.convertDeviceType(deviceType);

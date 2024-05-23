@@ -20,6 +20,7 @@ public class PriorityEvidenceSelectorImpTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -27,6 +28,7 @@ public class PriorityEvidenceSelectorImpTest {
             }
             @Override
             public Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
+
                 return super.pickRelevantFrom(collectedEvidence);
             }
         }.pickRelevantFrom(collectedEvidence);

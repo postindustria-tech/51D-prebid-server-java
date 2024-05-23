@@ -16,10 +16,12 @@ public class PipelineSupplierImpTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 return builder;
             }
             @Override
             public Pipeline getPipeline() {
+
                 return super.getPipeline();
             }
         }::getPipeline;

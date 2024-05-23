@@ -22,6 +22,7 @@ public class UserAgentEvidenceConverterImpTest {
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
+
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -29,6 +30,7 @@ public class UserAgentEvidenceConverterImpTest {
             }
             @Override
             public void appendSecureHeaders(UserAgent userAgent, Map<String, String> evidence) {
+
                 super.appendSecureHeaders(userAgent, evidence);
             }
         }::appendSecureHeaders;
