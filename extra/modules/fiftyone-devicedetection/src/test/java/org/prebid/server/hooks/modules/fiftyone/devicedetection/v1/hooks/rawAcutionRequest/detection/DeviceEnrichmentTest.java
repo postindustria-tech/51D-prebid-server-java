@@ -193,17 +193,17 @@ public class DeviceEnrichmentTest {
                 CollectedEvidence,
                 FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult> hook
                 = buildHook(() -> pipeline,
-                (dev, devData) -> {
-                    patcherCalled[0] = true;
-                    assertThat(dev).isEqualTo(device);
-                    assertThat(devData).isEqualTo(deviceData);
-                    return preparedResult;
-                },
-                ev -> {
-                    collectorCalled[0] = true;
-                    assertThat(ev).isEqualTo(collectedEvidence);
-                    return evidence;
-                });
+                    (dev, devData) -> {
+                        patcherCalled[0] = true;
+                        assertThat(dev).isEqualTo(device);
+                        assertThat(devData).isEqualTo(deviceData);
+                        return preparedResult;
+                    },
+                    ev -> {
+                        collectorCalled[0] = true;
+                        assertThat(ev).isEqualTo(collectedEvidence);
+                        return evidence;
+                    });
         final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result = hook.apply(
                 device,
                 CollectedEvidence.builder().build());
