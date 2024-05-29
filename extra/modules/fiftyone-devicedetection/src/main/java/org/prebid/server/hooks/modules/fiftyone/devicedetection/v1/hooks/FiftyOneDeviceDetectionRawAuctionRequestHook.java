@@ -145,32 +145,32 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
         pipelineBuilder.setDataUpdateService(new DataUpdateServiceDefault());
 
-        final var auto = updateConfig.getAuto();
+        final Boolean auto = updateConfig.getAuto();
         if (auto != null) {
             pipelineBuilder.setAutoUpdate(auto);
         }
 
-        final var onStartup = updateConfig.getOnStartup();
+        final Boolean onStartup = updateConfig.getOnStartup();
         if (onStartup != null) {
             pipelineBuilder.setDataUpdateOnStartup(onStartup);
         }
 
-        final var url = updateConfig.getUrl();
+        final String url = updateConfig.getUrl();
         if (url != null && !url.isEmpty()) {
             pipelineBuilder.setDataUpdateUrl(url);
         }
 
-        final var licenseKey = updateConfig.getLicenseKey();
+        final String licenseKey = updateConfig.getLicenseKey();
         if (licenseKey != null && !licenseKey.isEmpty()) {
             pipelineBuilder.setDataUpdateLicenseKey(licenseKey);
         }
 
-        final var watchFileSystem = updateConfig.getWatchFileSystem();
+        final Boolean watchFileSystem = updateConfig.getWatchFileSystem();
         if (watchFileSystem != null) {
             pipelineBuilder.setDataFileSystemWatcher(watchFileSystem);
         }
 
-        final var pollingInterval = updateConfig.getPollingInterval();
+        final Integer pollingInterval = updateConfig.getPollingInterval();
         if (pollingInterval != null) {
             pipelineBuilder.setUpdatePollingInterval(pollingInterval);
         }
