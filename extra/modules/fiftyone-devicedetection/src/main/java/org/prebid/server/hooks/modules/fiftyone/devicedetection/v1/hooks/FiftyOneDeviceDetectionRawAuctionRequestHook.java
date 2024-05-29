@@ -270,22 +270,16 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
             ModuleContext moduleContext,
             Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
 
-        final ModuleContext.ModuleContextBuilder contextBuilder;
-        CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = null;
-        if (moduleContext != null) {
-            contextBuilder = moduleContext.toBuilder();
-            final CollectedEvidence lastEvidence = moduleContext.collectedEvidence();
-            if (lastEvidence != null) {
-                evidenceBuilder = lastEvidence.toBuilder();
-            }
-        } else {
-            contextBuilder = ModuleContext.builder();
-        }
-        if (evidenceBuilder == null) {
-            evidenceBuilder = CollectedEvidence.builder();
-        }
+        final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = Optional.ofNullable(moduleContext)
+                .map(ModuleContext::collectedEvidence)
+                .map(CollectedEvidence::toBuilder)
+                .orElseGet(CollectedEvidence::builder);
+
         evidenceInjector.accept(evidenceBuilder);
-        return contextBuilder
+
+        return Optional.ofNullable(moduleContext)
+                .map(ModuleContext::toBuilder)
+                .orElseGet(ModuleContext::builder)
                 .collectedEvidence(evidenceBuilder.build())
                 .build();
     }
