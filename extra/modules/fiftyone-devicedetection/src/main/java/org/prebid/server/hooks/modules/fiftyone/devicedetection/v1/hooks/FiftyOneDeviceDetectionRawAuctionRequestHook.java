@@ -50,15 +50,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
     private static final String CODE = "fiftyone-devicedetection-raw-auction-request-hook";
 
-    private final ModuleConfig moduleConfig;
-    private final Pipeline pipeline;
-
-    public FiftyOneDeviceDetectionRawAuctionRequestHook(ModuleConfig moduleConfig) throws Exception {
-
-        this.moduleConfig = moduleConfig;
-        final DeviceDetectionOnPremisePipelineBuilder builder = makeBuilder();
-        pipeline = builder.build();
-    }
+    public static final String EXT_DEVICE_ID_KEY = "fiftyonedegrees_deviceId";
 
     private static final Collection<String> PROPERTIES_USED = List.of(
             "devicetype",
@@ -82,6 +74,48 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
             "GeoLocation",
             "HardwareModelVariants");
 
+    // https://github.com/InteractiveAdvertisingBureau/AdCOM/blob/main/AdCOM%20v1.0%20FINAL.md#list--device-types-
+    private enum ORTBDeviceType {
+        UNKNOWN,
+        MOBILE_TABLET,
+        PERSONAL_COMPUTER,
+        CONNECTED_TV,
+        PHONE,
+        TABLET,
+        CONNECTED_DEVICE,
+        SET_TOP_BOX,
+        OOH_DEVICE
+    }
+
+    private static final Map<String, Integer> MAPPING = Map.ofEntries(
+            Map.entry("Phone", ORTBDeviceType.PHONE.ordinal()),
+            Map.entry("Console", ORTBDeviceType.SET_TOP_BOX.ordinal()),
+            Map.entry("Desktop", ORTBDeviceType.PERSONAL_COMPUTER.ordinal()),
+            Map.entry("EReader", ORTBDeviceType.PERSONAL_COMPUTER.ordinal()),
+            Map.entry("IoT", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
+            Map.entry("Kiosk", ORTBDeviceType.OOH_DEVICE.ordinal()),
+            Map.entry("MediaHub", ORTBDeviceType.SET_TOP_BOX.ordinal()),
+            Map.entry("Mobile", ORTBDeviceType.MOBILE_TABLET.ordinal()),
+            Map.entry("Router", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
+            Map.entry("SmallScreen", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
+            Map.entry("SmartPhone", ORTBDeviceType.MOBILE_TABLET.ordinal()),
+            Map.entry("SmartSpeaker", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
+            Map.entry("SmartWatch", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
+            Map.entry("Tablet", ORTBDeviceType.TABLET.ordinal()),
+            Map.entry("Tv", ORTBDeviceType.CONNECTED_TV.ordinal()),
+            Map.entry("Vehicle Display", ORTBDeviceType.PERSONAL_COMPUTER.ordinal())
+    );
+
+    private final ModuleConfig moduleConfig;
+    private final Pipeline pipeline;
+
+    public FiftyOneDeviceDetectionRawAuctionRequestHook(ModuleConfig moduleConfig) throws Exception {
+
+        this.moduleConfig = moduleConfig;
+        final DeviceDetectionOnPremisePipelineBuilder builder = makeBuilder();
+        pipeline = builder.build();
+    }
+
     protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
 
         final ModuleConfig moduleConfig = getModuleConfig();
@@ -93,47 +127,16 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         return builder;
     }
 
+    protected ModuleConfig getModuleConfig() {
+
+        return moduleConfig;
+    }
+
     protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
 
         final Boolean shouldMakeDataCopy = dataFile.getMakeTempCopy();
         return new DeviceDetectionPipelineBuilder()
                 .useOnPremise(dataFile.getPath(), shouldMakeDataCopy != null && shouldMakeDataCopy);
-    }
-
-    protected void applyPerformanceOptions(
-            DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
-            PerformanceConfig performanceConfig) {
-
-        final String profile = performanceConfig.getProfile();
-        if (profile != null && !profile.isEmpty()) {
-            final String lowercasedProfile = profile.toLowerCase();
-            for (Constants.PerformanceProfiles nextProfile: Constants.PerformanceProfiles.values()) {
-                if (nextProfile.name().toLowerCase().equals(lowercasedProfile)) {
-                    pipelineBuilder.setPerformanceProfile(nextProfile);
-                    return;
-                }
-            }
-        }
-
-        final Integer concurrency = performanceConfig.getConcurrency();
-        if (concurrency != null) {
-            pipelineBuilder.setConcurrency(concurrency);
-        }
-
-        final Integer difference = performanceConfig.getDifference();
-        if (difference != null) {
-            pipelineBuilder.setDifference(difference);
-        }
-
-        final Boolean allowUnmatched = performanceConfig.getAllowUnmatched();
-        if (allowUnmatched != null) {
-            pipelineBuilder.setAllowUnmatched(allowUnmatched);
-        }
-
-        final Integer drift = performanceConfig.getDrift();
-        if (drift != null) {
-            pipelineBuilder.setDrift(drift);
-        }
     }
 
     protected void applyUpdateOptions(
@@ -170,6 +173,42 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         final var pollingInterval = updateConfig.getPollingInterval();
         if (pollingInterval != null) {
             pipelineBuilder.setUpdatePollingInterval(pollingInterval);
+        }
+    }
+
+    protected void applyPerformanceOptions(
+            DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+            PerformanceConfig performanceConfig) {
+
+        final String profile = performanceConfig.getProfile();
+        if (profile != null && !profile.isEmpty()) {
+            final String lowercasedProfile = profile.toLowerCase();
+            for (Constants.PerformanceProfiles nextProfile: Constants.PerformanceProfiles.values()) {
+                if (nextProfile.name().toLowerCase().equals(lowercasedProfile)) {
+                    pipelineBuilder.setPerformanceProfile(nextProfile);
+                    return;
+                }
+            }
+        }
+
+        final Integer concurrency = performanceConfig.getConcurrency();
+        if (concurrency != null) {
+            pipelineBuilder.setConcurrency(concurrency);
+        }
+
+        final Integer difference = performanceConfig.getDifference();
+        if (difference != null) {
+            pipelineBuilder.setDifference(difference);
+        }
+
+        final Boolean allowUnmatched = performanceConfig.getAllowUnmatched();
+        if (allowUnmatched != null) {
+            pipelineBuilder.setAllowUnmatched(allowUnmatched);
+        }
+
+        final Integer drift = performanceConfig.getDrift();
+        if (drift != null) {
+            pipelineBuilder.setDrift(drift);
         }
     }
 
@@ -239,6 +278,141 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         return !hasAllowList;
     }
 
+    protected ModuleContext addEvidenceToContext(
+            ModuleContext moduleContext,
+            Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
+
+        final ModuleContext.ModuleContextBuilder contextBuilder;
+        CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = null;
+        if (moduleContext != null) {
+            contextBuilder = moduleContext.toBuilder();
+            final CollectedEvidence lastEvidence = moduleContext.collectedEvidence();
+            if (lastEvidence != null) {
+                evidenceBuilder = lastEvidence.toBuilder();
+            }
+        } else {
+            contextBuilder = ModuleContext.builder();
+        }
+        if (evidenceBuilder == null) {
+            evidenceBuilder = CollectedEvidence.builder();
+        }
+        evidenceInjector.accept(evidenceBuilder);
+        return contextBuilder
+                .collectedEvidence(evidenceBuilder.build())
+                .build();
+    }
+
+    protected void collectEvidence(
+            CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder,
+            BidRequest bidRequest) {
+
+        final Device device = bidRequest.getDevice();
+        if (device == null) {
+            return;
+        }
+        final String ua = device.getUa();
+        if (ua != null) {
+            evidenceBuilder.deviceUA(ua);
+        }
+        final UserAgent sua = device.getSua();
+        if (sua != null) {
+            final HashMap<String, String> secureHeaders = new HashMap<>();
+            appendSecureHeaders(sua, secureHeaders);
+            evidenceBuilder.secureHeaders(secureHeaders);
+        }
+    }
+
+    protected void appendSecureHeaders(UserAgent userAgent, Map<String, String> evidence) {
+
+        if (userAgent == null) {
+            return;
+        }
+
+        final List<BrandVersion> versions = userAgent.getBrowsers();
+        if (versions != null && !versions.isEmpty()) {
+            final String fullUA = brandListToString(versions);
+            evidence.put("header.Sec-CH-UA", fullUA);
+            evidence.put("header.Sec-CH-UA-Full-Version-List", fullUA);
+        }
+
+        final BrandVersion platform = userAgent.getPlatform();
+        if (platform != null) {
+            final String platformName = platform.getBrand();
+            if (platformName != null && !platformName.isEmpty()) {
+                evidence.put("header.Sec-CH-UA-Platform", '"' + toHeaderSafe(platformName) + '"');
+            }
+
+            final List<String> platformVersions = platform.getVersion();
+            if (platformVersions != null && !platformVersions.isEmpty()) {
+                final StringBuilder s = new StringBuilder();
+                s.append('"');
+                appendVersionList(s, platformVersions);
+                s.append('"');
+                evidence.put("header.Sec-CH-UA-Platform-Version", s.toString());
+            }
+        }
+
+        final Integer isMobile = userAgent.getMobile();
+        if (isMobile != null) {
+            evidence.put("header.Sec-CH-UA-Mobile", "?" + isMobile);
+        }
+
+        final String architecture = userAgent.getArchitecture();
+        if (architecture != null && !architecture.isEmpty()) {
+            evidence.put("header.Sec-CH-UA-Arch", '"' + toHeaderSafe(architecture) + '"');
+        }
+
+        final String bitness = userAgent.getBitness();
+        if (bitness != null && !bitness.isEmpty()) {
+            evidence.put("header.Sec-CH-UA-Bitness", '"' + toHeaderSafe(bitness) + '"');
+        }
+
+        final String model = userAgent.getModel();
+        if (model != null && !model.isEmpty()) {
+            evidence.put("header.Sec-CH-UA-Model", '"' + toHeaderSafe(model) + '"');
+        }
+    }
+
+    private static String toHeaderSafe(String rawValue) {
+
+        return rawValue.replace("\"", "\\\"");
+    }
+
+    private static String brandListToString(List<BrandVersion> versions) {
+
+        final StringBuilder s = new StringBuilder();
+        for (BrandVersion nextBrandVersion : versions) {
+            final String brandName = nextBrandVersion.getBrand();
+            if (brandName == null) {
+                continue;
+            }
+            if (!s.isEmpty()) {
+                s.append(", ");
+            }
+            s.append('"');
+            s.append(toHeaderSafe(brandName));
+            s.append("\";v=\"");
+            appendVersionList(s, nextBrandVersion.getVersion());
+            s.append('"');
+        }
+        return s.toString();
+    }
+
+    private static void appendVersionList(StringBuilder s, List<String> versions) {
+
+        if (versions == null || versions.isEmpty()) {
+            return;
+        }
+        boolean isFirstVersionFragment = true;
+        for (String nextFragment : versions) {
+            if (!isFirstVersionFragment) {
+                s.append('.');
+            }
+            s.append(nextFragment);
+            isFirstVersionFragment = false;
+        }
+    }
+
     private AuctionRequestPayload updatePayload(
             AuctionRequestPayload existingPayload,
             CollectedEvidence collectedEvidence) {
@@ -276,6 +450,14 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                 .build();
     }
 
+    @Builder
+    public record EnrichmentResult(
+            Device enrichedDevice,
+            Collection<String> enrichedFields,
+            Exception processingException
+    ) {
+    }
+
     protected EnrichmentResult populateDeviceInfo(
             Device device,
             CollectedEvidence collectedEvidence) {
@@ -294,6 +476,37 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                     .processingException(e)
                     .build();
         }
+    }
+
+    protected Pipeline getPipeline() {
+
+        return pipeline;
+    }
+
+    protected Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
+
+        final Map<String, String> evidence = new HashMap<>();
+
+        final String ua = collectedEvidence.deviceUA();
+        if (ua != null && !ua.isEmpty()) {
+            evidence.put("header.user-agent", ua);
+        }
+        final Map<String, String> secureHeaders = collectedEvidence.secureHeaders();
+        if (secureHeaders != null && !secureHeaders.isEmpty()) {
+            evidence.putAll(secureHeaders);
+        }
+        if (!evidence.isEmpty()) {
+            return evidence;
+        }
+
+        final Collection<Map.Entry<String, String>> headers = collectedEvidence.rawHeaders();
+        if (headers != null && !headers.isEmpty()) {
+            for (Map.Entry<String, String> nextRawHeader : headers) {
+                evidence.put("header." + nextRawHeader.getKey(), nextRawHeader.getValue());
+            }
+        }
+
+        return evidence;
     }
 
     protected EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
@@ -427,207 +640,12 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         return null;
     }
 
-    // https://github.com/InteractiveAdvertisingBureau/AdCOM/blob/main/AdCOM%20v1.0%20FINAL.md#list--device-types-
-    private enum ORTBDeviceType {
-        UNKNOWN,
-        MOBILE_TABLET,
-        PERSONAL_COMPUTER,
-        CONNECTED_TV,
-        PHONE,
-        TABLET,
-        CONNECTED_DEVICE,
-        SET_TOP_BOX,
-        OOH_DEVICE
-    }
-
-    private static final Map<String, Integer> MAPPING = Map.ofEntries(
-            Map.entry("Phone", ORTBDeviceType.PHONE.ordinal()),
-            Map.entry("Console", ORTBDeviceType.SET_TOP_BOX.ordinal()),
-            Map.entry("Desktop", ORTBDeviceType.PERSONAL_COMPUTER.ordinal()),
-            Map.entry("EReader", ORTBDeviceType.PERSONAL_COMPUTER.ordinal()),
-            Map.entry("IoT", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
-            Map.entry("Kiosk", ORTBDeviceType.OOH_DEVICE.ordinal()),
-            Map.entry("MediaHub", ORTBDeviceType.SET_TOP_BOX.ordinal()),
-            Map.entry("Mobile", ORTBDeviceType.MOBILE_TABLET.ordinal()),
-            Map.entry("Router", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
-            Map.entry("SmallScreen", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
-            Map.entry("SmartPhone", ORTBDeviceType.MOBILE_TABLET.ordinal()),
-            Map.entry("SmartSpeaker", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
-            Map.entry("SmartWatch", ORTBDeviceType.CONNECTED_DEVICE.ordinal()),
-            Map.entry("Tablet", ORTBDeviceType.TABLET.ordinal()),
-            Map.entry("Tv", ORTBDeviceType.CONNECTED_TV.ordinal()),
-            Map.entry("Vehicle Display", ORTBDeviceType.PERSONAL_COMPUTER.ordinal())
-    );
-
     protected Integer convertDeviceType(String deviceType) {
 
         return Optional
                 .ofNullable(MAPPING.get(deviceType))
                 .orElse(ORTBDeviceType.UNKNOWN.ordinal());
     }
-
-    protected Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
-
-        final Map<String, String> evidence = new HashMap<>();
-
-        final String ua = collectedEvidence.deviceUA();
-        if (ua != null && !ua.isEmpty()) {
-            evidence.put("header.user-agent", ua);
-        }
-        final Map<String, String> secureHeaders = collectedEvidence.secureHeaders();
-        if (secureHeaders != null && !secureHeaders.isEmpty()) {
-            evidence.putAll(secureHeaders);
-        }
-        if (!evidence.isEmpty()) {
-            return evidence;
-        }
-
-        final Collection<Map.Entry<String, String>> headers = collectedEvidence.rawHeaders();
-        if (headers != null && !headers.isEmpty()) {
-            for (Map.Entry<String, String> nextRawHeader : headers) {
-                evidence.put("header." + nextRawHeader.getKey(), nextRawHeader.getValue());
-            }
-        }
-
-        return evidence;
-    }
-
-    protected ModuleContext addEvidenceToContext(
-            ModuleContext moduleContext,
-            Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
-
-        final ModuleContext.ModuleContextBuilder contextBuilder;
-        CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = null;
-        if (moduleContext != null) {
-            contextBuilder = moduleContext.toBuilder();
-            final CollectedEvidence lastEvidence = moduleContext.collectedEvidence();
-            if (lastEvidence != null) {
-                evidenceBuilder = lastEvidence.toBuilder();
-            }
-        } else {
-            contextBuilder = ModuleContext.builder();
-        }
-        if (evidenceBuilder == null) {
-            evidenceBuilder = CollectedEvidence.builder();
-        }
-        evidenceInjector.accept(evidenceBuilder);
-        return contextBuilder
-                .collectedEvidence(evidenceBuilder.build())
-                .build();
-    }
-
-    protected void collectEvidence(
-            CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder,
-            BidRequest bidRequest) {
-
-        final Device device = bidRequest.getDevice();
-        if (device == null) {
-            return;
-        }
-        final String ua = device.getUa();
-        if (ua != null) {
-            evidenceBuilder.deviceUA(ua);
-        }
-        final UserAgent sua = device.getSua();
-        if (sua != null) {
-            final HashMap<String, String> secureHeaders = new HashMap<>();
-            appendSecureHeaders(sua, secureHeaders);
-            evidenceBuilder.secureHeaders(secureHeaders);
-        }
-    }
-
-    protected void appendSecureHeaders(UserAgent userAgent, Map<String, String> evidence) {
-
-        if (userAgent == null) {
-            return;
-        }
-
-        final List<BrandVersion> versions = userAgent.getBrowsers();
-        if (versions != null && !versions.isEmpty()) {
-            final String fullUA = brandListToString(versions);
-            evidence.put("header.Sec-CH-UA", fullUA);
-            evidence.put("header.Sec-CH-UA-Full-Version-List", fullUA);
-        }
-
-        final BrandVersion platform = userAgent.getPlatform();
-        if (platform != null) {
-            final String platformName = platform.getBrand();
-            if (platformName != null && !platformName.isEmpty()) {
-                evidence.put("header.Sec-CH-UA-Platform", '"' + toHeaderSafe(platformName) + '"');
-            }
-
-            final List<String> platformVersions = platform.getVersion();
-            if (platformVersions != null && !platformVersions.isEmpty()) {
-                final StringBuilder s = new StringBuilder();
-                s.append('"');
-                appendVersionList(s, platformVersions);
-                s.append('"');
-                evidence.put("header.Sec-CH-UA-Platform-Version", s.toString());
-            }
-        }
-
-        final Integer isMobile = userAgent.getMobile();
-        if (isMobile != null) {
-            evidence.put("header.Sec-CH-UA-Mobile", "?" + isMobile);
-        }
-
-        final String architecture = userAgent.getArchitecture();
-        if (architecture != null && !architecture.isEmpty()) {
-            evidence.put("header.Sec-CH-UA-Arch", '"' + toHeaderSafe(architecture) + '"');
-        }
-
-        final String bitness = userAgent.getBitness();
-        if (bitness != null && !bitness.isEmpty()) {
-            evidence.put("header.Sec-CH-UA-Bitness", '"' + toHeaderSafe(bitness) + '"');
-        }
-
-        final String model = userAgent.getModel();
-        if (model != null && !model.isEmpty()) {
-            evidence.put("header.Sec-CH-UA-Model", '"' + toHeaderSafe(model) + '"');
-        }
-    }
-
-    private static String brandListToString(List<BrandVersion> versions) {
-
-        final StringBuilder s = new StringBuilder();
-        for (BrandVersion nextBrandVersion : versions) {
-            final String brandName = nextBrandVersion.getBrand();
-            if (brandName == null) {
-                continue;
-            }
-            if (!s.isEmpty()) {
-                s.append(", ");
-            }
-            s.append('"');
-            s.append(toHeaderSafe(brandName));
-            s.append("\";v=\"");
-            appendVersionList(s, nextBrandVersion.getVersion());
-            s.append('"');
-        }
-        return s.toString();
-    }
-
-    private static void appendVersionList(StringBuilder s, List<String> versions) {
-
-        if (versions == null || versions.isEmpty()) {
-            return;
-        }
-        boolean isFirstVersionFragment = true;
-        for (String nextFragment : versions) {
-            if (!isFirstVersionFragment) {
-                s.append('.');
-            }
-            s.append(nextFragment);
-            isFirstVersionFragment = false;
-        }
-    }
-
-    private static String toHeaderSafe(String rawValue) {
-
-        return rawValue.replace("\"", "\\\"");
-    }
-
-    public static final String EXT_DEVICE_ID_KEY = "fiftyonedegrees_deviceId";
 
     /**
      * Consists of four components separated by a hyphen symbol:
@@ -668,23 +686,5 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
         ext.addProperty(EXT_DEVICE_ID_KEY, new TextNode(deviceId));
         deviceBuilder.ext(ext);
-    }
-
-    @Builder
-    public record EnrichmentResult(
-            Device enrichedDevice,
-            Collection<String> enrichedFields,
-            Exception processingException
-    ) {
-    }
-
-    protected ModuleConfig getModuleConfig() {
-
-        return moduleConfig;
-    }
-
-    protected Pipeline getPipeline() {
-
-        return pipeline;
     }
 }
