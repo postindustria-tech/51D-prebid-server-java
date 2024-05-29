@@ -253,32 +253,17 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     protected boolean isAccountAllowed(AuctionInvocationContext invocationContext) {
 
         final AccountFilter accountFilter = getModuleConfig().getAccountFilter();
-        if (accountFilter == null) {
+        final List<String> allowList = ObjectUtil.getIfNotNull(accountFilter, AccountFilter::getAllowList);
+        if (CollectionUtils.isEmpty(allowList)) {
             return true;
         }
-        final List<String> allowList = accountFilter.getAllowList();
-        final boolean hasAllowList = CollectionUtils.isNotEmpty(allowList);
-        do {
-            if (invocationContext == null) {
-                break;
-            }
-            final AuctionContext auctionContext = invocationContext.auctionContext();
-            if (auctionContext == null) {
-                break;
-            }
-            final Account account = auctionContext.getAccount();
-            if (account == null) {
-                break;
-            }
-            final String accountId = account.getId();
-            if (StringUtils.isEmpty(accountId)) {
-                break;
-            }
-            if (hasAllowList) {
-                return allowList.contains(accountId);
-            }
-        } while (false);
-        return !hasAllowList;
+        return Optional.ofNullable(invocationContext)
+                .map(AuctionInvocationContext::auctionContext)
+                .map(AuctionContext::getAccount)
+                .map(Account::getId)
+                .filter(StringUtils::isNotBlank)
+                .map(allowList::contains)
+                .orElse(false);
     }
 
     protected ModuleContext addEvidenceToContext(
