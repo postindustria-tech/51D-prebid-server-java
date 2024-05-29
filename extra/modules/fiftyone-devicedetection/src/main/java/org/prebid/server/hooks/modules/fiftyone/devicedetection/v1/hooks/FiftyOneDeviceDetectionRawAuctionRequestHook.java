@@ -15,6 +15,9 @@ import fiftyone.pipeline.engines.Constants;
 import fiftyone.pipeline.engines.data.AspectPropertyValue;
 import fiftyone.pipeline.engines.services.DataUpdateServiceDefault;
 import lombok.Builder;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.prebid.server.auction.model.AuctionContext;
 import org.prebid.server.hooks.execution.v1.auction.AuctionRequestPayloadImpl;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
@@ -156,12 +159,12 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
 
         final String url = updateConfig.getUrl();
-        if (url != null && !url.isEmpty()) {
+        if (StringUtils.isNotBlank(url)) {
             pipelineBuilder.setDataUpdateUrl(url);
         }
 
         final String licenseKey = updateConfig.getLicenseKey();
-        if (licenseKey != null && !licenseKey.isEmpty()) {
+        if (StringUtils.isNotBlank(licenseKey)) {
             pipelineBuilder.setDataUpdateLicenseKey(licenseKey);
         }
 
@@ -181,7 +184,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
             PerformanceConfig performanceConfig) {
 
         final String profile = performanceConfig.getProfile();
-        if (profile != null && !profile.isEmpty()) {
+        if (StringUtils.isNotBlank(profile)) {
             final String lowercasedProfile = profile.toLowerCase();
             for (Constants.PerformanceProfiles nextProfile: Constants.PerformanceProfiles.values()) {
                 if (nextProfile.name().toLowerCase().equals(lowercasedProfile)) {
@@ -254,7 +257,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
             return true;
         }
         final List<String> allowList = accountFilter.getAllowList();
-        final boolean hasAllowList = allowList != null && !allowList.isEmpty();
+        final boolean hasAllowList = CollectionUtils.isNotEmpty(allowList);
         do {
             if (invocationContext == null) {
                 break;
@@ -268,7 +271,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                 break;
             }
             final String accountId = account.getId();
-            if (accountId == null || accountId.isEmpty()) {
+            if (StringUtils.isEmpty(accountId)) {
                 break;
             }
             if (hasAllowList) {
@@ -329,7 +332,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
 
         final List<BrandVersion> versions = userAgent.getBrowsers();
-        if (versions != null && !versions.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(versions)) {
             final String fullUA = brandListToString(versions);
             evidence.put("header.Sec-CH-UA", fullUA);
             evidence.put("header.Sec-CH-UA-Full-Version-List", fullUA);
@@ -338,12 +341,12 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         final BrandVersion platform = userAgent.getPlatform();
         if (platform != null) {
             final String platformName = platform.getBrand();
-            if (platformName != null && !platformName.isEmpty()) {
+            if (StringUtils.isNotBlank(platformName)) {
                 evidence.put("header.Sec-CH-UA-Platform", '"' + toHeaderSafe(platformName) + '"');
             }
 
             final List<String> platformVersions = platform.getVersion();
-            if (platformVersions != null && !platformVersions.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(platformVersions)) {
                 final StringBuilder s = new StringBuilder();
                 s.append('"');
                 appendVersionList(s, platformVersions);
@@ -358,17 +361,17 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
 
         final String architecture = userAgent.getArchitecture();
-        if (architecture != null && !architecture.isEmpty()) {
+        if (StringUtils.isNotBlank(architecture)) {
             evidence.put("header.Sec-CH-UA-Arch", '"' + toHeaderSafe(architecture) + '"');
         }
 
         final String bitness = userAgent.getBitness();
-        if (bitness != null && !bitness.isEmpty()) {
+        if (StringUtils.isNotBlank(bitness)) {
             evidence.put("header.Sec-CH-UA-Bitness", '"' + toHeaderSafe(bitness) + '"');
         }
 
         final String model = userAgent.getModel();
-        if (model != null && !model.isEmpty()) {
+        if (StringUtils.isNotBlank(model)) {
             evidence.put("header.Sec-CH-UA-Model", '"' + toHeaderSafe(model) + '"');
         }
     }
@@ -400,7 +403,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
     private static void appendVersionList(StringBuilder s, List<String> versions) {
 
-        if (versions == null || versions.isEmpty()) {
+        if (CollectionUtils.isEmpty(versions)) {
             return;
         }
         boolean isFirstVersionFragment = true;
@@ -488,11 +491,11 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         final Map<String, String> evidence = new HashMap<>();
 
         final String ua = collectedEvidence.deviceUA();
-        if (ua != null && !ua.isEmpty()) {
+        if (StringUtils.isNotBlank(ua)) {
             evidence.put("header.user-agent", ua);
         }
         final Map<String, String> secureHeaders = collectedEvidence.secureHeaders();
-        if (secureHeaders != null && !secureHeaders.isEmpty()) {
+        if (MapUtils.isNotEmpty(secureHeaders)) {
             evidence.putAll(secureHeaders);
         }
         if (!evidence.isEmpty()) {
@@ -500,7 +503,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
 
         final Collection<Map.Entry<String, String>> headers = collectedEvidence.rawHeaders();
-        if (headers != null && !headers.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(headers)) {
             for (Map.Entry<String, String> nextRawHeader : headers) {
                 evidence.put("header." + nextRawHeader.getKey(), nextRawHeader.getValue());
             }
@@ -527,23 +530,23 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
 
         final String currentMake = device.getMake();
-        if (!(currentMake != null && !currentMake.isEmpty())) {
+        if (!(StringUtils.isNotBlank(currentMake))) {
             final String make = getSafe(deviceData, DeviceData::getHardwareVendor);
-            if (make != null && !make.isEmpty()) {
+            if (StringUtils.isNotBlank(make)) {
                 deviceBuilder.make(make);
                 updatedFields.add("make");
             }
         }
 
         final String currentModel = device.getModel();
-        if (!(currentModel != null && !currentModel.isEmpty())) {
+        if (!(StringUtils.isNotBlank(currentModel))) {
             final String model = getSafe(deviceData, DeviceData::getHardwareModel);
-            if (model != null && !model.isEmpty()) {
+            if (StringUtils.isNotBlank(model)) {
                 deviceBuilder.model(model);
                 updatedFields.add("model");
             } else {
                 final List<String> names = getSafe(deviceData, DeviceData::getHardwareName);
-                if (names != null && !names.isEmpty()) {
+                if (CollectionUtils.isNotEmpty(names)) {
                     deviceBuilder.model(String.join(",", names));
                     updatedFields.add("model");
                 }
@@ -551,18 +554,18 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
 
         final String currentOS = device.getOs();
-        if (!(currentOS != null && !currentOS.isEmpty())) {
+        if (!(StringUtils.isNotBlank(currentOS))) {
             final String os = getSafe(deviceData, DeviceData::getPlatformName);
-            if (os != null && !os.isEmpty()) {
+            if (StringUtils.isNotBlank(os)) {
                 deviceBuilder.os(os);
                 updatedFields.add("os");
             }
         }
 
         final String currentOSV = device.getOsv();
-        if (!(currentOSV != null && !currentOSV.isEmpty())) {
+        if (!(StringUtils.isNotBlank(currentOSV))) {
             final String osv = getSafe(deviceData, DeviceData::getPlatformVersion);
-            if (osv != null && !osv.isEmpty()) {
+            if (StringUtils.isNotBlank(osv)) {
                 deviceBuilder.osv(osv);
                 updatedFields.add("osv");
             }
@@ -608,9 +611,9 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
 
         final String currentDeviceId = getDeviceId(device);
-        if (!(currentDeviceId != null && !currentDeviceId.isEmpty())) {
+        if (!(StringUtils.isNotBlank(currentDeviceId))) {
             final String deviceID = getSafe(deviceData, DeviceData::getDeviceId);
-            if (deviceID != null && !deviceID.isEmpty()) {
+            if (StringUtils.isNotBlank(deviceID)) {
                 setDeviceId(deviceBuilder, device, deviceID);
                 updatedFields.add("ext." + EXT_DEVICE_ID_KEY);
             }
