@@ -26,6 +26,7 @@ import org.prebid.server.settings.model.Account;
 import org.prebid.server.util.ObjectUtil;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -77,7 +78,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         );
     }
 
-    private boolean isAccountAllowed(AuctionInvocationContext invocationContext) {
+    protected boolean isAccountAllowed(AuctionInvocationContext invocationContext) {
 
         final AccountFilter accountFilter = moduleConfig.getAccountFilter();
         final List<String> allowList = ObjectUtil.getIfNotNull(accountFilter, AccountFilter::getAllowList);
@@ -93,7 +94,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                 .orElse(false);
     }
 
-    private ModuleContext addEvidenceToContext(ModuleContext moduleContext,
+    protected ModuleContext addEvidenceToContext(ModuleContext moduleContext,
                                                Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
 
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = Optional.ofNullable(moduleContext)
@@ -110,7 +111,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                 .build();
     }
 
-    private void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
+    protected void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
 
         final Device device = bidRequest.getDevice();
         if (device == null) {
@@ -122,8 +123,12 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
         final UserAgent sua = device.getSua();
         if (sua != null) {
-            evidenceBuilder.secureHeaders(SecureHeadersRetriever.retrieveFrom(sua));
+            evidenceBuilder.secureHeaders(convertSecureHeaders(sua));
         }
+    }
+
+    protected Map<String, String> convertSecureHeaders(UserAgent userAgent) {
+        return SecureHeadersRetriever.retrieveFrom(userAgent);
     }
 
     private AuctionRequestPayload updatePayload(AuctionRequestPayload existingPayload,
@@ -138,7 +143,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         return AuctionRequestPayloadImpl.of(patchedRequest);
     }
 
-    private BidRequest enrichDevice(BidRequest bidRequest, CollectedEvidence collectedEvidence) {
+    protected BidRequest enrichDevice(BidRequest bidRequest, CollectedEvidence collectedEvidence) {
 
         if (bidRequest == null) {
             return null;

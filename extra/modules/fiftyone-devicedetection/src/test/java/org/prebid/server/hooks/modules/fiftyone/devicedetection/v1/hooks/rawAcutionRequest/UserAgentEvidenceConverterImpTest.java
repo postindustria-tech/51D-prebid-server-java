@@ -2,9 +2,8 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcu
 
 import com.iab.openrtb.request.BrandVersion;
 import com.iab.openrtb.request.UserAgent;
-import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.SecureHeadersRetriever;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,30 +11,12 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class UserAgentEvidenceConverterImpTest {
 
     private static BiConsumer<UserAgent, Map<String, String>> buildConverter() throws Exception {
 
-        return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
-            @Override
-            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
-
-                final DeviceDetectionOnPremisePipelineBuilder builder
-                        = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-                when(builder.build()).thenReturn(null);
-                return builder;
-            }
-
-            @Override
-            public void appendSecureHeaders(UserAgent userAgent, Map<String, String> evidence) {
-
-                super.appendSecureHeaders(userAgent, evidence);
-            }
-        }
-            ::appendSecureHeaders;
+        return (userAgent, evidence) -> evidence.putAll(SecureHeadersRetriever.retrieveFrom(userAgent));
     }
 
     @Test

@@ -38,7 +38,7 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
     @Bean
     Pipeline pipeline(ModuleConfig moduleConfig) throws Exception {
 
-        return PipelineBuilder.build(moduleConfig);
+        return new PipelineBuilder().build(moduleConfig);
     }
 
     @Bean

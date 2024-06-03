@@ -8,14 +8,13 @@ import fiftyone.pipeline.core.flowelements.Pipeline;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceEnricher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.EnrichmentResult;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
@@ -28,23 +27,14 @@ public class DeviceEnrichmentTest {
     private static BiFunction<Device,
             CollectedEvidence,
             EnrichmentResult> buildHook(
-                    Supplier<Pipeline> pipelineSupplier,
+                    Pipeline pipeline,
                     BiFunction<
                             Device,
                             DeviceData,
                             EnrichmentResult> patcher,
                     Function<CollectedEvidence, Map<String, String>> evidenceCollector) throws Exception {
 
-        return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
-            @Override
-            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
-
-                final DeviceDetectionOnPremisePipelineBuilder builder
-                        = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-                when(builder.build()).thenReturn(null);
-                return builder;
-            }
-
+        return new DeviceEnricher(pipeline) {
             @Override
             protected EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
 
@@ -55,12 +45,6 @@ public class DeviceEnrichmentTest {
             protected Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
 
                 return evidenceCollector.apply(collectedEvidence);
-            }
-
-            @Override
-            protected Pipeline getPipeline() {
-
-                return pipelineSupplier.get();
             }
 
             @Override
@@ -87,7 +71,7 @@ public class DeviceEnrichmentTest {
                 Device,
                 CollectedEvidence,
                 EnrichmentResult> hook
-                = buildHook(() -> pipeline, null, null);
+                = buildHook(pipeline, null, null);
         final EnrichmentResult result = hook.apply(null, null);
 
         // then
@@ -113,7 +97,7 @@ public class DeviceEnrichmentTest {
                 Device,
                 CollectedEvidence,
                 EnrichmentResult> hook
-                = buildHook(() -> pipeline, null, ev -> {
+                = buildHook(pipeline, null, ev -> {
                     collectorCalled[0] = true;
                     assertThat(ev).isEqualTo(collectedEvidence);
                     return evidence;
@@ -149,7 +133,7 @@ public class DeviceEnrichmentTest {
                 CollectedEvidence,
                 EnrichmentResult> hook
                 = buildHook(
-                        () -> pipeline,
+                        pipeline,
                         null,
                         ev -> {
                             collectorCalled[0] = true;
@@ -193,7 +177,7 @@ public class DeviceEnrichmentTest {
                 Device,
                 CollectedEvidence,
                 EnrichmentResult> hook
-                = buildHook(() -> pipeline,
+                = buildHook(pipeline,
                     (dev, devData) -> {
                         patcherCalled[0] = true;
                         assertThat(dev).isEqualTo(device);

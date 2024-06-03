@@ -2,13 +2,13 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcu
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.iab.openrtb.request.Device;
-import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import fiftyone.devicedetection.shared.DeviceData;
+import fiftyone.pipeline.core.flowelements.Pipeline;
 import fiftyone.pipeline.engines.data.AspectPropertyValue;
 import fiftyone.pipeline.engines.exceptions.NoValueException;
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceEnricher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.EnrichmentResult;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 import org.prebid.server.proto.openrtb.ext.request.ExtDevice;
 
 import java.math.BigDecimal;
@@ -17,8 +17,8 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook.EXT_DEVICE_ID_KEY;
-import static org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook.getDeviceId;
+import static org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceEnricher.EXT_DEVICE_ID_KEY;
+import static org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceEnricher.getDeviceId;
 
 public class DevicePatchPlannerImpTest {
 
@@ -60,16 +60,7 @@ public class DevicePatchPlannerImpTest {
             Device device,
             DeviceData deviceData) throws Exception {
 
-        return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
-            @Override
-            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder() throws Exception {
-
-                final DeviceDetectionOnPremisePipelineBuilder builder
-                        = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-                when(builder.build()).thenReturn(null);
-                return builder;
-            }
-
+        return new DeviceEnricher(mock(Pipeline.class)) {
             @Override
             public EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
 

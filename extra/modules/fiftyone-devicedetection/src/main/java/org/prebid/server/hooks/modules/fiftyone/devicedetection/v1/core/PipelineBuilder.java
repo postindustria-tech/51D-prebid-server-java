@@ -39,28 +39,29 @@ public class PipelineBuilder {
             "GeoLocation",
             "HardwareModelVariants");
 
-    private PipelineBuilder() {
+    public Pipeline build(ModuleConfig moduleConfig) throws Exception {
 
+        return makeBuilder(moduleConfig).build();
     }
 
-    public static Pipeline build(ModuleConfig moduleConfig) throws Exception {
+    protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(ModuleConfig moduleConfig) throws Exception {
 
         final DataFile dataFile = moduleConfig.getDataFile();
         final DeviceDetectionOnPremisePipelineBuilder builder = makeRawBuilder(dataFile);
         applyUpdateOptions(builder, dataFile.getUpdate());
         applyPerformanceOptions(builder, moduleConfig.getPerformance());
         PROPERTIES_USED.forEach(builder::setProperty);
-        return builder.build();
+        return builder;
     }
 
-    private static DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
+    protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
 
         final Boolean shouldMakeDataCopy = dataFile.getMakeTempCopy();
         return new DeviceDetectionPipelineBuilder()
                 .useOnPremise(dataFile.getPath(), BooleanUtils.isTrue(shouldMakeDataCopy));
     }
 
-    private static void applyUpdateOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+    protected void applyUpdateOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                                            DataFileUpdate updateConfig) {
 
         pipelineBuilder.setDataUpdateService(new DataUpdateServiceDefault());
@@ -96,7 +97,7 @@ public class PipelineBuilder {
         }
     }
 
-    private static void applyPerformanceOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+    protected void applyPerformanceOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                                                 PerformanceConfig performanceConfig) {
 
         final String profile = performanceConfig.getProfile();

@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 public class DeviceEnricher {
 
-    private static final String EXT_DEVICE_ID_KEY = "fiftyonedegrees_deviceId";
+    public static final String EXT_DEVICE_ID_KEY = "fiftyonedegrees_deviceId";
 
     private static final Map<String, Integer> DEVICE_FIELD_MAPPING = Map.ofEntries(
             Map.entry("Phone", OrtbDeviceType.PHONE.ordinal()),
@@ -68,7 +68,7 @@ public class DeviceEnricher {
         }
     }
 
-    private Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
+    protected Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
 
         final Map<String, String> evidence = new HashMap<>();
 
@@ -91,7 +91,7 @@ public class DeviceEnricher {
         return evidence;
     }
 
-    private EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
+    protected EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
 
         final List<String> updatedFields = new ArrayList<>();
         final Device.DeviceBuilder deviceBuilder = device.toBuilder();
@@ -219,7 +219,7 @@ public class DeviceEnricher {
      *
      * @see fiftyone.devicedetection.hash.engine.onpremise.data.DeviceDataHash#getDeviceId()
      */
-    private static String getDeviceId(Device device) {
+    public static String getDeviceId(Device device) {
 
         final ExtDevice ext = device.getExt();
         if (ext == null) {
@@ -265,7 +265,7 @@ public class DeviceEnricher {
         return null;
     }
 
-    private Integer convertDeviceType(String deviceType) {
+    protected Integer convertDeviceType(String deviceType) {
 
         return Optional.ofNullable(DEVICE_FIELD_MAPPING.get(deviceType)).orElse(OrtbDeviceType.UNKNOWN.ordinal());
     }
