@@ -128,6 +128,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     protected Map<String, String> convertSecureHeaders(UserAgent userAgent) {
+
         return SecureHeadersRetriever.retrieveFrom(userAgent);
     }
 
