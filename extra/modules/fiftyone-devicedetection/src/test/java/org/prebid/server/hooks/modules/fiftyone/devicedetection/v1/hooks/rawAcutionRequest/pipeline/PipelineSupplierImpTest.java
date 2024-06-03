@@ -18,7 +18,7 @@ public class PipelineSupplierImpTest {
 
                 return builder;
             }
-        }.build(mock(ModuleConfig.class));
+        }.build(null);
     }
 
     @Test

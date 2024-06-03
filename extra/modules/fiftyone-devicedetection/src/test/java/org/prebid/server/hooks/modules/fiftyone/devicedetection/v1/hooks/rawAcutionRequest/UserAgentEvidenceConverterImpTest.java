@@ -1,9 +1,14 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcutionRequest;
 
+import com.iab.openrtb.request.BidRequest;
 import com.iab.openrtb.request.BrandVersion;
 import com.iab.openrtb.request.UserAgent;
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.ModuleConfig;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceEnricher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.SecureHeadersRetriever;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,12 +16,24 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class UserAgentEvidenceConverterImpTest {
 
     private static BiConsumer<UserAgent, Map<String, String>> buildConverter() throws Exception {
 
-        return (userAgent, evidence) -> evidence.putAll(SecureHeadersRetriever.retrieveFrom(userAgent));
+        return (userAgent, evidence) -> evidence.putAll(
+                new FiftyOneDeviceDetectionRawAuctionRequestHook(
+                    mock(ModuleConfig.class),
+                    mock(DeviceEnricher.class)) {
+
+                    @Override
+                    public Map<String, String> convertSecureHeaders(UserAgent userAgent) {
+
+                        return super.convertSecureHeaders(userAgent);
+                    }
+                }
+                .convertSecureHeaders(userAgent));
     }
 
     @Test

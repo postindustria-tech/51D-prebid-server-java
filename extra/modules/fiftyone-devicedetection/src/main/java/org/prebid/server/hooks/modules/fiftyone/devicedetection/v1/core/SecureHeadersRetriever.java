@@ -8,19 +8,16 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import jakarta.annotation.Nonnull;
 
 public class SecureHeadersRetriever {
 
     private SecureHeadersRetriever() {
     }
 
-    public static Map<String, String> retrieveFrom(UserAgent userAgent) {
+    public static Map<String, String> retrieveFrom(@Nonnull UserAgent userAgent) {
 
         final Map<String, String> secureHeaders = new HashMap<>();
-
-        if (userAgent == null) {
-            return secureHeaders;
-        }
 
         final List<BrandVersion> versions = userAgent.getBrowsers();
         if (CollectionUtils.isNotEmpty(versions)) {
