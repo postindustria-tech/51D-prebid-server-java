@@ -4,6 +4,7 @@ import com.iab.openrtb.request.BidRequest;
 import com.iab.openrtb.request.Device;
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.EnrichmentResult;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 
@@ -21,7 +22,7 @@ public class BidRequestPatcherImpTest {
             BiFunction<
                     Device,
                     CollectedEvidence,
-                    FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult> deviceRefiner
+                    EnrichmentResult> deviceRefiner
     ) throws Exception {
 
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(null) {
@@ -85,7 +86,7 @@ public class BidRequestPatcherImpTest {
                 (builder, request) -> { },
                 (device, evidence) -> {
                     refinerCalled[0] = true;
-                    return FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult.builder().build();
+                    return EnrichmentResult.builder().build();
                 }
         );
 
@@ -132,7 +133,7 @@ public class BidRequestPatcherImpTest {
         // when
         final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 (builder, request) -> { },
-                (device, collectedEvidence) -> FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult
+                (device, collectedEvidence) -> EnrichmentResult
                         .builder()
                         .enrichedDevice(mergedDevice)
                         .build());

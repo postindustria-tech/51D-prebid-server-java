@@ -7,6 +7,7 @@ import fiftyone.devicedetection.shared.DeviceData;
 import fiftyone.pipeline.engines.data.AspectPropertyValue;
 import fiftyone.pipeline.engines.exceptions.NoValueException;
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.EnrichmentResult;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 import org.prebid.server.proto.openrtb.ext.request.ExtDevice;
 
@@ -55,7 +56,7 @@ public class DevicePatchPlannerImpTest {
         };
     }
 
-    private static FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult patchDevice(
+    private static EnrichmentResult patchDevice(
             Device device,
             DeviceData deviceData) throws Exception {
 
@@ -84,7 +85,7 @@ public class DevicePatchPlannerImpTest {
         final Device device = Device.builder().build();
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(device, buildCompleteDeviceData());
 
         // then
@@ -95,7 +96,7 @@ public class DevicePatchPlannerImpTest {
     public void shouldReturnNullWhenDeviceIsFull() throws Exception {
 
         // given and when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(buildCompleteDevice(), buildCompleteDeviceData());
 
         // then
@@ -111,7 +112,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(testDevice, buildCompleteDeviceData());
 
         // then
@@ -128,7 +129,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(testDevice, buildCompleteDeviceData());
 
         // then
@@ -149,7 +150,7 @@ public class DevicePatchPlannerImpTest {
         when(deviceData.getHardwareModel()).thenThrow(new RuntimeException());
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(testDevice, deviceData);
 
         // then
@@ -166,7 +167,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(testDevice, buildCompleteDeviceData());
 
         // then
@@ -183,7 +184,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(testDevice, buildCompleteDeviceData());
 
         // then
@@ -200,7 +201,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(testDevice, buildCompleteDeviceData());
 
         // then
@@ -217,7 +218,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(testDevice, buildCompleteDeviceData());
 
         // then
@@ -234,7 +235,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(testDevice, buildCompleteDeviceData());
 
         // then
@@ -251,7 +252,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(testDevice, buildCompleteDeviceData());
 
         // then
@@ -268,7 +269,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(testDevice, buildCompleteDeviceData());
 
         // then
@@ -285,7 +286,7 @@ public class DevicePatchPlannerImpTest {
                 .build();
 
         // when
-        final FiftyOneDeviceDetectionRawAuctionRequestHook.EnrichmentResult result
+        final EnrichmentResult result
                 = patchDevice(testDevice, buildCompleteDeviceData());
 
         // then
