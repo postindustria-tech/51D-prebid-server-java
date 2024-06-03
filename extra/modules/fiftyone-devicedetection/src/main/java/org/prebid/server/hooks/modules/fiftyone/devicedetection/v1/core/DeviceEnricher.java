@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.proto.openrtb.ext.request.ExtDevice;
 
+import jakarta.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +49,7 @@ public class DeviceEnricher {
 
     private final Pipeline pipeline;
 
-    public DeviceEnricher(Pipeline pipeline) {
+    public DeviceEnricher(@Nonnull Pipeline pipeline) {
 
         this.pipeline = Objects.requireNonNull(pipeline);
     }

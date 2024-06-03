@@ -25,6 +25,7 @@ import io.vertx.core.Future;
 import org.prebid.server.settings.model.Account;
 import org.prebid.server.util.ObjectUtil;
 
+import jakarta.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,8 +39,8 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     private final ModuleConfig moduleConfig;
     private final DeviceEnricher deviceEnricher;
 
-    public FiftyOneDeviceDetectionRawAuctionRequestHook(ModuleConfig moduleConfig,
-                                                        DeviceEnricher deviceEnricher) {
+    public FiftyOneDeviceDetectionRawAuctionRequestHook(@Nonnull ModuleConfig moduleConfig,
+                                                        @Nonnull DeviceEnricher deviceEnricher) {
 
         this.moduleConfig = Objects.requireNonNull(moduleConfig);
         this.deviceEnricher = Objects.requireNonNull(deviceEnricher);
