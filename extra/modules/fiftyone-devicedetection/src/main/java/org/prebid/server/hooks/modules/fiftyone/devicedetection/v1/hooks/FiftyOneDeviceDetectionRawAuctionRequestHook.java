@@ -111,7 +111,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     protected void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
-        final Device device = bidRequest.getDevice();
+        final Device device = ObjectUtil.getIfNotNull(bidRequest, BidRequest::getDevice);
         if (device == null) {
             return;
         }
