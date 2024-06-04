@@ -1,12 +1,16 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcutionRequest;
 
+import com.iab.openrtb.request.BidRequest;
 import org.junit.Test;
 import org.prebid.server.auction.model.AuctionContext;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.ModuleConfig;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceEnricher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.FiftyOneDeviceDetectionRawAuctionRequestHook;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.AccountFilter;
+import org.prebid.server.hooks.v1.InvocationAction;
 import org.prebid.server.hooks.v1.auction.AuctionInvocationContext;
+import org.prebid.server.hooks.v1.auction.AuctionRequestPayload;
+import org.prebid.server.hooks.v1.auction.RawAuctionRequestHook;
 import org.prebid.server.settings.model.Account;
 
 import java.util.Collections;
@@ -33,17 +37,15 @@ public class AccountControlImpTest {
     private static Predicate<AuctionInvocationContext> buildHook(AccountFilter accountFilter) throws Exception {
         final ModuleConfig moduleConfig = new ModuleConfig();
         moduleConfig.setAccountFilter(accountFilter);
-        return new FiftyOneDeviceDetectionRawAuctionRequestHook(
+        final RawAuctionRequestHook hook = new FiftyOneDeviceDetectionRawAuctionRequestHook(
                 moduleConfig,
                 mock(DeviceEnricher.class)
-        ) {
-            @Override
-            public boolean isAccountAllowed(AuctionInvocationContext invocationContext) {
-                return super.isAccountAllowed(invocationContext);
-            }
-
-        }
-            ::isAccountAllowed;
+        );
+        final AuctionRequestPayload payload = mock(AuctionRequestPayload.class);
+        when(payload.bidRequest()).thenReturn(BidRequest.builder().build());
+        return auctionInvocationContext -> hook.call(payload, auctionInvocationContext)
+                .result()
+                .action() == InvocationAction.update;
     }
 
     @Test
