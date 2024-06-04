@@ -3,45 +3,39 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcu
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFileUpdate;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.ModuleConfig;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.PipelineBuilder;
-
-import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class PipelineUpdateConfiguratorTest {
-    private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder,
-            DataFileUpdate> makeConfigurator() throws Exception {
-        return new PipelineBuilder(null) {
-            @Override
-            public void applyUpdateOptions(
-                    DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
-                    DataFileUpdate updateConfig) {
-                super.applyUpdateOptions(pipelineBuilder, updateConfig);
-            }
-        }
-            ::applyUpdateOptions;
+    private static void applyUpdateOptions(
+            DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+            DataFileUpdate dataFileUpdate) throws Exception {
+        final ModuleConfig moduleConfig = new ModuleConfig();
+        moduleConfig.setDataFile(new DataFile());
+        moduleConfig.getDataFile().setUpdate(dataFileUpdate);
+        moduleConfig.setPerformance(new PerformanceConfig());
+        new PipelineBuilder(pipelineBuilder).build(moduleConfig);
     }
 
     @Test
     public void shouldIgnoreEmptyUrl() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setUrl("");
 
         // when
-        configurator.accept(builder, config);
+        applyUpdateOptions(builder, config);
 
         // then
         verify(builder, never()).setPerformanceProfile(any());
@@ -51,8 +45,6 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignURL() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setUrl("http://void/");
@@ -60,7 +52,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
 
         // when
-        configurator.accept(builder, config);
+        applyUpdateOptions(builder, config);
 
         // then
         verify(builder).setDataUpdateUrl(argumentCaptor.capture());
@@ -71,14 +63,12 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldIgnoreEmptyKey() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setLicenseKey("");
 
         // when
-        configurator.accept(builder, config);
+        applyUpdateOptions(builder, config);
 
         // then
         verify(builder, never()).setDataUpdateLicenseKey(any());
@@ -88,8 +78,6 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignKey() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setLicenseKey("687-398475-34876-384678-34756-3487");
@@ -97,7 +85,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
 
         // when
-        configurator.accept(builder, config);
+        applyUpdateOptions(builder, config);
 
         // then
         verify(builder).setDataUpdateLicenseKey(argumentCaptor.capture());
@@ -108,8 +96,6 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignAuto() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setAuto(true);
@@ -117,7 +103,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<Boolean> argumentCaptor = ArgumentCaptor.forClass(Boolean.class);
 
         // when
-        configurator.accept(builder, config);
+        applyUpdateOptions(builder, config);
 
         // then
         verify(builder).setAutoUpdate(argumentCaptor.capture());
@@ -128,8 +114,6 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignOnStartup() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setOnStartup(true);
@@ -137,7 +121,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<Boolean> argumentCaptor = ArgumentCaptor.forClass(Boolean.class);
 
         // when
-        configurator.accept(builder, config);
+        applyUpdateOptions(builder, config);
 
         // then
         verify(builder).setDataUpdateOnStartup(argumentCaptor.capture());
@@ -148,8 +132,6 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignWatchFileSystem() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setWatchFileSystem(true);
@@ -157,7 +139,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<Boolean> argumentCaptor = ArgumentCaptor.forClass(Boolean.class);
 
         // when
-        configurator.accept(builder, config);
+        applyUpdateOptions(builder, config);
 
         // then
         verify(builder).setDataFileSystemWatcher(argumentCaptor.capture());
@@ -168,8 +150,6 @@ public class PipelineUpdateConfiguratorTest {
     public void shouldAssignPollingInterval() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-        final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
-                = makeConfigurator();
 
         final DataFileUpdate config = new DataFileUpdate();
         config.setPollingInterval(643);
@@ -177,7 +157,7 @@ public class PipelineUpdateConfiguratorTest {
         final ArgumentCaptor<Integer> argumentCaptor = ArgumentCaptor.forClass(Integer.class);
 
         // when
-        configurator.accept(builder, config);
+        applyUpdateOptions(builder, config);
 
         // then
         verify(builder).setUpdatePollingInterval(argumentCaptor.capture());
