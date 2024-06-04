@@ -67,7 +67,7 @@ public class DeviceEnricher {
         }
     }
 
-    protected Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
+    private Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
         final Map<String, String> evidence = new HashMap<>();
 
         final String ua = collectedEvidence.deviceUA();
@@ -89,7 +89,7 @@ public class DeviceEnricher {
         return evidence;
     }
 
-    protected EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
+    private EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
         final List<String> updatedFields = new ArrayList<>();
         final Device.DeviceBuilder deviceBuilder = device.toBuilder();
 
@@ -257,7 +257,7 @@ public class DeviceEnricher {
         return null;
     }
 
-    protected Integer convertDeviceType(String deviceType) {
+    private Integer convertDeviceType(String deviceType) {
         return Optional.ofNullable(DEVICE_FIELD_MAPPING.get(deviceType)).orElse(OrtbDeviceType.UNKNOWN.ordinal());
     }
 }
