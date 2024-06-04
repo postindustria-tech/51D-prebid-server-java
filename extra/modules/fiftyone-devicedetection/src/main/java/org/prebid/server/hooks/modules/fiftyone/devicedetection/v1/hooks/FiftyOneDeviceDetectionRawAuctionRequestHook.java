@@ -79,7 +79,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         );
     }
 
-    protected boolean isAccountAllowed(AuctionInvocationContext invocationContext) {
+    private boolean isAccountAllowed(AuctionInvocationContext invocationContext) {
         final AccountFilter accountFilter = moduleConfig.getAccountFilter();
         final List<String> allowList = ObjectUtil.getIfNotNull(accountFilter, AccountFilter::getAllowList);
         if (CollectionUtils.isEmpty(allowList)) {
@@ -94,7 +94,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                 .orElse(false);
     }
 
-    protected ModuleContext addEvidenceToContext(ModuleContext moduleContext,
+    private ModuleContext addEvidenceToContext(ModuleContext moduleContext,
                                                Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = Optional.ofNullable(moduleContext)
                 .map(ModuleContext::collectedEvidence)
@@ -110,7 +110,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                 .build();
     }
 
-    protected void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
+    private void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
         final Device device = ObjectUtil.getIfNotNull(bidRequest, BidRequest::getDevice);
         if (device == null) {
             return;
@@ -125,7 +125,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
     }
 
-    protected Map<String, String> convertSecureHeaders(UserAgent userAgent) {
+    private Map<String, String> convertSecureHeaders(UserAgent userAgent) {
         return SecureHeadersRetriever.retrieveFrom(userAgent);
     }
 
@@ -140,7 +140,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         return AuctionRequestPayloadImpl.of(patchedRequest);
     }
 
-    protected BidRequest enrichDevice(BidRequest bidRequest, CollectedEvidence collectedEvidence) {
+    private BidRequest enrichDevice(BidRequest bidRequest, CollectedEvidence collectedEvidence) {
         if (bidRequest == null) {
             return null;
         }
