@@ -15,11 +15,9 @@ import static org.mockito.Mockito.mock;
 
 public class PriorityEvidenceSelectorImpTest {
     private static Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) throws Exception {
-
         return new DeviceEnricher(mock(Pipeline.class)) {
             @Override
             public Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
-
                 return super.pickRelevantFrom(collectedEvidence);
             }
         }.pickRelevantFrom(collectedEvidence);
@@ -27,7 +25,6 @@ public class PriorityEvidenceSelectorImpTest {
 
     @Test
     public void shouldSelectSuaIfPresent() throws Exception {
-
         // given
         final Map<String, String> secureHeaders = Collections.singletonMap("ua", "fake-ua");
         final CollectedEvidence collectedEvidence = CollectedEvidence.builder()
@@ -45,7 +42,6 @@ public class PriorityEvidenceSelectorImpTest {
 
     @Test
     public void shouldSelectUaIfNoSuaPresent() throws Exception {
-
         // given
         final CollectedEvidence collectedEvidence = CollectedEvidence.builder()
                 .deviceUA("dummy-ua")
@@ -64,7 +60,6 @@ public class PriorityEvidenceSelectorImpTest {
 
     @Test
     public void shouldMergeUaWithSuaIfBothPresent() throws Exception {
-
         // given
         final Map<String, String> suaHeaders = Collections.singletonMap("ua", "fake-ua");
         final CollectedEvidence collectedEvidence = CollectedEvidence.builder()
@@ -85,7 +80,6 @@ public class PriorityEvidenceSelectorImpTest {
 
     @Test
     public void shouldSelectRawHeaderIfNoDeviceInfoPresent() throws Exception {
-
         // given
         final List<Map.Entry<String, String>> rawHeaders = List.of(
                 new AbstractMap.SimpleEntry<>("ua", "zumba"),
@@ -111,7 +105,6 @@ public class PriorityEvidenceSelectorImpTest {
 
     @Test
     public void shouldPickLastHeaderWithSameKey() throws Exception {
-
         // given
         final String theKey = "ua";
         final List<Map.Entry<String, String>> rawHeaders = List.of(
@@ -133,7 +126,6 @@ public class PriorityEvidenceSelectorImpTest {
 
     @Test
     public void shouldReturnEmptyMapOnNoEvidenceToPick() throws Exception {
-
         // given
         final CollectedEvidence collectedEvidence = CollectedEvidence.builder().build();
 

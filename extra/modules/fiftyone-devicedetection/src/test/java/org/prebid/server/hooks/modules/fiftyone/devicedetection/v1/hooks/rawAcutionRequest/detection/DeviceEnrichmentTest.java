@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class DeviceEnrichmentTest {
-
     private static BiFunction<Device,
             CollectedEvidence,
             EnrichmentResult> buildHook(
@@ -32,17 +31,14 @@ public class DeviceEnrichmentTest {
                             DeviceData,
                             EnrichmentResult> patcher,
                     Function<CollectedEvidence, Map<String, String>> evidenceCollector) throws Exception {
-
         return new DeviceEnricher(pipeline) {
             @Override
             protected EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
-
                 return patcher.apply(device, deviceData);
             }
 
             @Override
             protected Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
-
                 return evidenceCollector.apply(collectedEvidence);
             }
 
@@ -50,7 +46,6 @@ public class DeviceEnrichmentTest {
             public EnrichmentResult populateDeviceInfo(
                     Device device,
                     CollectedEvidence collectedEvidence) {
-
                 return super.populateDeviceInfo(device, collectedEvidence);
             }
         }
@@ -59,7 +54,6 @@ public class DeviceEnrichmentTest {
 
     @Test
     public void shouldReportErrorOnPipelineException() throws Exception {
-
         // given
         final Pipeline pipeline = mock(Pipeline.class);
         final Exception e = new RuntimeException();
@@ -79,7 +73,6 @@ public class DeviceEnrichmentTest {
 
     @Test
     public void shouldReportErrorOnProcessException() throws Exception {
-
         // given
         final Pipeline pipeline = mock(Pipeline.class);
         final FlowData flowData = mock(FlowData.class);
@@ -114,7 +107,6 @@ public class DeviceEnrichmentTest {
 
     @Test
     public void shouldReturnNullOnNullDeviceData() throws Exception {
-
         // given
         final Pipeline pipeline = mock(Pipeline.class);
         final FlowData flowData = mock(FlowData.class);
@@ -152,7 +144,6 @@ public class DeviceEnrichmentTest {
 
     @Test
     public void shouldReturnPatchResult() throws Exception {
-
         // given
         final Pipeline pipeline = mock(Pipeline.class);
         final FlowData flowData = mock(FlowData.class);

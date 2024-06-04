@@ -9,12 +9,9 @@ import static org.mockito.Mockito.mock;
 
 public class DeviceTypeConverterImpTest {
     private static Integer convertDeviceType(String deviceType) throws Exception {
-
         return new DeviceEnricher(mock(Pipeline.class)) {
-
             @Override
             public Integer convertDeviceType(String deviceType) {
-
                 return super.convertDeviceType(deviceType);
             }
         }.convertDeviceType(deviceType);
@@ -22,7 +19,6 @@ public class DeviceTypeConverterImpTest {
 
     @Test
     public void shouldReturnFourForPhone() throws Exception {
-
         // given
         final String typeString = "Phone";
 
@@ -35,7 +31,6 @@ public class DeviceTypeConverterImpTest {
 
     @Test
     public void shouldReturnSevenForMediaHub() throws Exception {
-
         // given
         final String typeString = "MediaHub";
 
@@ -48,7 +43,6 @@ public class DeviceTypeConverterImpTest {
 
     @Test
     public void shouldReturnZeroForUnexpectedValue() throws Exception {
-
         // given
         final String typeString = "BattleStar Atlantis";
 

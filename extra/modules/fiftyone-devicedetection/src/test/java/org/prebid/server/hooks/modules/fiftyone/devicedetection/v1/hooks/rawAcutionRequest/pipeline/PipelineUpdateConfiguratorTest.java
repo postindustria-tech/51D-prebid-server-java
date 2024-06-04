@@ -19,11 +19,9 @@ import static org.mockito.Mockito.when;
 public class PipelineUpdateConfiguratorTest {
     private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder,
             DataFileUpdate> makeConfigurator() throws Exception {
-
         return new PipelineBuilder() {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(ModuleConfig moduleConfig) throws Exception {
-
                 final DeviceDetectionOnPremisePipelineBuilder builder
                         = mock(DeviceDetectionOnPremisePipelineBuilder.class);
                 when(builder.build()).thenReturn(null);
@@ -34,7 +32,6 @@ public class PipelineUpdateConfiguratorTest {
             public void applyUpdateOptions(
                     DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                     DataFileUpdate updateConfig) {
-
                 super.applyUpdateOptions(pipelineBuilder, updateConfig);
             }
         }
@@ -43,7 +40,6 @@ public class PipelineUpdateConfiguratorTest {
 
     @Test
     public void shouldIgnoreEmptyUrl() throws Exception {
-
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
@@ -61,7 +57,6 @@ public class PipelineUpdateConfiguratorTest {
 
     @Test
     public void shouldAssignURL() throws Exception {
-
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
@@ -82,7 +77,6 @@ public class PipelineUpdateConfiguratorTest {
 
     @Test
     public void shouldIgnoreEmptyKey() throws Exception {
-
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
@@ -100,7 +94,6 @@ public class PipelineUpdateConfiguratorTest {
 
     @Test
     public void shouldAssignKey() throws Exception {
-
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
@@ -121,7 +114,6 @@ public class PipelineUpdateConfiguratorTest {
 
     @Test
     public void shouldAssignAuto() throws Exception {
-
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
@@ -142,7 +134,6 @@ public class PipelineUpdateConfiguratorTest {
 
     @Test
     public void shouldAssignOnStartup() throws Exception {
-
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
@@ -163,7 +154,6 @@ public class PipelineUpdateConfiguratorTest {
 
     @Test
     public void shouldAssignWatchFileSystem() throws Exception {
-
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator
@@ -184,7 +174,6 @@ public class PipelineUpdateConfiguratorTest {
 
     @Test
     public void shouldAssignPollingInterval() throws Exception {
-
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
         final BiConsumer<DeviceDetectionOnPremisePipelineBuilder, DataFileUpdate> configurator

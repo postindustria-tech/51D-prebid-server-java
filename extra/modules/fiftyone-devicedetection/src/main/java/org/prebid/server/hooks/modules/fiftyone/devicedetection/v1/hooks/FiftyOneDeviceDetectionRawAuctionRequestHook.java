@@ -33,7 +33,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionRequestHook {
-
     private static final String CODE = "fiftyone-devicedetection-raw-auction-request-hook";
 
     private final ModuleConfig moduleConfig;
@@ -41,21 +40,18 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
     public FiftyOneDeviceDetectionRawAuctionRequestHook(@Nonnull ModuleConfig moduleConfig,
                                                         @Nonnull DeviceEnricher deviceEnricher) {
-
         this.moduleConfig = Objects.requireNonNull(moduleConfig);
         this.deviceEnricher = Objects.requireNonNull(deviceEnricher);
     }
 
     @Override
     public String code() {
-
         return CODE;
     }
 
     @Override
     public Future<InvocationResult<AuctionRequestPayload>> call(AuctionRequestPayload payload,
                                                                 AuctionInvocationContext invocationContext) {
-
         if (!isAccountAllowed(invocationContext)) {
             return Future.succeededFuture(
                     InvocationResultImpl.<AuctionRequestPayload>builder()
@@ -80,7 +76,6 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     protected boolean isAccountAllowed(AuctionInvocationContext invocationContext) {
-
         final AccountFilter accountFilter = moduleConfig.getAccountFilter();
         final List<String> allowList = ObjectUtil.getIfNotNull(accountFilter, AccountFilter::getAllowList);
         if (CollectionUtils.isEmpty(allowList)) {
@@ -97,7 +92,6 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
     protected ModuleContext addEvidenceToContext(ModuleContext moduleContext,
                                                Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
-
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = Optional.ofNullable(moduleContext)
                 .map(ModuleContext::collectedEvidence)
                 .map(CollectedEvidence::toBuilder)
@@ -113,7 +107,6 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     protected void collectEvidence(CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder, BidRequest bidRequest) {
-
         final Device device = bidRequest.getDevice();
         if (device == null) {
             return;
@@ -129,13 +122,11 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     protected Map<String, String> convertSecureHeaders(UserAgent userAgent) {
-
         return SecureHeadersRetriever.retrieveFrom(userAgent);
     }
 
     private AuctionRequestPayload updatePayload(AuctionRequestPayload existingPayload,
                                                 CollectedEvidence collectedEvidence) {
-
         final BidRequest currentRequest = existingPayload.bidRequest();
         final BidRequest patchedRequest = enrichDevice(currentRequest, collectedEvidence);
         // todo: 'patchedRequest == currentRequest' doesn't make any sense then
@@ -146,7 +137,6 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     }
 
     protected BidRequest enrichDevice(BidRequest bidRequest, CollectedEvidence collectedEvidence) {
-
         if (bidRequest == null) {
             return null;
         }

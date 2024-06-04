@@ -19,7 +19,6 @@ import static org.mockito.Mockito.mock;
 public class BidRequestReaderTest {
     private static BiConsumer<CollectedEvidence.CollectedEvidenceBuilder, BidRequest> buildHook(
             BiConsumer<UserAgent, Map<String, String>> userAgentEvidenceConverter) throws Exception {
-
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(
                 mock(ModuleConfig.class),
                 mock(DeviceEnricher.class)
@@ -28,13 +27,11 @@ public class BidRequestReaderTest {
             public void collectEvidence(
                     CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder,
                     BidRequest bidRequest) {
-
                 super.collectEvidence(evidenceBuilder, bidRequest);
             }
 
             @Override
             protected Map<String, String> convertSecureHeaders(UserAgent userAgent) {
-
                 final Map<String, String> evidence = new HashMap<>();
                 userAgentEvidenceConverter.accept(userAgent, evidence);
                 return evidence;
@@ -45,14 +42,12 @@ public class BidRequestReaderTest {
 
     @Test
     public void shouldNotFailOnNoDevice() throws Exception {
-
         // just check for no throw
         buildHook(null).accept(null, BidRequest.builder().build());
     }
 
     @Test
     public void shouldAddUA() throws Exception {
-
         // given
         final String testUA = "MindScape Crawler";
         final BidRequest bidRequest = BidRequest.builder()
@@ -70,7 +65,6 @@ public class BidRequestReaderTest {
 
     @Test
     public void shouldAddSUA() throws Exception {
-
         // given
         final UserAgent testSUA = UserAgent.builder().build();
         final BidRequest bidRequest = BidRequest.builder()

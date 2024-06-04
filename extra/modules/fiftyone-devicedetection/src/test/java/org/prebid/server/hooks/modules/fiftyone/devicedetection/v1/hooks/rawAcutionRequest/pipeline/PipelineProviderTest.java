@@ -29,7 +29,6 @@ public class PipelineProviderTest {
         final PipelineBuilder builder = new PipelineBuilder() {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
-
                 return builderSpawner.spawn(dataFile);
             }
 
@@ -37,7 +36,6 @@ public class PipelineProviderTest {
             protected void applyUpdateOptions(
                     DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                     DataFileUpdate updateConfig) {
-
                 updateOptionsMerger.accept(pipelineBuilder, updateConfig);
             }
 
@@ -45,7 +43,6 @@ public class PipelineProviderTest {
             protected void applyPerformanceOptions(
                     DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                     PerformanceConfig performanceConfig) {
-
                 performanceOptionsMerger.accept(pipelineBuilder, performanceConfig);
             }
         };
@@ -54,7 +51,6 @@ public class PipelineProviderTest {
 
     @Test
     public void shouldUseJoinedBuilder() throws Exception {
-
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
 

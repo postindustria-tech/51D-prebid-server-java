@@ -19,7 +19,6 @@ public class ModuleContextPatcherImpTest {
             ModuleContext,
             Consumer<CollectedEvidence.CollectedEvidenceBuilder>,
             ModuleContext> buildPatcher() throws Exception {
-
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(
                 mock(ModuleConfig.class),
                 mock(DeviceEnricher.class)
@@ -28,7 +27,6 @@ public class ModuleContextPatcherImpTest {
             public ModuleContext addEvidenceToContext(
                     ModuleContext moduleContext,
                     Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
-
                 return super.addEvidenceToContext(moduleContext, evidenceInjector);
             }
         }
@@ -37,7 +35,6 @@ public class ModuleContextPatcherImpTest {
 
     @Test
     public void shouldMakeNewContextIfNullIsPassedIn() throws Exception {
-
         // given and when
         final ModuleContext newContext = buildPatcher().apply(null, b -> { });
 
@@ -48,7 +45,6 @@ public class ModuleContextPatcherImpTest {
 
     @Test
     public void shouldMakeNewEvidenceIfNoneWasPresent() throws Exception {
-
         // given and when
         final ModuleContext newContext = buildPatcher().apply(
                 ModuleContext.builder().build(),
@@ -61,7 +57,6 @@ public class ModuleContextPatcherImpTest {
 
     @Test
     public void shouldMergeEvidences() throws Exception {
-
         // given and when
         final String ua = "mad-hatter";
         final HashMap<String, String> sua = new HashMap<>();

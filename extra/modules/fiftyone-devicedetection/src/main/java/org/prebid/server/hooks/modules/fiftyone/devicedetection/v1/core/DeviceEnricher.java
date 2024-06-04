@@ -26,7 +26,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class DeviceEnricher {
-
     public static final String EXT_DEVICE_ID_KEY = "fiftyonedegrees_deviceId";
 
     private static final Map<String, Integer> DEVICE_FIELD_MAPPING = Map.ofEntries(
@@ -50,12 +49,10 @@ public class DeviceEnricher {
     private final Pipeline pipeline;
 
     public DeviceEnricher(@Nonnull Pipeline pipeline) {
-
         this.pipeline = Objects.requireNonNull(pipeline);
     }
 
     public EnrichmentResult populateDeviceInfo(Device device, CollectedEvidence collectedEvidence) {
-
         try (FlowData data = pipeline.createFlowData()) {
             data.addEvidence(pickRelevantFrom(collectedEvidence));
             data.process();
@@ -70,7 +67,6 @@ public class DeviceEnricher {
     }
 
     protected Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
-
         final Map<String, String> evidence = new HashMap<>();
 
         final String ua = collectedEvidence.deviceUA();
@@ -93,7 +89,6 @@ public class DeviceEnricher {
     }
 
     protected EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
-
         final List<String> updatedFields = new ArrayList<>();
         final Device.DeviceBuilder deviceBuilder = device.toBuilder();
 
@@ -204,12 +199,10 @@ public class DeviceEnricher {
     }
 
     private static boolean isPositive(Integer value) {
-
         return value != null && value > 0;
     }
 
     private static boolean isPositive(Double value) {
-
         return value != null && value > 0;
     }
 
@@ -221,7 +214,6 @@ public class DeviceEnricher {
      * @see fiftyone.devicedetection.hash.engine.onpremise.data.DeviceDataHash#getDeviceId()
      */
     public static String getDeviceId(Device device) {
-
         final ExtDevice ext = device.getExt();
         if (ext == null) {
             return null;
@@ -241,7 +233,6 @@ public class DeviceEnricher {
      * @see fiftyone.devicedetection.hash.engine.onpremise.data.DeviceDataHash#getDeviceId()
      */
     private static void setDeviceId(Device.DeviceBuilder deviceBuilder, Device device, String deviceId) {
-
         ExtDevice ext = null;
         if (device != null) {
             ext = device.getExt();
@@ -254,7 +245,6 @@ public class DeviceEnricher {
     }
 
     private <T> T getSafe(DeviceData deviceData, Function<DeviceData, AspectPropertyValue<T>> propertyGetter) {
-
         try {
             final AspectPropertyValue<T> propertyValue = propertyGetter.apply(deviceData);
             if (propertyValue != null && propertyValue.hasValue()) {
@@ -267,7 +257,6 @@ public class DeviceEnricher {
     }
 
     protected Integer convertDeviceType(String deviceType) {
-
         return Optional.ofNullable(DEVICE_FIELD_MAPPING.get(deviceType)).orElse(OrtbDeviceType.UNKNOWN.ordinal());
     }
 }

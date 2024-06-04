@@ -9,11 +9,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PipelineBuilderSpawnerImpTest {
     private static PipelineBuilderSpawner<DeviceDetectionOnPremisePipelineBuilder> makeSpawner() throws Exception {
-
         return new PipelineBuilder() {
             @Override
             public DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
-
                 return super.makeRawBuilder(dataFile);
             }
         }
@@ -22,7 +20,6 @@ public class PipelineBuilderSpawnerImpTest {
 
     @Test
     public void shouldReturnNonNull() throws Exception {
-
         // given
         final DataFile dataFile = new DataFile();
         dataFile.setPath("dummy.hash");
@@ -38,7 +35,6 @@ public class PipelineBuilderSpawnerImpTest {
 
     @Test
     public void shouldReturnNonNullWithCopy() throws Exception {
-
         // given
         final DataFile dataFile = new DataFile();
         dataFile.setPath("dummy.hash");

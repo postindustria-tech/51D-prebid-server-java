@@ -15,7 +15,6 @@ public class PipelineSupplierImpTest {
         return () -> new PipelineBuilder() {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(ModuleConfig moduleConfig) throws Exception {
-
                 return builder;
             }
         }.build(null);
@@ -23,7 +22,6 @@ public class PipelineSupplierImpTest {
 
     @Test
     public void shouldReturnBuiltPipeline() throws Exception {
-
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
 

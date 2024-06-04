@@ -25,7 +25,6 @@ public class BidRequestPatcherImpTest {
                     CollectedEvidence,
                     EnrichmentResult> deviceRefiner
     ) throws Exception {
-
         return new FiftyOneDeviceDetectionRawAuctionRequestHook(
                 mock(ModuleConfig.class),
                 new DeviceEnricher(mock(Pipeline.class)) {
@@ -33,13 +32,11 @@ public class BidRequestPatcherImpTest {
                     public EnrichmentResult populateDeviceInfo(
                             Device device,
                             CollectedEvidence collectedEvidence) {
-
                         return deviceRefiner.apply(device, collectedEvidence);
                     }
                 }) {
             @Override
             public BidRequest enrichDevice(BidRequest bidRequest, CollectedEvidence collectedEvidence) {
-
                 return super.enrichDevice(bidRequest, collectedEvidence);
             }
 
@@ -47,7 +44,6 @@ public class BidRequestPatcherImpTest {
             protected void collectEvidence(
                     CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder,
                     BidRequest bidRequest) {
-
                 bidRequestEvidenceCollector.accept(evidenceBuilder, bidRequest);
             }
         }
@@ -56,7 +52,6 @@ public class BidRequestPatcherImpTest {
 
     @Test
     public void shouldReturnNullWhenRequestIsNull() throws Exception {
-
         // given
         final BiFunction<BidRequest, CollectedEvidence, BidRequest> requestPatcher = buildHook(
                 null,
@@ -69,7 +64,6 @@ public class BidRequestPatcherImpTest {
 
     @Test
     public void shouldReturnNullWhenMergedDeviceIsNull() throws Exception {
-
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
         final CollectedEvidence savedEvidence = CollectedEvidence.builder().build();
@@ -91,7 +85,6 @@ public class BidRequestPatcherImpTest {
 
     @Test
     public void shouldPassMergedEvidenceToDeviceRefiner() throws Exception {
-
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
         final CollectedEvidence savedEvidence = CollectedEvidence.builder()
@@ -118,7 +111,6 @@ public class BidRequestPatcherImpTest {
 
     @Test
     public void shouldInjectReturnedDevice() throws Exception {
-
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
         final CollectedEvidence savedEvidence = CollectedEvidence.builder().build();

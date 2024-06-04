@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class PipelineBuilder {
-
     private static final Collection<String> PROPERTIES_USED = List.of(
             "devicetype",
             "hardwarevendor",
@@ -40,12 +39,10 @@ public class PipelineBuilder {
             "HardwareModelVariants");
 
     public Pipeline build(ModuleConfig moduleConfig) throws Exception {
-
         return makeBuilder(moduleConfig).build();
     }
 
     protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(ModuleConfig moduleConfig) throws Exception {
-
         final DataFile dataFile = moduleConfig.getDataFile();
         final DeviceDetectionOnPremisePipelineBuilder builder = makeRawBuilder(dataFile);
         applyUpdateOptions(builder, dataFile.getUpdate());
@@ -55,7 +52,6 @@ public class PipelineBuilder {
     }
 
     protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
-
         final Boolean shouldMakeDataCopy = dataFile.getMakeTempCopy();
         return new DeviceDetectionPipelineBuilder()
                 .useOnPremise(dataFile.getPath(), BooleanUtils.isTrue(shouldMakeDataCopy));
@@ -63,7 +59,6 @@ public class PipelineBuilder {
 
     protected void applyUpdateOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                                            DataFileUpdate updateConfig) {
-
         pipelineBuilder.setDataUpdateService(new DataUpdateServiceDefault());
 
         final Boolean auto = updateConfig.getAuto();
@@ -99,7 +94,6 @@ public class PipelineBuilder {
 
     protected void applyPerformanceOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                                                 PerformanceConfig performanceConfig) {
-
         final String profile = performanceConfig.getProfile();
         if (StringUtils.isNotBlank(profile)) {
             for (Constants.PerformanceProfiles nextProfile : Constants.PerformanceProfiles.values()) {
