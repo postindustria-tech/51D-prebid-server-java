@@ -57,7 +57,7 @@ public class PipelineBuilder {
         return builder;
     }
 
-    protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
+    private DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
         if (premadeBuilder != null) {
             return premadeBuilder;
         }
@@ -66,7 +66,7 @@ public class PipelineBuilder {
                 .useOnPremise(dataFile.getPath(), BooleanUtils.isTrue(shouldMakeDataCopy));
     }
 
-    protected void applyUpdateOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+    private void applyUpdateOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                                            DataFileUpdate updateConfig) {
         pipelineBuilder.setDataUpdateService(new DataUpdateServiceDefault());
 
@@ -101,7 +101,7 @@ public class PipelineBuilder {
         }
     }
 
-    protected void applyPerformanceOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+    private void applyPerformanceOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                                                 PerformanceConfig performanceConfig) {
         final String profile = performanceConfig.getProfile();
         if (StringUtils.isNotBlank(profile)) {
