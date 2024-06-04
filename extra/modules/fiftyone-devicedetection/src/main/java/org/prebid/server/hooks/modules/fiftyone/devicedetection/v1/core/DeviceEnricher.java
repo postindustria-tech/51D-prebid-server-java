@@ -57,10 +57,11 @@ public class DeviceEnricher {
             data.addEvidence(pickRelevantFrom(collectedEvidence));
             data.process();
             final DeviceData deviceData = data.get(DeviceData.class);
-            if (device == null) {
+            if (deviceData == null) {
                 return null;
             }
-            return patchDevice(device, deviceData);
+            final Device properDevice = Optional.ofNullable(device).orElseGet(() -> Device.builder().build());
+            return patchDevice(properDevice, deviceData);
         } catch (Exception e) {
             return EnrichmentResult.builder().processingException(e).build();
         }
