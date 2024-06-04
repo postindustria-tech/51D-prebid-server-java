@@ -3,10 +3,12 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcu
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.iab.openrtb.request.Device;
 import fiftyone.devicedetection.shared.DeviceData;
+import fiftyone.pipeline.core.data.FlowData;
 import fiftyone.pipeline.core.flowelements.Pipeline;
 import fiftyone.pipeline.engines.data.AspectPropertyValue;
 import fiftyone.pipeline.engines.exceptions.NoValueException;
 import org.junit.Test;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceEnricher;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.EnrichmentResult;
 import org.prebid.server.proto.openrtb.ext.request.ExtDevice;
@@ -22,7 +24,7 @@ import static org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.D
 
 public class DevicePatchPlannerImpTest {
     private static <T> AspectPropertyValue<T> mockValue(T value) {
-        return new AspectPropertyValue<T>() {
+        return new AspectPropertyValue<>() {
             @Override
             public boolean hasValue() {
                 return true;
@@ -53,12 +55,15 @@ public class DevicePatchPlannerImpTest {
     private static EnrichmentResult patchDevice(
             Device device,
             DeviceData deviceData) throws Exception {
-        return new DeviceEnricher(mock(Pipeline.class)) {
-            @Override
-            public EnrichmentResult patchDevice(Device device, DeviceData deviceData) {
-                return super.patchDevice(device, deviceData);
-            }
-        }.patchDevice(device, deviceData);
+        final Pipeline pipeline = mock(Pipeline.class);
+        final FlowData flowData = mock(FlowData.class);
+        when(pipeline.createFlowData()).thenReturn(flowData);
+        when(flowData.get(DeviceData.class)).thenReturn(deviceData);
+        final DeviceEnricher deviceEnricher = new DeviceEnricher(pipeline);
+        final CollectedEvidence collectedEvidence = CollectedEvidence.builder()
+                .deviceUA("fake-UserAgent")
+                .build();
+        return deviceEnricher.populateDeviceInfo(device, collectedEvidence);
     }
 
     @Test

@@ -25,7 +25,7 @@ public class PriorityEvidenceSelectorImpTest {
         when(pipeline.createFlowData()).thenReturn(flowData);
         final ArgumentCaptor<Map<String, String>> evidenceCaptor = ArgumentCaptor.forClass(Map.class);
         final DeviceEnricher deviceEnricher = new DeviceEnricher(pipeline);
-        final EnrichmentResult result = deviceEnricher.populateDeviceInfo(null, collectedEvidence);
+        deviceEnricher.populateDeviceInfo(null, collectedEvidence);
         verify(flowData).addEvidence(evidenceCaptor.capture());
         return evidenceCaptor.getValue();
     }

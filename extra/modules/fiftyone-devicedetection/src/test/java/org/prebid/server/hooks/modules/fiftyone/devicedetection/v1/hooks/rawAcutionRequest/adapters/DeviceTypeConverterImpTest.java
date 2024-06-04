@@ -38,7 +38,7 @@ public class DeviceTypeConverterImpTest {
     }
 
     private static <T> AspectPropertyValue<T> mockValue(T value) {
-        return new AspectPropertyValue<T>() {
+        return new AspectPropertyValue<>() {
             @Override
             public boolean hasValue() {
                 return true;
