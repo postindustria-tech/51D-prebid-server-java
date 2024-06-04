@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 public class DeviceTypeConverterImpTest {
     private static Integer convertDeviceType(String deviceType) throws Exception {
-        // given
         final Pipeline pipeline = mock(Pipeline.class);
         final FlowData flowData = mock(FlowData.class);
         when(pipeline.createFlowData()).thenReturn(flowData);

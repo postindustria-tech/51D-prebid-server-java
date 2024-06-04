@@ -1,9 +1,12 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks.rawAcutionRequest.detection;
 
+import fiftyone.pipeline.core.data.FlowData;
 import fiftyone.pipeline.core.flowelements.Pipeline;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.boundary.CollectedEvidence;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.DeviceEnricher;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.EnrichmentResult;
 
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -12,15 +15,19 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class PriorityEvidenceSelectorImpTest {
     private static Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) throws Exception {
-        return new DeviceEnricher(mock(Pipeline.class)) {
-            @Override
-            public Map<String, String> pickRelevantFrom(CollectedEvidence collectedEvidence) {
-                return super.pickRelevantFrom(collectedEvidence);
-            }
-        }.pickRelevantFrom(collectedEvidence);
+        final Pipeline pipeline = mock(Pipeline.class);
+        final FlowData flowData = mock(FlowData.class);
+        when(pipeline.createFlowData()).thenReturn(flowData);
+        final ArgumentCaptor<Map<String, String>> evidenceCaptor = ArgumentCaptor.forClass(Map.class);
+        final DeviceEnricher deviceEnricher = new DeviceEnricher(pipeline);
+        final EnrichmentResult result = deviceEnricher.populateDeviceInfo(null, collectedEvidence);
+        verify(flowData).addEvidence(evidenceCaptor.capture());
+        return evidenceCaptor.getValue();
     }
 
     @Test
