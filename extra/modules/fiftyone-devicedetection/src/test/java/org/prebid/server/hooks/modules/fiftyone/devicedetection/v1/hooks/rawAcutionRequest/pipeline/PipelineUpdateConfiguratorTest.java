@@ -19,15 +19,7 @@ import static org.mockito.Mockito.when;
 public class PipelineUpdateConfiguratorTest {
     private static BiConsumer<DeviceDetectionOnPremisePipelineBuilder,
             DataFileUpdate> makeConfigurator() throws Exception {
-        return new PipelineBuilder() {
-            @Override
-            protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(ModuleConfig moduleConfig) throws Exception {
-                final DeviceDetectionOnPremisePipelineBuilder builder
-                        = mock(DeviceDetectionOnPremisePipelineBuilder.class);
-                when(builder.build()).thenReturn(null);
-                return builder;
-            }
-
+        return new PipelineBuilder(null) {
             @Override
             public void applyUpdateOptions(
                     DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,

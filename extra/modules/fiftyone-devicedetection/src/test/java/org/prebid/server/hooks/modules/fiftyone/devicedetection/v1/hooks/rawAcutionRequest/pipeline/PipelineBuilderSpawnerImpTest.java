@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PipelineBuilderSpawnerImpTest {
     private static PipelineBuilderSpawner<DeviceDetectionOnPremisePipelineBuilder> makeSpawner() throws Exception {
-        return new PipelineBuilder() {
+        return new PipelineBuilder(null) {
             @Override
             public DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
                 return super.makeRawBuilder(dataFile);

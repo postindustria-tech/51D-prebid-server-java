@@ -3,8 +3,12 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core;
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import fiftyone.devicedetection.DeviceDetectionPipelineBuilder;
 import fiftyone.pipeline.core.flowelements.Pipeline;
+import fiftyone.pipeline.core.flowelements.PipelineBuilderBase;
 import fiftyone.pipeline.engines.Constants;
 import fiftyone.pipeline.engines.services.DataUpdateServiceDefault;
+
+import jakarta.annotation.Nullable;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
@@ -38,11 +42,13 @@ public class PipelineBuilder {
             "GeoLocation",
             "HardwareModelVariants");
 
-    public Pipeline build(ModuleConfig moduleConfig) throws Exception {
-        return makeBuilder(moduleConfig).build();
+    private final DeviceDetectionOnPremisePipelineBuilder premadeBuilder;
+
+    public PipelineBuilder(@Nullable DeviceDetectionOnPremisePipelineBuilder premadeBuilder) {
+        this.premadeBuilder = premadeBuilder;
     }
 
-    protected DeviceDetectionOnPremisePipelineBuilder makeBuilder(ModuleConfig moduleConfig) throws Exception {
+    public PipelineBuilderBase<?> build(ModuleConfig moduleConfig) throws Exception {
         final DataFile dataFile = moduleConfig.getDataFile();
         final DeviceDetectionOnPremisePipelineBuilder builder = makeRawBuilder(dataFile);
         applyUpdateOptions(builder, dataFile.getUpdate());
@@ -52,6 +58,9 @@ public class PipelineBuilder {
     }
 
     protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
+        if (premadeBuilder != null) {
+            return premadeBuilder;
+        }
         final Boolean shouldMakeDataCopy = dataFile.getMakeTempCopy();
         return new DeviceDetectionPipelineBuilder()
                 .useOnPremise(dataFile.getPath(), BooleanUtils.isTrue(shouldMakeDataCopy));

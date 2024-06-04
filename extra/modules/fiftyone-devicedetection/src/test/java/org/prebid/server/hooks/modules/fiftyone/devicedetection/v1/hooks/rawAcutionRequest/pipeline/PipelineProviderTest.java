@@ -26,7 +26,7 @@ public class PipelineProviderTest {
         final ModuleConfig moduleConfig = new ModuleConfig();
         moduleConfig.setDataFile(dataFile);
         moduleConfig.setPerformance(performanceConfig);
-        final PipelineBuilder builder = new PipelineBuilder() {
+        final PipelineBuilder builder = new PipelineBuilder(null) {
             @Override
             protected DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
                 return builderSpawner.spawn(dataFile);
@@ -46,7 +46,7 @@ public class PipelineProviderTest {
                 performanceOptionsMerger.accept(pipelineBuilder, performanceConfig);
             }
         };
-        return () -> builder.build(moduleConfig);
+        return builder.build(moduleConfig)::build;
     }
 
     @Test
