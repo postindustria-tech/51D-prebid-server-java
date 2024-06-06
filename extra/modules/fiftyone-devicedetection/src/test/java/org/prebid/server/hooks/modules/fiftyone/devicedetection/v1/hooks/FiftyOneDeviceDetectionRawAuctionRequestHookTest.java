@@ -2,11 +2,11 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks;
 
 import com.iab.openrtb.request.BidRequest;
 import com.iab.openrtb.request.Device;
+import com.iab.openrtb.request.UserAgent;
 import fiftyone.pipeline.core.flowelements.Pipeline;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.prebid.server.auction.model.AuctionContext;
@@ -53,6 +53,83 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
                         return deviceRefiner.apply(device, collectedEvidence);
                     }
                 });
+    }
+
+    // MARK: - collectEvidence
+
+    @Test
+    public void shouldNotFailOnNoDevice() throws Exception {
+        // given
+        final BidRequest bidRequest = BidRequest.builder().build();
+        final AuctionRequestPayload payload = AuctionRequestPayloadImpl.of(bidRequest);
+        final AuctionInvocationContext auctionInvocationContext = AuctionInvocationContextImpl.of(
+                null,
+                null,
+                false,
+                null,
+                null
+        );
+
+        // when
+        final CollectedEvidence evidence = ((ModuleContext) target.call(payload, auctionInvocationContext)
+                .result()
+                .moduleContext())
+                .collectedEvidence();
+
+        // then
+        assertThat(evidence).isNotNull();
+    }
+
+    @Test
+    public void shouldAddUA() throws Exception {
+        // given
+        final String testUA = "MindScape Crawler";
+        final BidRequest bidRequest = BidRequest.builder()
+                .device(Device.builder().ua(testUA).build())
+                .build();
+        final AuctionRequestPayload payload = AuctionRequestPayloadImpl.of(bidRequest);
+        final AuctionInvocationContext auctionInvocationContext = AuctionInvocationContextImpl.of(
+                null,
+                null,
+                false,
+                null,
+                null
+        );
+
+        // when
+        final CollectedEvidence evidence = ((ModuleContext) target.call(payload, auctionInvocationContext)
+                .result()
+                .moduleContext())
+                .collectedEvidence();
+
+        // then
+        assertThat(evidence.deviceUA()).isEqualTo(testUA);
+    }
+
+    @Test
+    public void shouldAddSUA() throws Exception {
+        // given
+        final UserAgent testSUA = UserAgent.builder().build();
+        final BidRequest bidRequest = BidRequest.builder()
+                .device(Device.builder().sua(testSUA).build())
+                .build();
+        final AuctionRequestPayload payload = AuctionRequestPayloadImpl.of(bidRequest);
+        final AuctionInvocationContext auctionInvocationContext = AuctionInvocationContextImpl.of(
+                null,
+                null,
+                false,
+                null,
+                null
+        );
+
+        // when
+        final CollectedEvidence evidence = ((ModuleContext) target.call(payload, auctionInvocationContext)
+                .result()
+                .moduleContext())
+                .collectedEvidence();
+
+        // then
+        assertThat(evidence.secureHeaders()).isEmpty();
     }
 
     // MARK: - enrichDevice
