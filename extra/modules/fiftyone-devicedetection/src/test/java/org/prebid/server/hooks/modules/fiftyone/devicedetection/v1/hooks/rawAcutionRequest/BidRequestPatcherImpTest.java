@@ -28,7 +28,7 @@ public class BidRequestPatcherImpTest {
                     CollectedEvidence,
                     EnrichmentResult> deviceRefiner
     ) throws Exception {
-        final RawAuctionRequestHook hook = new FiftyOneDeviceDetectionRawAuctionRequestHook(
+        final RawAuctionRequestHook target = new FiftyOneDeviceDetectionRawAuctionRequestHook(
                 mock(ModuleConfig.class),
                 new DeviceEnricher(mock(Pipeline.class)) {
                     @Override
@@ -46,7 +46,7 @@ public class BidRequestPatcherImpTest {
                     .collectedEvidence(evidence)
                     .build();
             when(invocationContext.moduleContext()).thenReturn(moduleContext);
-            return hook.call(auctionRequestPayload, invocationContext)
+            return target.call(auctionRequestPayload, invocationContext)
                     .result()
                     .payloadUpdate()
                     .apply(auctionRequestPayload)

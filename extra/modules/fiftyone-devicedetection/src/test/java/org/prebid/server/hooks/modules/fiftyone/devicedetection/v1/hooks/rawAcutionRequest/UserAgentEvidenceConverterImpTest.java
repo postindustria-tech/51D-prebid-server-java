@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 public class UserAgentEvidenceConverterImpTest {
     private static BiConsumer<UserAgent, Map<String, String>> buildConverter() throws Exception {
-        final RawAuctionRequestHook hook = new FiftyOneDeviceDetectionRawAuctionRequestHook(
+        final RawAuctionRequestHook target = new FiftyOneDeviceDetectionRawAuctionRequestHook(
                 mock(ModuleConfig.class),
                 mock(DeviceEnricher.class)
         );
@@ -37,7 +37,7 @@ public class UserAgentEvidenceConverterImpTest {
                             .build())
                     .build();
             when(payload.bidRequest()).thenReturn(bidRequest);
-            evidence.putAll(((ModuleContext) hook.call(payload, auctionInvocationContext)
+            evidence.putAll(((ModuleContext) target.call(payload, auctionInvocationContext)
                     .result()
                     .moduleContext())
                     .collectedEvidence()

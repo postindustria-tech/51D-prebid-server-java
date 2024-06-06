@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 public class BidRequestReaderTest {
     private static Function<BidRequest, CollectedEvidence> buildHook() throws Exception {
-        final RawAuctionRequestHook hook = new FiftyOneDeviceDetectionRawAuctionRequestHook(
+        final RawAuctionRequestHook target = new FiftyOneDeviceDetectionRawAuctionRequestHook(
                 mock(ModuleConfig.class),
                 mock(DeviceEnricher.class)
         );
@@ -29,7 +29,7 @@ public class BidRequestReaderTest {
         final AuctionInvocationContext auctionInvocationContext = mock(AuctionInvocationContext.class);
         return bidRequest -> {
             when(payload.bidRequest()).thenReturn(bidRequest);
-            return ((ModuleContext) hook.call(payload, auctionInvocationContext)
+            return ((ModuleContext) target.call(payload, auctionInvocationContext)
                     .result()
                     .moduleContext())
                     .collectedEvidence();

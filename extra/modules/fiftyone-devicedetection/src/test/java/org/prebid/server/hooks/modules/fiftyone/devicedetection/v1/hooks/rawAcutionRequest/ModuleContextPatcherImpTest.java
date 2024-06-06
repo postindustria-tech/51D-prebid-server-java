@@ -24,7 +24,7 @@ public class ModuleContextPatcherImpTest {
             ModuleContext,
             Device,
             ModuleContext> buildPatcher() throws Exception {
-        final RawAuctionRequestHook hook = new FiftyOneDeviceDetectionRawAuctionRequestHook(
+        final RawAuctionRequestHook target = new FiftyOneDeviceDetectionRawAuctionRequestHook(
                 mock(ModuleConfig.class),
                 mock(DeviceEnricher.class)
         );
@@ -36,7 +36,7 @@ public class ModuleContextPatcherImpTest {
             when(auctionRequestPayload.bidRequest()).thenReturn(bidRequest);
             final AuctionInvocationContext invocationContext = mock(AuctionInvocationContext.class);
             when(invocationContext.moduleContext()).thenReturn(moduleContext);
-            return (ModuleContext) hook.call(auctionRequestPayload, invocationContext)
+            return (ModuleContext) target.call(auctionRequestPayload, invocationContext)
                     .result()
                     .moduleContext();
         };
