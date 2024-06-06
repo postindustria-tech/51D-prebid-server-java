@@ -26,6 +26,7 @@ import org.prebid.server.hooks.v1.auction.RawAuctionRequestHook;
 import org.prebid.server.settings.model.Account;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.function.BiFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,10 +56,99 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
                 });
     }
 
+    // MARK: - addEvidenceToContext
+
+    @Test
+    public void callShouldMakeNewContextWhenNullIsPassedIn() throws Exception {
+        // given
+        final BidRequest bidRequest = BidRequest.builder()
+                .device(null)
+                .build();
+        final AuctionRequestPayload auctionRequestPayload = AuctionRequestPayloadImpl.of(bidRequest);
+        final AuctionInvocationContext invocationContext = AuctionInvocationContextImpl.of(
+                null,
+                null,
+                false,
+                null,
+                null
+        );
+
+        // when
+        final ModuleContext newContext = (ModuleContext) target.call(auctionRequestPayload, invocationContext)
+                .result()
+                .moduleContext();
+
+        // then
+        assertThat(newContext).isNotNull();
+        assertThat(newContext.collectedEvidence()).isNotNull();
+    }
+
+    @Test
+    public void callShouldMakeNewEvidenceWhenNoneWasPresent() throws Exception {
+        // given
+        final ModuleContext moduleContext = ModuleContext.builder().build();
+        final BidRequest bidRequest = BidRequest.builder()
+                .device(null)
+                .build();
+        final AuctionRequestPayload auctionRequestPayload = AuctionRequestPayloadImpl.of(bidRequest);
+        final AuctionInvocationContext invocationContext = AuctionInvocationContextImpl.of(
+                null,
+                null,
+                false,
+                null,
+                moduleContext
+        );
+
+        // when
+        final ModuleContext newContext = (ModuleContext) target.call(auctionRequestPayload, invocationContext)
+                .result()
+                .moduleContext();
+
+        // then
+        assertThat(newContext).isNotNull();
+        assertThat(newContext.collectedEvidence()).isNotNull();
+    }
+
+    @Test
+    public void callShouldMergeEvidences() throws Exception {
+        // given
+        final String ua = "mad-hatter";
+        final HashMap<String, String> sua = new HashMap<>();
+        final ModuleContext existingContext = ModuleContext.builder()
+                .collectedEvidence(CollectedEvidence.builder()
+                        .secureHeaders(sua)
+                        .build())
+                .build();
+        final Device device = Device.builder().ua(ua).build();
+        final BidRequest bidRequest = BidRequest.builder()
+                .device(device)
+                .build();
+        final AuctionRequestPayload auctionRequestPayload = AuctionRequestPayloadImpl.of(bidRequest);
+        final AuctionInvocationContext invocationContext = AuctionInvocationContextImpl.of(
+                null,
+                null,
+                false,
+                null,
+                existingContext
+        );
+
+        // when
+        final ModuleContext newContext = (ModuleContext) target.call(auctionRequestPayload, invocationContext)
+                .result()
+                .moduleContext();
+
+        // then
+        assertThat(newContext).isNotNull();
+        final CollectedEvidence newEvidence = newContext.collectedEvidence();
+        assertThat(newEvidence).isNotNull();
+        assertThat(newEvidence.deviceUA()).isEqualTo(ua);
+        assertThat(newEvidence.secureHeaders()).isEqualTo(sua);
+    }
+
     // MARK: - collectEvidence
 
     @Test
-    public void shouldNotFailOnNoDevice() throws Exception {
+    public void callShouldNotFailWhenNoDevice() throws Exception {
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
         final AuctionRequestPayload payload = AuctionRequestPayloadImpl.of(bidRequest);
@@ -81,7 +171,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void shouldAddUA() throws Exception {
+    public void callShouldAddUAToModuleContextEvidence() throws Exception {
         // given
         final String testUA = "MindScape Crawler";
         final BidRequest bidRequest = BidRequest.builder()
@@ -107,7 +197,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void shouldAddSUA() throws Exception {
+    public void callShouldAddSUAToModuleContextEvidence() throws Exception {
         // given
         final UserAgent testSUA = UserAgent.builder().build();
         final BidRequest bidRequest = BidRequest.builder()
