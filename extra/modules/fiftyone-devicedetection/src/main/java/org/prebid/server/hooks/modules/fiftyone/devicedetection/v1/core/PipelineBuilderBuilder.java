@@ -5,9 +5,6 @@ import fiftyone.devicedetection.DeviceDetectionPipelineBuilder;
 import fiftyone.pipeline.core.flowelements.PipelineBuilderBase;
 import fiftyone.pipeline.engines.Constants;
 import fiftyone.pipeline.engines.services.DataUpdateServiceDefault;
-
-import jakarta.annotation.Nullable;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFile;
@@ -15,8 +12,10 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.Dat
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.ModuleConfig;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PipelineBuilderBuilder {
     private static final Collection<String> PROPERTIES_USED = List.of(
@@ -60,16 +59,13 @@ public class PipelineBuilderBuilder {
         return builder;
     }
 
-    private DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
-        if (premadeBuilder != null) {
-            return premadeBuilder;
-        }
+    private static DeviceDetectionOnPremisePipelineBuilder makeRawBuilder(DataFile dataFile) throws Exception {
         final Boolean shouldMakeDataCopy = dataFile.getMakeTempCopy();
         return new DeviceDetectionPipelineBuilder()
                 .useOnPremise(dataFile.getPath(), BooleanUtils.isTrue(shouldMakeDataCopy));
     }
 
-    private void applyUpdateOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+    private static void applyUpdateOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                                            DataFileUpdate updateConfig) {
         pipelineBuilder.setDataUpdateService(new DataUpdateServiceDefault());
 
@@ -84,12 +80,12 @@ public class PipelineBuilderBuilder {
         }
 
         final String url = updateConfig.getUrl();
-        if (StringUtils.isNotBlank(url)) {
+        if (url != null) {
             pipelineBuilder.setDataUpdateUrl(url);
         }
 
         final String licenseKey = updateConfig.getLicenseKey();
-        if (StringUtils.isNotBlank(licenseKey)) {
+        if (licenseKey != null) {
             pipelineBuilder.setDataUpdateLicenseKey(licenseKey);
         }
 
@@ -104,17 +100,11 @@ public class PipelineBuilderBuilder {
         }
     }
 
-    private void applyPerformanceOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+    private static void applyPerformanceOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                                                 PerformanceConfig performanceConfig) {
         final String profile = performanceConfig.getProfile();
-        if (StringUtils.isNotBlank(profile)) {
-            for (Constants.PerformanceProfiles nextProfile : Constants.PerformanceProfiles.values()) {
-                if (StringUtils.equalsAnyIgnoreCase(nextProfile.name(), profile)) {
-                    pipelineBuilder.setPerformanceProfile(nextProfile);
-                    // todo: return or break the cycle?
-                    return;
-                }
-            }
+        if (profile != null) {
+            setPerformanceProfile(pipelineBuilder, profile);
         }
 
         final Integer concurrency = performanceConfig.getConcurrency();
@@ -136,5 +126,24 @@ public class PipelineBuilderBuilder {
         if (drift != null) {
             pipelineBuilder.setDrift(drift);
         }
+    }
+
+    private static void setPerformanceProfile(
+            DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
+            String profile) {
+        for (Constants.PerformanceProfiles nextProfile : Constants.PerformanceProfiles.values()) {
+            if (StringUtils.equalsIgnoreCase(nextProfile.name(), profile)) {
+                pipelineBuilder.setPerformanceProfile(nextProfile);
+                return;
+            }
+        }
+        throw new IllegalArgumentException(
+                "Invalid value for performance profile ("
+                        + profile
+                        + ") -- should be one of: "
+                        + Arrays.stream(Constants.PerformanceProfiles.values())
+                        .map(Enum::name)
+                        .collect(Collectors.joining(", "))
+        );
     }
 }

@@ -70,7 +70,7 @@ public class PipelineBuilderBuilderTest {
     }
 
     @Test
-    public void buildShouldIgnoreEmptyLicenseKey() throws Exception {
+    public void buildShouldAssignEmptyLicenseKey() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
 
@@ -81,8 +81,11 @@ public class PipelineBuilderBuilderTest {
                 .withPremadeBuilder(builder)
                 .build(moduleConfig);
 
+        final ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+
         // then
-        verify(builder, never()).setDataUpdateLicenseKey(any());
+        verify(builder).setDataUpdateLicenseKey(argumentCaptor.capture());
+        assertThat(argumentCaptor.getAllValues()).containsExactly(dataFileUpdate.getLicenseKey());
     }
 
     @Test
@@ -182,36 +185,40 @@ public class PipelineBuilderBuilderTest {
 
     // MARK: - applyPerformanceOptions
 
-    @Test
-    public void buildShouldIgnoreUnknownProfile() throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void buildShouldThrowWhenProfileIsUnknown() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
 
         performanceConfig.setProfile("ghost");
 
-        // when
-        new PipelineBuilderBuilder()
-                .withPremadeBuilder(builder)
-                .build(moduleConfig);
-
-        // then
-        verify(builder, never()).setPerformanceProfile(any());
+        try {
+            // when
+            new PipelineBuilderBuilder()
+                    .withPremadeBuilder(builder)
+                    .build(moduleConfig);
+        } finally {
+            // then
+            verify(builder, never()).setPerformanceProfile(any());
+        }
     }
 
-    @Test
-    public void buildShouldIgnoreEmptyProfile() throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void buildShouldThrowWhenProfileEmpty() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
 
         performanceConfig.setProfile("");
 
-        // when
-        new PipelineBuilderBuilder()
-                .withPremadeBuilder(builder)
-                .build(moduleConfig);
-
-        // then
-        verify(builder, never()).setPerformanceProfile(any());
+        try {
+            // when
+            new PipelineBuilderBuilder()
+                    .withPremadeBuilder(builder)
+                    .build(moduleConfig);
+        } finally {
+            // then
+            verify(builder, never()).setPerformanceProfile(any());
+        }
     }
 
     @Test
