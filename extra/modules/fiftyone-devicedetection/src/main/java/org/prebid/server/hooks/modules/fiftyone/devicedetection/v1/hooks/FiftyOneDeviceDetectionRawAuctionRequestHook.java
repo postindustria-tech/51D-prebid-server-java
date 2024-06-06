@@ -133,7 +133,6 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                                                 CollectedEvidence collectedEvidence) {
         final BidRequest currentRequest = existingPayload.bidRequest();
         final BidRequest patchedRequest = enrichDevice(currentRequest, collectedEvidence);
-        // todo: 'patchedRequest == currentRequest' doesn't make any sense then
         if (patchedRequest == null || patchedRequest == currentRequest) {
             return existingPayload;
         }
