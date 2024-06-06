@@ -8,7 +8,7 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.Dat
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFileUpdate;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.ModuleConfig;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.PipelineBuilder;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.PipelineBuilderBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,7 +24,9 @@ public class PipelinePerformanceConfiguratorTest {
         moduleConfig.setDataFile(new DataFile());
         moduleConfig.getDataFile().setUpdate(new DataFileUpdate());
         moduleConfig.setPerformance(performanceConfig);
-        new PipelineBuilder(pipelineBuilder).build(moduleConfig);
+        new PipelineBuilderBuilder()
+                .withPremadeBuilder(pipelineBuilder)
+                .build(moduleConfig);
     }
 
     @Test

@@ -6,7 +6,7 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.Dat
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.DataFileUpdate;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.ModuleConfig;
 import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.PerformanceConfig;
-import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.PipelineBuilder;
+import org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core.PipelineBuilderBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +16,7 @@ public class PipelineBuilderSpawnerImpTest {
         moduleConfig.setDataFile(dataFile);
         dataFile.setUpdate(new DataFileUpdate());
         moduleConfig.setPerformance(new PerformanceConfig());
-        return new PipelineBuilder(null).build(moduleConfig);
+        return new PipelineBuilderBuilder().build(moduleConfig);
     }
 
     @Test

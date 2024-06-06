@@ -2,7 +2,6 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core;
 
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import fiftyone.devicedetection.DeviceDetectionPipelineBuilder;
-import fiftyone.pipeline.core.flowelements.Pipeline;
 import fiftyone.pipeline.core.flowelements.PipelineBuilderBase;
 import fiftyone.pipeline.engines.Constants;
 import fiftyone.pipeline.engines.services.DataUpdateServiceDefault;
@@ -19,7 +18,7 @@ import org.prebid.server.hooks.modules.fiftyone.devicedetection.model.config.Per
 import java.util.Collection;
 import java.util.List;
 
-public class PipelineBuilder {
+public class PipelineBuilderBuilder {
     private static final Collection<String> PROPERTIES_USED = List.of(
             "devicetype",
             "hardwarevendor",
@@ -42,15 +41,19 @@ public class PipelineBuilder {
             "GeoLocation",
             "HardwareModelVariants");
 
-    private final DeviceDetectionOnPremisePipelineBuilder premadeBuilder;
+    private DeviceDetectionOnPremisePipelineBuilder premadeBuilder = null;
 
-    public PipelineBuilder(@Nullable DeviceDetectionOnPremisePipelineBuilder premadeBuilder) {
+    public PipelineBuilderBuilder withPremadeBuilder(DeviceDetectionOnPremisePipelineBuilder premadeBuilder) {
         this.premadeBuilder = premadeBuilder;
+        return this;
     }
 
     public PipelineBuilderBase<?> build(ModuleConfig moduleConfig) throws Exception {
         final DataFile dataFile = moduleConfig.getDataFile();
-        final DeviceDetectionOnPremisePipelineBuilder builder = makeRawBuilder(dataFile);
+        final DeviceDetectionOnPremisePipelineBuilder builder
+                = (premadeBuilder != null)
+                ? premadeBuilder
+                : makeRawBuilder(dataFile);
         applyUpdateOptions(builder, dataFile.getUpdate());
         applyPerformanceOptions(builder, moduleConfig.getPerformance());
         PROPERTIES_USED.forEach(builder::setProperty);
