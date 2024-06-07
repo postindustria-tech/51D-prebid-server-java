@@ -83,12 +83,12 @@ public class PipelineBuilderBuilder {
         }
 
         final String url = updateConfig.getUrl();
-        if (url != null) {
+        if (StringUtils.isNotEmpty(url)) {
             pipelineBuilder.setDataUpdateUrl(url);
         }
 
         final String licenseKey = updateConfig.getLicenseKey();
-        if (licenseKey != null) {
+        if (StringUtils.isNotEmpty(licenseKey)) {
             pipelineBuilder.setDataUpdateLicenseKey(licenseKey);
         }
 
@@ -109,7 +109,7 @@ public class PipelineBuilderBuilder {
             return;
         }
         final String profile = performanceConfig.getProfile();
-        if (profile != null) {
+        if (StringUtils.isNotEmpty(profile)) {
             setPerformanceProfile(pipelineBuilder, profile);
         }
 

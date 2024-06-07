@@ -70,7 +70,7 @@ public class PipelineBuilderBuilderTest {
     }
 
     @Test
-    public void buildShouldAssignEmptyLicenseKey() throws Exception {
+    public void buildShouldIgnoreEmptyLicenseKey() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
 
@@ -81,11 +81,8 @@ public class PipelineBuilderBuilderTest {
                 .withPremadeBuilder(builder)
                 .build(moduleConfig);
 
-        final ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
-
         // then
-        verify(builder).setDataUpdateLicenseKey(argumentCaptor.capture());
-        assertThat(argumentCaptor.getAllValues()).containsExactly(dataFileUpdate.getLicenseKey());
+        verify(builder, never()).setDataUpdateLicenseKey(any());
     }
 
     @Test
@@ -203,22 +200,20 @@ public class PipelineBuilderBuilderTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void buildShouldThrowWhenProfileEmpty() throws Exception {
+    @Test
+    public void buildShouldIgnoreEmptyProfile() throws Exception {
         // given
         final DeviceDetectionOnPremisePipelineBuilder builder = mock(DeviceDetectionOnPremisePipelineBuilder.class);
 
         performanceConfig.setProfile("");
 
-        try {
-            // when
-            new PipelineBuilderBuilder()
-                    .withPremadeBuilder(builder)
-                    .build(moduleConfig);
-        } finally {
-            // then
-            verify(builder, never()).setPerformanceProfile(any());
-        }
+        // when
+        new PipelineBuilderBuilder()
+                .withPremadeBuilder(builder)
+                .build(moduleConfig);
+
+        // then
+        verify(builder, never()).setPerformanceProfile(any());
     }
 
     @Test
