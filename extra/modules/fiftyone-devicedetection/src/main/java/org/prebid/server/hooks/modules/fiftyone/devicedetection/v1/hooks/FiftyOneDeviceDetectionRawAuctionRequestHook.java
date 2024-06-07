@@ -147,7 +147,9 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = collectedEvidence.toBuilder();
         collectEvidence(evidenceBuilder, bidRequest);
 
-        final EnrichmentResult mergeResult = deviceEnricher.populateDeviceInfo(bidRequest.getDevice(), evidenceBuilder.build());
+        final EnrichmentResult mergeResult = deviceEnricher.populateDeviceInfo(
+                bidRequest.getDevice(),
+                evidenceBuilder.build());
         return Optional.ofNullable(mergeResult)
                 .map(EnrichmentResult::enrichedDevice)
                 .map(mergedDevice -> bidRequest.toBuilder().device(mergedDevice).build())
