@@ -67,6 +67,9 @@ public class PipelineBuilderBuilder {
 
     private static void applyUpdateOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                                            DataFileUpdate updateConfig) {
+        if (updateConfig == null) {
+            return;
+        }
         pipelineBuilder.setDataUpdateService(new DataUpdateServiceDefault());
 
         final Boolean auto = updateConfig.getAuto();
@@ -102,6 +105,9 @@ public class PipelineBuilderBuilder {
 
     private static void applyPerformanceOptions(DeviceDetectionOnPremisePipelineBuilder pipelineBuilder,
                                                 PerformanceConfig performanceConfig) {
+        if (performanceConfig == null) {
+            return;
+        }
         final String profile = performanceConfig.getProfile();
         if (profile != null) {
             setPerformanceProfile(pipelineBuilder, profile);

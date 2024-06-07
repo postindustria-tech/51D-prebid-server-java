@@ -343,4 +343,18 @@ public class PipelineBuilderBuilderTest {
         // then
         assertThat(pipelineBuilder).isNotNull();
     }
+
+    @Test
+    public void buildShouldNotThrowWhenMinimal() throws Exception {
+        // given
+        moduleConfig.getDataFile().setPath("dummy.hash");
+        moduleConfig.getDataFile().setUpdate(null);
+        moduleConfig.setPerformance(null);
+
+        // when
+        final PipelineBuilderBase<?> pipelineBuilder = new PipelineBuilderBuilder().build(moduleConfig);
+
+        // then
+        assertThat(pipelineBuilder).isNotNull();
+    }
 }
