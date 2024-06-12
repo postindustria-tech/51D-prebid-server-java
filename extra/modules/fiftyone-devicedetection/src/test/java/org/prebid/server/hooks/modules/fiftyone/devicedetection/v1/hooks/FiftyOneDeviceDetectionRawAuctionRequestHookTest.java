@@ -3,10 +3,11 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks;
 import com.iab.openrtb.request.BidRequest;
 import com.iab.openrtb.request.Device;
 import com.iab.openrtb.request.UserAgent;
-import fiftyone.pipeline.core.flowelements.Pipeline;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.prebid.server.auction.model.AuctionContext;
@@ -27,33 +28,27 @@ import org.prebid.server.settings.model.Account;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.function.BiFunction;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     @Rule
     public final MockitoRule mockitoRule = MockitoJUnit.rule();
 
+    @Mock
+    private DeviceEnricher deviceEnricher;
     private ModuleConfig moduleConfig;
     private RawAuctionRequestHook target;
-    private BiFunction<Device, CollectedEvidence, EnrichmentResult> deviceRefiner;
 
     @Before
     public void setUp() {
         moduleConfig = new ModuleConfig();
-        deviceRefiner = (bidRequest, evidence) -> null;
-        target = new FiftyOneDeviceDetectionRawAuctionRequestHook(
-                moduleConfig,
-                new DeviceEnricher(mock(Pipeline.class)) {
-                    @Override
-                    public EnrichmentResult populateDeviceInfo(
-                            Device device,
-                            CollectedEvidence collectedEvidence) {
-                        return deviceRefiner.apply(device, collectedEvidence);
-                    }
-                });
+        target = new FiftyOneDeviceDetectionRawAuctionRequestHook(moduleConfig, deviceEnricher);
     }
 
     // MARK: - addEvidenceToContext
@@ -264,13 +259,10 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
                         .collectedEvidence(savedEvidence)
                         .build()
         );
+        when(deviceEnricher.populateDeviceInfo(any(), any()))
+                .thenReturn(EnrichmentResult.builder().build());
 
         // when
-        final boolean[] refinerCalled = {false};
-        deviceRefiner = (device, evidence) -> {
-            refinerCalled[0] = true;
-            return EnrichmentResult.builder().build();
-        };
         final BidRequest newBidRequest = target.call(auctionRequestPayload, invocationContext)
                 .result()
                 .payloadUpdate()
@@ -279,7 +271,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
         // then
         assertThat(newBidRequest).isEqualTo(bidRequest);
-        assertThat(refinerCalled).containsExactly(true);
+        verify(deviceEnricher, times(1)).populateDeviceInfo(any(), any());
     }
 
     @Test
@@ -301,15 +293,10 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
                         .collectedEvidence(savedEvidence)
                         .build()
         );
+        when(deviceEnricher.populateDeviceInfo(any(), any()))
+                .thenReturn(EnrichmentResult.builder().build());
 
         // when
-        final boolean[] refinerCalled = {false};
-        deviceRefiner = (device, collectedEvidence) -> {
-            assertThat(collectedEvidence.rawHeaders()).isEqualTo(savedEvidence.rawHeaders());
-            assertThat(collectedEvidence.deviceUA()).isEqualTo(fakeUA);
-            refinerCalled[0] = true;
-            return null;
-        };
         final BidRequest newBidRequest = target.call(auctionRequestPayload, invocationContext)
                 .result()
                 .payloadUpdate()
@@ -318,7 +305,13 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
         // then
         assertThat(newBidRequest).isEqualTo(bidRequest);
-        assertThat(refinerCalled).containsExactly(true);
+        verify(deviceEnricher, times(1)).populateDeviceInfo(any(), any());
+
+        final ArgumentCaptor<CollectedEvidence> evidenceCaptor = ArgumentCaptor.forClass(CollectedEvidence.class);
+        verify(deviceEnricher).populateDeviceInfo(any(), evidenceCaptor.capture());
+        final List<CollectedEvidence> allEvidences = evidenceCaptor.getAllValues();
+        assertThat(allEvidences).hasSize(1);
+        assertThat(allEvidences.getFirst().deviceUA()).isEqualTo(fakeUA);
     }
 
     @Test
@@ -337,12 +330,13 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
                         .collectedEvidence(savedEvidence)
                         .build()
         );
+        when(deviceEnricher.populateDeviceInfo(any(), any()))
+                .thenReturn(EnrichmentResult
+                        .builder()
+                        .enrichedDevice(mergedDevice)
+                        .build());
 
         // when
-        deviceRefiner = (device, collectedEvidence) -> EnrichmentResult
-                .builder()
-                .enrichedDevice(mergedDevice)
-                .build();
         final BidRequest newBidRequest = target.call(auctionRequestPayload, invocationContext)
                 .result()
                 .payloadUpdate()
@@ -351,6 +345,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
         // then
         assertThat(newBidRequest.getDevice()).isEqualTo(mergedDevice);
+        verify(deviceEnricher, times(1)).populateDeviceInfo(any(), any());
     }
 
     // MARK: - code
