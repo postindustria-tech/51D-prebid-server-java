@@ -3,7 +3,6 @@ package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.core;
 import fiftyone.devicedetection.DeviceDetectionOnPremisePipelineBuilder;
 import fiftyone.devicedetection.DeviceDetectionPipelineBuilder;
 import fiftyone.pipeline.core.flowelements.Pipeline;
-import fiftyone.pipeline.core.flowelements.PipelineBuilderBase;
 import fiftyone.pipeline.engines.Constants;
 import org.junit.Before;
 import org.junit.Rule;

@@ -54,7 +54,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     // MARK: - addEvidenceToContext
 
     @Test
-    public void callShouldMakeNewContextWhenNullIsPassedIn() throws Exception {
+    public void callShouldMakeNewContextWhenNullIsPassedIn() {
         // given
         final BidRequest bidRequest = BidRequest.builder()
                 .device(null)
@@ -79,7 +79,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldMakeNewEvidenceWhenNoneWasPresent() throws Exception {
+    public void callShouldMakeNewEvidenceWhenNoneWasPresent() {
         // given
         final ModuleContext moduleContext = ModuleContext.builder().build();
         final BidRequest bidRequest = BidRequest.builder()
@@ -105,7 +105,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldMergeEvidences() throws Exception {
+    public void callShouldMergeEvidences() {
         // given
         final String ua = "mad-hatter";
         final HashMap<String, String> sua = new HashMap<>();
@@ -143,7 +143,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     // MARK: - collectEvidence
 
     @Test
-    public void callShouldNotFailWhenNoDevice() throws Exception {
+    public void callShouldNotFailWhenNoDevice() {
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
         final AuctionRequestPayload payload = AuctionRequestPayloadImpl.of(bidRequest);
@@ -166,7 +166,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldAddUAToModuleContextEvidence() throws Exception {
+    public void callShouldAddUAToModuleContextEvidence() {
         // given
         final String testUA = "MindScape Crawler";
         final BidRequest bidRequest = BidRequest.builder()
@@ -192,7 +192,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldAddSUAToModuleContextEvidence() throws Exception {
+    public void callShouldAddSUAToModuleContextEvidence() {
         // given
         final UserAgent testSUA = UserAgent.builder().build();
         final BidRequest bidRequest = BidRequest.builder()
@@ -220,7 +220,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     // MARK: - enrichDevice
 
     @Test
-    public void payloadUpdateShouldReturnNullWhenRequestIsNull() throws Exception {
+    public void payloadUpdateShouldReturnNullWhenRequestIsNull() {
         // given
         final AuctionRequestPayload auctionRequestPayload = AuctionRequestPayloadImpl.of(null);
         final AuctionInvocationContext invocationContext = AuctionInvocationContextImpl.of(
@@ -245,7 +245,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void payloadUpdateShouldReturnOldRequestWhenMergedDeviceIsNull() throws Exception {
+    public void payloadUpdateShouldReturnOldRequestWhenMergedDeviceIsNull() {
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
         final CollectedEvidence savedEvidence = CollectedEvidence.builder().build();
@@ -275,7 +275,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void payloadUpdateShouldPassMergedEvidenceToDeviceRefiner() throws Exception {
+    public void payloadUpdateShouldPassMergedEvidenceToDeviceRefiner() {
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
         final String fakeUA = "crystal-ball-navigator";
@@ -315,7 +315,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void payloadUpdateShouldInjectReturnedDevice() throws Exception {
+    public void payloadUpdateShouldInjectReturnedDevice() {
         // given
         final BidRequest bidRequest = BidRequest.builder().build();
         final CollectedEvidence savedEvidence = CollectedEvidence.builder().build();
@@ -351,7 +351,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     // MARK: - code
 
     @Test
-    public void codeShouldStartWithModuleCode() throws Exception {
+    public void codeShouldStartWithModuleCode() {
         // when and then
         assertThat(target.code()).startsWith(FiftyOneDeviceDetectionModule.CODE);
     }
@@ -359,7 +359,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     // MARK: - isAccountAllowed
 
     @Test
-    public void callShouldReturnUpdateActionWhenFilterIsNull() throws Exception {
+    public void callShouldReturnUpdateActionWhenFilterIsNull() {
         // when
         final AuctionRequestPayload payload = AuctionRequestPayloadImpl.of(BidRequest.builder().build());
         final InvocationAction invocationAction = target.call(payload, null)
@@ -371,7 +371,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenNoWhitelistAndNoAuctionInvocationContext() throws Exception {
+    public void callShouldReturnUpdateActionWhenNoWhitelistAndNoAuctionInvocationContext() {
         // given
 
         // when
@@ -385,7 +385,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndNoAuctionInvocationContext() throws Exception {
+    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndNoAuctionInvocationContext() {
         // given
         accountFilter.setAllowList(Collections.emptyList());
 
@@ -400,7 +400,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndNoAuctionInvocationContext() throws Exception {
+    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndNoAuctionInvocationContext() {
         // given
         accountFilter.setAllowList(Collections.singletonList("42"));
 
@@ -415,7 +415,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenNoWhitelistAndNoAuctionContext() throws Exception {
+    public void callShouldReturnUpdateActionWhenNoWhitelistAndNoAuctionContext() {
         // given
 
         final AuctionInvocationContext context = AuctionInvocationContextImpl.of(
@@ -437,7 +437,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndNoAuctionContext() throws Exception {
+    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndNoAuctionContext() {
         // given
         accountFilter.setAllowList(Collections.emptyList());
 
@@ -460,7 +460,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndNoAuctionContext() throws Exception {
+    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndNoAuctionContext() {
         // given
         accountFilter.setAllowList(Collections.singletonList("42"));
 
@@ -483,7 +483,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenNoWhitelistAndNoAccount() throws Exception {
+    public void callShouldReturnUpdateActionWhenNoWhitelistAndNoAccount() {
         // given
 
         final AuctionContext auctionContext = AuctionContext.builder().build();
@@ -506,7 +506,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndNoAccount() throws Exception {
+    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndNoAccount() {
         // given
         accountFilter.setAllowList(Collections.emptyList());
 
@@ -530,7 +530,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndNoAccount() throws Exception {
+    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndNoAccount() {
         // given
         accountFilter.setAllowList(Collections.singletonList("42"));
 
@@ -554,7 +554,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenNoWhitelistAndNoAccountID() throws Exception {
+    public void callShouldReturnUpdateActionWhenNoWhitelistAndNoAccountID() {
         // given
 
         final AuctionContext auctionContext = AuctionContext.builder()
@@ -580,7 +580,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndNoAccountID() throws Exception {
+    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndNoAccountID() {
         // given
         accountFilter.setAllowList(Collections.emptyList());
 
@@ -607,7 +607,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndNoAccountID() throws Exception {
+    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndNoAccountID() {
         // given
         accountFilter.setAllowList(Collections.singletonList("42"));
 
@@ -634,7 +634,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenNoWhitelistAndEmptyAccountID() throws Exception {
+    public void callShouldReturnUpdateActionWhenNoWhitelistAndEmptyAccountID() {
         // given
 
         final AuctionContext auctionContext = AuctionContext.builder()
@@ -661,7 +661,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndEmptyAccountID() throws Exception {
+    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndEmptyAccountID() {
         // given
         accountFilter.setAllowList(Collections.emptyList());
 
@@ -689,7 +689,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndEmptyAccountID() throws Exception {
+    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndEmptyAccountID() {
         // given
         accountFilter.setAllowList(Collections.singletonList("42"));
 
@@ -717,7 +717,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenNoWhitelistAndAllowedAccountID() throws Exception {
+    public void callShouldReturnUpdateActionWhenNoWhitelistAndAllowedAccountID() {
         // given
 
         final AuctionContext auctionContext = AuctionContext.builder()
@@ -744,7 +744,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndAllowedAccountID() throws Exception {
+    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndAllowedAccountID() {
         // given
         accountFilter.setAllowList(Collections.emptyList());
 
@@ -772,7 +772,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenWhitelistFilledAndAllowedAccountID() throws Exception {
+    public void callShouldReturnUpdateActionWhenWhitelistFilledAndAllowedAccountID() {
         // given
         accountFilter.setAllowList(Collections.singletonList("42"));
 
@@ -800,7 +800,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenNoWhitelistAndNotAllowedAccountID() throws Exception {
+    public void callShouldReturnUpdateActionWhenNoWhitelistAndNotAllowedAccountID() {
         // given
 
         final AuctionContext auctionContext = AuctionContext.builder()
@@ -827,7 +827,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndNotAllowedAccountID() throws Exception {
+    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndNotAllowedAccountID() {
         // given
         accountFilter.setAllowList(Collections.emptyList());
 
@@ -855,7 +855,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
     }
 
     @Test
-    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndNotAllowedAccountID() throws Exception {
+    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndNotAllowedAccountID() {
         // given
         accountFilter.setAllowList(Collections.singletonList("42"));
 
