@@ -246,7 +246,18 @@ public class DeviceEnricherTest {
         final EnrichmentResult result = target.populateDeviceInfo(device, collectedEvidence);
 
         // then
-        assertThat(result.enrichedFields()).hasSize(10);
+        assertThat(result.enrichedFields()).containsExactly(
+                "devicetype",
+                "make",
+                "model",
+                "os",
+                "osv",
+                "h",
+                "w",
+                "ppi",
+                "pxratio",
+                "ext.fiftyonedegrees_deviceId"
+        );
     }
 
     @Test
