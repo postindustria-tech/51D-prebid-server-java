@@ -481,6 +481,25 @@ public class DeviceEnricherTest {
     }
 
     @Test
+    public void populateDeviceInfoShouldReturnNullWhenScreenInchesHeightIsZero() throws Exception {
+        // given
+        final Device testDevice = buildCompleteDevice().toBuilder()
+                .ppi(null)
+                .build();
+
+        // when
+        buildCompleteDeviceData();
+        when(deviceData.getScreenInchesHeight()).thenReturn(aspectPropertyValueWith(0.0));
+        final CollectedEvidence collectedEvidence = CollectedEvidence.builder()
+                .deviceUA("fake-UserAgent")
+                .build();
+        final EnrichmentResult result = target.populateDeviceInfo(testDevice, collectedEvidence);
+
+        // then
+        assertThat(result).isNull();
+    }
+
+    @Test
     public void populateDeviceInfoShouldEnrichPXRatioWhenItIsMissing() throws Exception {
         // given
         final Device testDevice = buildCompleteDevice().toBuilder()
