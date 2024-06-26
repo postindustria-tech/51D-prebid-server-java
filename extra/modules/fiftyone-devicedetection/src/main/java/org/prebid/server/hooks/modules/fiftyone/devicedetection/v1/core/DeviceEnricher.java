@@ -35,6 +35,10 @@ public class DeviceEnricher {
         this.pipeline = Objects.requireNonNull(pipeline);
     }
 
+    public static boolean shouldSkipEnriching(Device device) {
+        return StringUtils.isNotEmpty(getDeviceId(device));
+    }
+
     public EnrichmentResult populateDeviceInfo(Device device, CollectedEvidence collectedEvidence) throws Exception {
         try (FlowData data = pipeline.createFlowData()) {
             data.addEvidence(pickRelevantFrom(collectedEvidence));

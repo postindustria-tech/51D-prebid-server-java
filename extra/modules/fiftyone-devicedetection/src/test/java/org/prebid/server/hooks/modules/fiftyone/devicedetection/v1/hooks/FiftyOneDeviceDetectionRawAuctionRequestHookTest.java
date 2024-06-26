@@ -1,5 +1,6 @@
 package org.prebid.server.hooks.modules.fiftyone.devicedetection.v1.hooks;
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.iab.openrtb.request.BidRequest;
 import com.iab.openrtb.request.Device;
 import com.iab.openrtb.request.UserAgent;
@@ -23,6 +24,7 @@ import org.prebid.server.hooks.v1.InvocationAction;
 import org.prebid.server.hooks.v1.auction.AuctionInvocationContext;
 import org.prebid.server.hooks.v1.auction.AuctionRequestPayload;
 import org.prebid.server.hooks.v1.auction.RawAuctionRequestHook;
+import org.prebid.server.proto.openrtb.ext.request.ExtDevice;
 import org.prebid.server.settings.model.Account;
 
 import java.util.Collections;
@@ -497,6 +499,33 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
         // then
         assertThat(invocationAction).isEqualTo(InvocationAction.update);
+    }
+
+    @Test
+    public void callShouldReturnNoUpdateActionWhenNoWhitelistAndNoAccountButDeviceIdIsSet() {
+        // given
+
+        final AuctionContext auctionContext = AuctionContext.builder().build();
+        final AuctionInvocationContext context = AuctionInvocationContextImpl.of(
+                null,
+                auctionContext,
+                false,
+                null,
+                null
+        );
+        final ExtDevice ext = ExtDevice.empty();
+        final Device device = Device.builder().ext(ext).build();
+        final BidRequest bidRequest = BidRequest.builder().device(device).build();
+        final AuctionRequestPayload payload = AuctionRequestPayloadImpl.of(bidRequest);
+        ext.addProperty("fiftyonedegrees_deviceId", new TextNode("0-0-0-0"));
+
+        // when
+        final InvocationAction invocationAction = target.call(payload, context)
+                .result()
+                .action();
+
+        // then
+        assertThat(invocationAction).isEqualTo(InvocationAction.no_action);
     }
 
     @Test

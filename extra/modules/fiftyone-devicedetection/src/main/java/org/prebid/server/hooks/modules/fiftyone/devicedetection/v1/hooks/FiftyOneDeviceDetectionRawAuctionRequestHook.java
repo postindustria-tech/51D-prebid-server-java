@@ -51,7 +51,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                                                                 AuctionInvocationContext invocationContext) {
         final ModuleContext oldModuleContext = (ModuleContext) invocationContext.moduleContext();
 
-        if (!isAccountAllowed(invocationContext)) {
+        if (shouldSkipEnriching(payload, invocationContext)) {
             return Future.succeededFuture(
                     InvocationResultImpl.<AuctionRequestPayload>builder()
                             .status(InvocationStatus.success)
@@ -72,6 +72,14 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                         .moduleContext(moduleContext)
                         .build()
         );
+    }
+
+    private boolean shouldSkipEnriching(AuctionRequestPayload payload, AuctionInvocationContext invocationContext) {
+        if (!isAccountAllowed(invocationContext)) {
+            return true;
+        }
+        final Device device = ObjectUtil.getIfNotNull(payload.bidRequest(), BidRequest::getDevice);
+        return device != null && DeviceEnricher.shouldSkipEnriching(device);
     }
 
     private boolean isAccountAllowed(AuctionInvocationContext invocationContext) {

@@ -52,6 +52,38 @@ public class DeviceEnricherTest {
         target = new DeviceEnricher(pipeline);
     }
 
+    // MARK: - shouldSkipEnriching
+
+    @Test
+    public void shouldSkipEnrichingShouldReturnFalseWhenExtIsNull() {
+        // given
+        final Device device = Device.builder().build();
+
+        // when and then
+        assertThat(DeviceEnricher.shouldSkipEnriching(device)).isFalse();
+    }
+
+    @Test
+    public void shouldSkipEnrichingShouldReturnFalseWhenExtIsEmpty() {
+        // given
+        final ExtDevice ext = ExtDevice.empty();
+        final Device device = Device.builder().ext(ext).build();
+
+        // when and then
+        assertThat(DeviceEnricher.shouldSkipEnriching(device)).isFalse();
+    }
+
+    @Test
+    public void shouldSkipEnrichingShouldReturnTrueWhenExtContainsProfileID() {
+        // given
+        final ExtDevice ext = ExtDevice.empty();
+        ext.addProperty("fiftyonedegrees_deviceId", new TextNode("0-0-0-0"));
+        final Device device = Device.builder().ext(ext).build();
+
+        // when and then
+        assertThat(DeviceEnricher.shouldSkipEnriching(device)).isTrue();
+    }
+
     // MARK: - populateDeviceInfo
 
     @Test
