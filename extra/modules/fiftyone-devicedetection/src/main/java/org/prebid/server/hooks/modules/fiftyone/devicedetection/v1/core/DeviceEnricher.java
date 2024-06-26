@@ -28,24 +28,6 @@ import java.util.stream.Stream;
 public class DeviceEnricher {
     private static final String EXT_DEVICE_ID_KEY = "fiftyonedegrees_deviceId";
 
-    private static final Map<String, Integer> DEVICE_FIELD_MAPPING = Map.ofEntries(
-            Map.entry("Phone", OrtbDeviceType.PHONE.ordinal()),
-            Map.entry("Console", OrtbDeviceType.SET_TOP_BOX.ordinal()),
-            Map.entry("Desktop", OrtbDeviceType.PERSONAL_COMPUTER.ordinal()),
-            Map.entry("EReader", OrtbDeviceType.PERSONAL_COMPUTER.ordinal()),
-            Map.entry("IoT", OrtbDeviceType.CONNECTED_DEVICE.ordinal()),
-            Map.entry("Kiosk", OrtbDeviceType.OOH_DEVICE.ordinal()),
-            Map.entry("MediaHub", OrtbDeviceType.SET_TOP_BOX.ordinal()),
-            Map.entry("Mobile", OrtbDeviceType.MOBILE_TABLET.ordinal()),
-            Map.entry("Router", OrtbDeviceType.CONNECTED_DEVICE.ordinal()),
-            Map.entry("SmallScreen", OrtbDeviceType.CONNECTED_DEVICE.ordinal()),
-            Map.entry("SmartPhone", OrtbDeviceType.MOBILE_TABLET.ordinal()),
-            Map.entry("SmartSpeaker", OrtbDeviceType.CONNECTED_DEVICE.ordinal()),
-            Map.entry("SmartWatch", OrtbDeviceType.CONNECTED_DEVICE.ordinal()),
-            Map.entry("Tablet", OrtbDeviceType.TABLET.ordinal()),
-            Map.entry("Tv", OrtbDeviceType.CONNECTED_TV.ordinal()),
-            Map.entry("Vehicle Display", OrtbDeviceType.PERSONAL_COMPUTER.ordinal()));
-
     private final Pipeline pipeline;
 
     public DeviceEnricher(@Nonnull Pipeline pipeline) {
@@ -95,9 +77,9 @@ public class DeviceEnricher {
         if (!isPositive(currentDeviceType)) {
             final String rawDeviceType = getSafe(deviceData, DeviceData::getDeviceType);
             if (rawDeviceType != null) {
-                final Integer properDeviceType = convertDeviceType(rawDeviceType);
-                if (isPositive(properDeviceType)) {
-                    deviceBuilder.devicetype(properDeviceType);
+                final OrtbDeviceType properDeviceType = OrtbDeviceType.resolveFrom(rawDeviceType);
+                if (properDeviceType != OrtbDeviceType.UNKNOWN) {
+                    deviceBuilder.devicetype(properDeviceType.ordinal());
                     updatedFields.add("devicetype");
                 }
             }
@@ -253,10 +235,6 @@ public class DeviceEnricher {
             // nop -- not interested in errors on getting missing values.
         }
         return null;
-    }
-
-    private Integer convertDeviceType(String deviceType) {
-        return Optional.ofNullable(DEVICE_FIELD_MAPPING.get(deviceType)).orElse(OrtbDeviceType.UNKNOWN.ordinal());
     }
 }
 
