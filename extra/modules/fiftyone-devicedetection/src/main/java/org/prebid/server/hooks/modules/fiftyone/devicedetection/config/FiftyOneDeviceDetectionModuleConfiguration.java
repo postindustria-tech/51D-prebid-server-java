@@ -19,8 +19,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Configuration
 @PropertySource(
@@ -46,10 +44,10 @@ public class FiftyOneDeviceDetectionModuleConfiguration {
 
     @Bean
     Module fiftyOneDeviceDetectionModule(ModuleConfig moduleConfig, DeviceEnricher deviceEnricher) {
-        final Set<? extends Hook<?, ? extends InvocationContext>> hooks = Stream.of(
+        final Set<? extends Hook<?, ? extends InvocationContext>> hooks = Set.of(
                 new FiftyOneDeviceDetectionEntrypointHook(),
                 new FiftyOneDeviceDetectionRawAuctionRequestHook(moduleConfig.getAccountFilter(), deviceEnricher)
-        ).collect(Collectors.toSet());
+        );
 
         return new FiftyOneDeviceDetectionModule(hooks);
     }
