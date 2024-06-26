@@ -24,9 +24,7 @@ import io.vertx.core.Future;
 import org.prebid.server.settings.model.Account;
 import org.prebid.server.util.ObjectUtil;
 
-import jakarta.annotation.Nonnull;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionRequestHook {
@@ -35,10 +33,9 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     private final AccountFilter accountFilter;
     private final DeviceEnricher deviceEnricher;
 
-    public FiftyOneDeviceDetectionRawAuctionRequestHook(@Nonnull AccountFilter accountFilter,
-                                                        @Nonnull DeviceEnricher deviceEnricher) {
-        this.accountFilter = Objects.requireNonNull(accountFilter);
-        this.deviceEnricher = Objects.requireNonNull(deviceEnricher);
+    public FiftyOneDeviceDetectionRawAuctionRequestHook(AccountFilter accountFilter, DeviceEnricher deviceEnricher) {
+        this.accountFilter = accountFilter;
+        this.deviceEnricher = deviceEnricher;
     }
 
     @Override
