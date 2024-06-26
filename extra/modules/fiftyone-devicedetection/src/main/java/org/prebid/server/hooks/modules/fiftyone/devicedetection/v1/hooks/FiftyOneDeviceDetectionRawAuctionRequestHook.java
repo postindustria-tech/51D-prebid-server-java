@@ -26,7 +26,6 @@ import org.prebid.server.util.ObjectUtil;
 
 import jakarta.annotation.Nonnull;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -115,12 +114,8 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
         }
         final UserAgent sua = device.getSua();
         if (sua != null) {
-            evidenceBuilder.secureHeaders(convertSecureHeaders(sua));
+            evidenceBuilder.secureHeaders(SecureHeadersRetriever.retrieveFrom(sua));
         }
-    }
-
-    private Map<String, String> convertSecureHeaders(UserAgent userAgent) {
-        return SecureHeadersRetriever.retrieveFrom(userAgent);
     }
 
     private AuctionRequestPayload updatePayload(AuctionRequestPayload existingPayload,
