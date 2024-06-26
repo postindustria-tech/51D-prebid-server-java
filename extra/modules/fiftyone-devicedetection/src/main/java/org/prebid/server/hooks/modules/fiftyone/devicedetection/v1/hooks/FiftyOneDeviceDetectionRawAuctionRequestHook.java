@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionRequestHook {
     private static final String CODE = "fiftyone-devicedetection-raw-auction-request-hook";
@@ -64,7 +63,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
 
         final ModuleContext moduleContext = addEvidenceToContext(
                 oldModuleContext,
-                builder -> collectEvidence(builder, payload.bidRequest()));
+                payload.bidRequest());
 
         return Future.succeededFuture(
                 InvocationResultImpl.<AuctionRequestPayload>builder()
@@ -90,14 +89,13 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
                 .orElse(false);
     }
 
-    private ModuleContext addEvidenceToContext(ModuleContext moduleContext,
-                                               Consumer<CollectedEvidence.CollectedEvidenceBuilder> evidenceInjector) {
+    private ModuleContext addEvidenceToContext(ModuleContext moduleContext, BidRequest bidRequest) {
         final CollectedEvidence.CollectedEvidenceBuilder evidenceBuilder = Optional.ofNullable(moduleContext)
                 .map(ModuleContext::collectedEvidence)
                 .map(CollectedEvidence::toBuilder)
                 .orElseGet(CollectedEvidence::builder);
 
-        evidenceInjector.accept(evidenceBuilder);
+        collectEvidence(evidenceBuilder, bidRequest);
 
         return Optional.ofNullable(moduleContext)
                 .map(ModuleContext::toBuilder)
