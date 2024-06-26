@@ -389,58 +389,23 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHookTest {
 
     @Test
     public void callShouldReturnUpdateActionWhenFilterIsNull() {
+        // given
+        final AuctionInvocationContext context = AuctionInvocationContextImpl.of(
+                null,
+                null,
+                false,
+                null,
+                null
+        );
+
         // when
         final AuctionRequestPayload payload = AuctionRequestPayloadImpl.of(BidRequest.builder().build());
-        final InvocationAction invocationAction = target.call(payload, null)
+        final InvocationAction invocationAction = target.call(payload, context)
                 .result()
                 .action();
 
         // then
         assertThat(invocationAction).isEqualTo(InvocationAction.update);
-    }
-
-    @Test
-    public void callShouldReturnUpdateActionWhenNoWhitelistAndNoAuctionInvocationContext() {
-        // given
-
-        // when
-        final AuctionRequestPayload payload = AuctionRequestPayloadImpl.of(BidRequest.builder().build());
-        final InvocationAction invocationAction = target.call(payload, null)
-                .result()
-                .action();
-
-        // then
-        assertThat(invocationAction).isEqualTo(InvocationAction.update);
-    }
-
-    @Test
-    public void callShouldReturnUpdateActionWhenWhitelistEmptyAndNoAuctionInvocationContext() {
-        // given
-        accountFilter.setAllowList(Collections.emptyList());
-
-        // when
-        final AuctionRequestPayload payload = AuctionRequestPayloadImpl.of(BidRequest.builder().build());
-        final InvocationAction invocationAction = target.call(payload, null)
-                .result()
-                .action();
-
-        // then
-        assertThat(invocationAction).isEqualTo(InvocationAction.update);
-    }
-
-    @Test
-    public void callShouldReturnNoUpdateActionWhenWhitelistFilledAndNoAuctionInvocationContext() {
-        // given
-        accountFilter.setAllowList(Collections.singletonList("42"));
-
-        // when
-        final AuctionRequestPayload payload = AuctionRequestPayloadImpl.of(BidRequest.builder().build());
-        final InvocationAction invocationAction = target.call(payload, null)
-                .result()
-                .action();
-
-        // then
-        assertThat(invocationAction).isEqualTo(InvocationAction.no_action);
     }
 
     @Test

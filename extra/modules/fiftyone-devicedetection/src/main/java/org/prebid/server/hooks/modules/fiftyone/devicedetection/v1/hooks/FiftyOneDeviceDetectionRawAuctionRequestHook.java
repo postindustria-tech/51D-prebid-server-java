@@ -51,9 +51,7 @@ public class FiftyOneDeviceDetectionRawAuctionRequestHook implements RawAuctionR
     @Override
     public Future<InvocationResult<AuctionRequestPayload>> call(AuctionRequestPayload payload,
                                                                 AuctionInvocationContext invocationContext) {
-        final ModuleContext oldModuleContext = (ModuleContext) ObjectUtil.getIfNotNull(
-                invocationContext,
-                AuctionInvocationContext::moduleContext);
+        final ModuleContext oldModuleContext = (ModuleContext) invocationContext.moduleContext();
 
         if (!isAccountAllowed(invocationContext)) {
             return Future.succeededFuture(
